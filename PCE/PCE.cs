@@ -3,6 +3,7 @@ using BepInEx;
 using UnboundLib.Cards;
 using UnityEngine;
 using PCE.Cards;
+using System.IO;
 
 namespace PCE
 {
@@ -13,13 +14,21 @@ namespace PCE
     {
         private void Start()
         {
+            PCE.ArtAssets = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "pce"));
+            if (PCE.ArtAssets == null)
+            {
+                global::Debug.Log("Failed to load PCE art asset bundle");
+            }
             CustomCard.BuildCard<LaserCard>();
             CustomCard.BuildCard<GhostGunCard>();
             CustomCard.BuildCard<TractorBeamCard>();
+            CustomCard.BuildCard<MoonShoesCard>();
+            CustomCard.BuildCard<JetpackCard>();
         }
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 
         private const string ModName = "Pykess's Card Expansion (PCE)";
+        internal static AssetBundle ArtAssets;
     }
 }
 
@@ -68,10 +77,9 @@ namespace PCE.Cards
         {
             return "Light Amplification by Stimulated Emission of Radiation";
         }
-
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Laser");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -175,7 +183,7 @@ namespace PCE.Cards
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
+            return CardThemeColor.CardThemeColorType.TechWhite;
         }
     }
 
@@ -221,15 +229,147 @@ namespace PCE.Cards
                 {
                 positive = true,
                 stat = "Knockback",
-                amount = "Reverse",
+                amount = "-2×",
                 simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
             };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
+            return CardThemeColor.CardThemeColorType.MagicPink;
         }
     }
 
+    public class MoonShoesCard : CustomCard
+    {
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            characterStats.jump *= 3f;
+            characterStats.gravity *= 0.3f;
+
+        }
+        public override void OnRemoveCard()
+        {
+        }
+
+        protected override string GetTitle()
+        {
+            return "Moon Shoes";
+        }
+        protected override string GetDescription()
+        {
+            return null;
+        }
+
+        protected override GameObject GetCardArt()
+        {
+            return null;
+        }
+
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Uncommon;
+        }
+
+        protected override CardInfoStat[] GetStats()
+        {
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Jump Height",
+                amount = "+300%",
+                simepleAmount = CardInfoStat.SimpleAmount.aLotOf
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Gravity",
+                amount = "-70%",
+                simepleAmount = CardInfoStat.SimpleAmount.aLotLower
+                },
+            };
+        }
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.TechWhite;
+        }
+    }
+    public class JetpackCard : CustomCard
+    {
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            // TODO: override methods that fuck with CharacterData.currentJumps to not reset it incorrectly 
+            
+            //data.jumps = int.MaxValue;
+            data.jumps = 2;
+            characterStats.jump = 0.5f;
+            characterStats.movementSpeed *= 0.75f;
+            data.maxHealth *= 0.75f;
+
+        }
+        public override void OnRemoveCard()
+        {
+        }
+
+        protected override string GetTitle()
+        {
+            return "Jetpack";
+        }
+        protected override string GetDescription()
+        {
+            return "Fly around";
+        }
+
+        protected override GameObject GetCardArt()
+        {
+            return null;
+        }
+
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Uncommon;
+        }
+
+        protected override CardInfoStat[] GetStats()
+        {
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Jetpack",
+                amount = "A",
+                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                },
+                new CardInfoStat
+                {
+                positive = false,
+                stat = "HP",
+                amount = "-25%",
+                simepleAmount = CardInfoStat.SimpleAmount.lower
+                },
+                new CardInfoStat
+                {
+                positive = false,
+                stat = "Movement Speed",
+                amount = "-25%",
+                simepleAmount = CardInfoStat.SimpleAmount.lower
+                },
+            };
+        }
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.TechWhite;
+        }
+    }
 }
