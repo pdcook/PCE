@@ -17,6 +17,9 @@
     <Reference Include="BepInEx.Harmony">
       <HintPath>Libs\BepInEx.Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="MMHOOK_Assembly-CSharp">
+      <HintPath>Libs\MMHOOK_Assembly-CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="UnboundLib">
       <HintPath>Libs\UnboundLib.dll</HintPath>
     </Reference>
