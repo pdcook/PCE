@@ -25,7 +25,7 @@ namespace PCE
         private void Start()
         {
 
-            PCE.ArtAssets = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "pce"));
+            PCE.ArtAssets = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "pceAssetBundle"));
             if (PCE.ArtAssets == null)
             {
                 global::Debug.Log("Failed to load PCE art asset bundle");
@@ -755,7 +755,7 @@ namespace PCE.Cards
             // this will probably cause problems with the pick two mod
             Player oppPlayer = PlayerManager.instance.GetClosestPlayerInTeam(Vector3.zero, PlayerManager.instance.GetOtherTeam(player.teamID), false);
 
-            Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+            Unbound.Instance.ExecuteAfterSeconds(3f, delegate
             {
                 typeof(HealthHandler).InvokeMember("RPCA_Die",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |

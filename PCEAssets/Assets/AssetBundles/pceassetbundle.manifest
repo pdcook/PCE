@@ -1,0 +1,96 @@
+ManifestFileVersion: 0
+CRC: 3542102472
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: ed5cac0979d25d0679d946316d2fd598
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 6a144a124261198e123e4249a53dcb7e
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 55d011acaec8c9fbbcc2d1a14a0dd65a, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 223
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+- Class: 225
+  Script: {instanceID: 0}
+Assets:
+- Assets/Prefabs/Images/lasertriangleinverted.png
+- Assets/Prefabs/Images/LaserScatter.png
+- Assets/Prefabs/Images/Circle_Quarter2.png
+- Assets/Prefabs/Images/BigLaserScatter.png
+- Assets/Prefabs/C_Laser.prefab
+- Assets/Prefabs/Images/invertedscatter.png
+- Assets/Prefabs/Images/LaserIn.png
+- Assets/Prefabs/Images/Circle_Quarter1.png
+- Assets/Prefabs/Images/LaserCard.png
+- Assets/Prefabs/Sample Card.prefab
+- Assets/Prefabs/AnimationClip/Anim_BgDots1.anim
+- Assets/Prefabs/Images/invertedbigscatter.png
+- Assets/Prefabs/Images/lasertriangleinverted.controller
+- Assets/Prefabs/Images/laserpoint.anim
+- Assets/Prefabs/C_QuickReload.prefab
+- Assets/Prefabs/Images/invertedlaserin.controller
+- Assets/Prefabs/Images/Triangle.png
+- Assets/Prefabs/C_Laser 1.controller
+- Assets/Prefabs/Images/invertedtriangle.png
+- Assets/Prefabs/Images/Triangle2.png
+- Assets/Prefabs/AnimatorController/BG_Dots.controller
+- Assets/Prefabs/AnimationClip/Anim_Circle1.anim
+- Assets/Prefabs/Images/invertedlaserpoint.controller
+- Assets/Prefabs/AnimatorController/Art_Body.controller
+- Assets/Prefabs/Images/DotsDetail_2.png
+- Assets/Prefabs/AnimationClip/Anim_Bg1.anim
+- Assets/Prefabs/Images/lasertriangle.png.png
+- Assets/Prefabs/Images/Triangle1.png
+- Assets/Prefabs/Images/laserin.anim
+- Assets/Prefabs/Images/TriangleSpriteHalf.png
+- Assets/Prefabs/Images/invertedlaserin.png
+- Assets/Prefabs/Images/LaserPoint.png
+- Assets/Prefabs/Images/Square.png
+- Assets/Prefabs/Images/triangle.anim
+- Assets/Prefabs/Images/bigscatter.anim
+- Assets/Prefabs/C_Laser.anim
+- Assets/Prefabs/C_Laser.controller
+- Assets/Prefabs/Images/CardBG.png
+- Assets/Prefabs/Images/Grid3.png
+- Assets/Prefabs/AnimatorController/BG (2) 1.controller
+- Assets/Prefabs/Images/invertedlasercard.png
+- Assets/Prefabs/Images/invertedlaserpoint.png
+- Assets/Prefabs/Images/Bg_Pattern2.png
+Dependencies: []

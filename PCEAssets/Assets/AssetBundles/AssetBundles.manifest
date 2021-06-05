@@ -1,7 +1,7 @@
 ManifestFileVersion: 0
-CRC: 1716189464
+CRC: 1513716794
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: pce
+      Name: pceassetbundle
       Dependencies: {}
