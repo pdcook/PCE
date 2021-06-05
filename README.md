@@ -2,6 +2,8 @@
 -------------------------------
 This is a BepInEx compatible mod for Rounds that adds a number of new cards to the game.
 
+A massive thanks to the people who helped me learn how to mod, especially Ascyst, Willis, and Tilastokeskus.
+
 ## Installation Instructions
 ----------------------------
 Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
