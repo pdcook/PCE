@@ -10,7 +10,7 @@ Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
 Install the newest versions of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
 
 Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
-Copy `pce` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
+Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
 
 ### Version Notes
 -----------------
