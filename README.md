@@ -47,7 +47,7 @@ Makes your bullets completely invisible and go through walls.
 
 ### Tractor Beam
 ----------------
-**ncommon**
+**Uncommon**
 
 Reverses the direction of knockback that your bullets do.
 
