@@ -1,13 +1,15 @@
 ﻿using System;
-using BepInEx;
-using UnboundLib;
-using UnboundLib.Cards;
-using UnityEngine;
+using BepInEx; // requires BepInEx.dll and BepInEx.Harmony.dll
+using UnboundLib; // requires UnboundLib.dll
+using UnboundLib.Cards; // " "
+using UnityEngine; // requires UnityEngine.dll, UnityEngine.CoreModule.dll, and UnityEngine.AssetBundleModule.dll
 using PCE.Cards;
 using System.IO;
-using HarmonyLib;
+using HarmonyLib; // requires 0Harmony.dll
 using System.Runtime.CompilerServices;
 using System.Reflection;
+// requires Assembly-CSharp.dll
+// requires MMHOOK-Assembly-CSharp.dll
 
 namespace PCE
 {
