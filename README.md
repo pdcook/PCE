@@ -19,6 +19,14 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
         - Ghost Gun should allow bullets to penetrate shields, this does not work yet.
 	- There are cards in the source code which are not built by the plugin. This is because these cards do not work yet. These card are not included in this documentation either.
 
+- v0.1.1.0: various balance changes and bug fixes
+    - Gravity now properly resets between matches
+    - Murder should work in online now
+        * Murder no longer works in Sandbox
+    - Grounded was given a slight buff to effect duration
+    - Increased the damage debuff from Laser to `-99%`
+    - Bullet speed from Laser is now capped at `100`
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 

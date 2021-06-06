@@ -8,13 +8,14 @@ using System.IO;
 using HarmonyLib; // requires 0Harmony.dll
 using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.Collections;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.0.0")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.1.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -62,6 +63,9 @@ namespace PCE
         public float gravityDurationOnDoDamage;
         public float timeOfLastWasDealtDamage;
         public bool defaultGravity;
+        public float defaultGravityForce;
+        public float defaultGravityExponent;
+        public int murder;
 
 
         public CharacterStatModifiersAdditionalData()
@@ -70,6 +74,7 @@ namespace PCE
             gravityDurationOnDoDamage = 0f;
             timeOfLastWasDealtDamage = -1f;
             defaultGravity = true;
+            murder = 0;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -89,6 +94,16 @@ namespace PCE
                 data.Add(characterstats, value);
             }
             catch (Exception) { }
+        }
+    }
+    [HarmonyPatch(typeof(CharacterStatModifiers), "Start")]
+    class CharacterStatModifiersPatchStart
+    {
+        private static void Postfix(CharacterStatModifiers __instance)
+        {
+            __instance.GetAdditionalData().defaultGravityExponent = __instance.GetComponent<Player>().GetComponent<Gravity>().exponent;
+            __instance.GetAdditionalData().defaultGravityForce = __instance.GetComponent<Player>().GetComponent<Gravity>().gravityForce;
+            
         }
     }
     [HarmonyPatch(typeof(CharacterStatModifiers), "DealtDamage")]
@@ -132,6 +147,25 @@ namespace PCE
             {
                 __instance.GetAdditionalData().timeOfLastWasDealtDamage = Time.realtimeSinceStartup;
             }
+        }
+    }
+    // reset player gravity effects when ResetStats is called
+    [HarmonyPatch(typeof(CharacterStatModifiers), "ResetStats")]
+    class CharacterStatModifiersPatchResetStats
+    {
+        private static void Prefix(CharacterStatModifiers __instance)
+        {
+
+            __instance.GetAdditionalData().gravityMultiplierOnDoDamage = 1f;
+            __instance.GetAdditionalData().gravityDurationOnDoDamage = 0f;
+            __instance.GetAdditionalData().timeOfLastWasDealtDamage = -1f;
+            __instance.GetAdditionalData().defaultGravity = true;
+            __instance.GetAdditionalData().murder = 0;
+            Gravity gravity = __instance.GetComponent<Gravity>();
+            gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
+            gravity.exponent = __instance.GetAdditionalData().defaultGravityExponent;
+
+
         }
     }
 
@@ -178,6 +212,40 @@ namespace PCE
         }
     }
 
+    // patch for murder card
+    [HarmonyPatch(typeof(GM_ArmsRace), "RoundTransition")]
+    class GM_ArmsRacePatchRoundTransition : MonoBehaviour
+    {
+        private static bool Prefix(GM_ArmsRace __instance, int winningTeamID, int killedTeamID)
+        {
+            __instance.StartCoroutine(murderOnRoundStart(PlayerManager.instance.players.ToArray()));
+
+            return true;
+
+        }
+        private static IEnumerator murderOnRoundStart(Player[] players)
+        {
+            while(!GameManager.instance.battleOngoing) { yield return null; }
+
+
+            for (int j = 0; j < players.Length; j++)
+            {
+                if (players[j].data.stats.GetAdditionalData().murder >= 1)
+                {
+                    players[j].data.stats.GetAdditionalData().murder--;
+                    Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
+                    Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                    {
+                        typeof(HealthHandler).InvokeMember("RPCA_Die",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
+                                    new object[] { new Vector2(0, 1) });
+                    });
+                }
+            }
+            yield break;
+        }
+    }
 }
 
 namespace PCE.Cards
@@ -189,7 +257,7 @@ namespace PCE.Cards
          */
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-
+            cardInfo.allowMultiple = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -201,7 +269,7 @@ namespace PCE.Cards
             gun.size = 0f;
             gun.bursts = 50;
             gun.knockback *= 0.005f;
-            gun.projectileSpeed *= 100f;
+            gun.projectileSpeed = Math.Min(Math.Max(gun.projectileSpeed*100f, 0f), 100f); // why the hell doesn't Clamp work?
             gun.drag = 0f;
             gun.gravity = 0f;
             gun.timeBetweenBullets = 0.001f;
@@ -211,7 +279,7 @@ namespace PCE.Cards
             }
             gun.multiplySpread = 0f;
             gun.shakeM = 0f;
-            gun.bulletDamageMultiplier = 0.025f;
+            gun.bulletDamageMultiplier = 0.01f;
             gunAmmo.reloadTimeMultiplier *= 1.5f;
             gunAmmo.maxAmmo = 1;
             gun.destroyBulletAfter = 1f;
@@ -235,7 +303,7 @@ namespace PCE.Cards
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Uncommon;
+            return CardInfo.Rarity.Rare;
         }
 
         protected override CardInfoStat[] GetStats()
@@ -260,7 +328,7 @@ namespace PCE.Cards
                 {
                 positive = false,
                 stat = "Damage",
-                amount = "-97.5%",
+                amount = "-99%",
                 simepleAmount = CardInfoStat.SimpleAmount.aLotLower
                 },
                 new CardInfoStat
@@ -298,6 +366,8 @@ namespace PCE.Cards
             gun.ignoreWalls = true;
             gun.bulletDamageMultiplier = 0.75f;
             gun.projectileColor = Color.clear;
+            if (gun.destroyBulletAfter == 0f) { gun.destroyBulletAfter = 5f; }
+            gun.unblockable = true;
         }
         public override void OnRemoveCard()
         {
@@ -309,7 +379,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Bullets are invisible and go through walls";
+            return "Bullets are invisible, go through walls, and penetrate shields";
         }
 
         protected override GameObject GetCardArt()
@@ -541,16 +611,6 @@ namespace PCE.Cards
         /*
         *  Bullets temporarily invert victim's gravity
         */
-        public class FlipGravity : DealtDamageEffect
-        {
-            public override void DealtDamage(Vector2 damage, bool selfDamage, Player damagedPlayer = null)
-            {
-
-                Gravity opgrav = damagedPlayer.GetComponent<Gravity>();
-                opgrav.gravityForce *= -1f;
-            }
-        }
-
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
@@ -623,7 +683,7 @@ namespace PCE.Cards
             characterStats.GetAdditionalData().gravityMultiplierOnDoDamage *= 2f;
             if (characterStats.GetAdditionalData().gravityDurationOnDoDamage < 4f)
             {
-                characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1f;
+                characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
             }
 
 
@@ -751,18 +811,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // kill the opponent after 2 seconds
-            // this will probably cause problems with the pick two mod
-            Player oppPlayer = PlayerManager.instance.GetClosestPlayerInTeam(Vector3.zero, PlayerManager.instance.GetOtherTeam(player.teamID), false);
-
-            Unbound.Instance.ExecuteAfterSeconds(3f, delegate
-            {
-                typeof(HealthHandler).InvokeMember("RPCA_Die",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
-                                    new object[] { new Vector2(0, 1) });
-
-            });
+            characterStats.GetAdditionalData().murder += 1;
 
         }
         public override void OnRemoveCard()
