@@ -27,6 +27,10 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
     - Increased the damage debuff from Laser to `-99%`
     - Bullet speed from Laser is now capped at `100`
 
+- v0.1.2.0: various attempts at fixes
+    - Murder should actually work now?
+    - Jackpot, Small Jackpot, Gamble, and Risky Gamble should all work online now
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 

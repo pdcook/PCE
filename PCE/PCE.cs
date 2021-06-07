@@ -9,13 +9,16 @@ using HarmonyLib; // requires 0Harmony.dll
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using Photon.Pun;
+using Photon;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.1.0")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.2.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -236,10 +239,15 @@ namespace PCE
                     Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
                     Unbound.Instance.ExecuteAfterSeconds(2f, delegate
                     {
-                        typeof(HealthHandler).InvokeMember("RPCA_Die",
+                        /*typeof(HealthHandler).InvokeMember("RPCA_Die",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
                                     BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
-                                    new object[] { new Vector2(0, 1) });
+                                    new object[] { new Vector2(0, 1) });*/
+                        oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                        {
+                            new Vector2(0, 1)
+                        });
+
                     });
                 }
             }
@@ -856,6 +864,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+
             // get array of all cards
             CardInfo[] cards = global::CardChoice.instance.cards;
 
@@ -875,9 +884,29 @@ namespace PCE.Cards
             }
 
             // add the card to the player's deck
-            ApplyCardStats cardStats = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats.GetComponent<CardInfo>().sourceCard = cards[rID];
-            cardStats.Pick(player.playerID, true, PickerType.Player);
+            ApplyCardStats cardStats1 = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
+            cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID];
+
+            if (PhotonNetwork.OfflineMode)
+            {
+                // assign card locally
+                cardStats1.Pick(player.playerID, true, PickerType.Player);
+            }
+
+            else
+            {
+                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                int[] array2 = new int[array.Length];
+                for (int j = 0; j < array.Length; i++)
+                {
+                    array2[j] = array[j].data.view.ControllerActorNr;
+                }
+
+                // assign card with RPC
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] {cardStats1, array2});
+
+            }
+            return;
         }
         public override void OnRemoveCard()
         {
@@ -910,6 +939,22 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
+        [PunRPC]
+        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        {
+            for (int i = 0; i < actorIDs.Length; i++)
+            {
+                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, PlayerManager.instance,
+                                    new object[] { actorIDs[i] }));
+
+                typeof(ApplyCardStats).InvokeMember("ApplyStats",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+            }
+        }
     }
     public class SmallJackpotCard : CustomCard
     {
@@ -922,6 +967,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+
             // get array of all cards
             CardInfo[] cards = global::CardChoice.instance.cards;
 
@@ -941,9 +987,29 @@ namespace PCE.Cards
             }
 
             // add the card to the player's deck
-            ApplyCardStats cardStats = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats.GetComponent<CardInfo>().sourceCard = cards[rID];
-            cardStats.Pick(player.playerID, true, PickerType.Player);
+            ApplyCardStats cardStats1 = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
+            cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID];
+
+            if (PhotonNetwork.OfflineMode)
+            {
+                // assign card locally
+                cardStats1.Pick(player.playerID, true, PickerType.Player);
+            }
+
+            else
+            {
+                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                int[] array2 = new int[array.Length];
+                for (int j = 0; j < array.Length; i++)
+                {
+                    array2[j] = array[j].data.view.ControllerActorNr;
+                }
+
+                // assign card with RPC
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats1, array2 });
+
+            }
+            return;
         }
         public override void OnRemoveCard()
         {
@@ -976,6 +1042,22 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
+        [PunRPC]
+        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        {
+            for (int i = 0; i < actorIDs.Length; i++)
+            {
+                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, PlayerManager.instance,
+                                    new object[] { actorIDs[i] }));
+
+                typeof(ApplyCardStats).InvokeMember("ApplyStats",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+            }
+        }
     }
     public class GambleCard : CustomCard
     {
@@ -1000,26 +1082,49 @@ namespace PCE.Cards
             int i = 0;
             int maxAttempts = 1000;
 
-            // draw a random card until it's a uncommon or the maximum number of attempts was reached
+            // draw a random card until it's an uncommon or the maximum number of attempts was reached
             while (cards[rID1].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts)
             {
                 rID1 = r.Next(0, cards.Length);
                 i++;
             }
-            // draw a random card until it's a uncommon or the maximum number of attempts was reached
+            // draw a random card until it's an uncommon or the maximum number of attempts was reached
             while (cards[rID2].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts)
             {
                 rID2 = r.Next(0, cards.Length);
                 i++;
             }
 
-            // add the cards to the player's deck
+            // add the card to the player's deck
             ApplyCardStats cardStats1 = cards[rID1].gameObject.GetComponentInChildren<ApplyCardStats>();
             cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID1];
-            cardStats1.Pick(player.playerID, true, PickerType.Player);
             ApplyCardStats cardStats2 = cards[rID2].gameObject.GetComponentInChildren<ApplyCardStats>();
             cardStats2.GetComponent<CardInfo>().sourceCard = cards[rID2];
-            cardStats2.Pick(player.playerID, true, PickerType.Player);
+
+            if (PhotonNetwork.OfflineMode)
+            {
+                // assign cards locally
+                cardStats1.Pick(player.playerID, true, PickerType.Player);
+                cardStats2.Pick(player.playerID, true, PickerType.Player);
+
+            }
+
+            else
+            {
+                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                int[] array2 = new int[array.Length];
+                for (int j = 0; j < array.Length; i++)
+                {
+                    array2[j] = array[j].data.view.ControllerActorNr;
+                }
+
+                // assign cards with RPC
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats1, array2 });
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats2, array2 });
+
+
+            }
+            return;
         }
         public override void OnRemoveCard()
         {
@@ -1051,6 +1156,22 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.TechWhite;
+        }
+        [PunRPC]
+        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        {
+            for (int i = 0; i < actorIDs.Length; i++)
+            {
+                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, PlayerManager.instance,
+                                    new object[] { actorIDs[i] }));
+
+                typeof(ApplyCardStats).InvokeMember("ApplyStats",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+            }
         }
     }
     public class RiskyGambleCard : CustomCard
@@ -1089,13 +1210,36 @@ namespace PCE.Cards
                 i++;
             }
 
-            // add the cards to the player's deck
+            // add the card to the player's deck
             ApplyCardStats cardStats1 = cards[rID1].gameObject.GetComponentInChildren<ApplyCardStats>();
             cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID1];
-            cardStats1.Pick(player.playerID, true, PickerType.Player);
             ApplyCardStats cardStats2 = cards[rID2].gameObject.GetComponentInChildren<ApplyCardStats>();
             cardStats2.GetComponent<CardInfo>().sourceCard = cards[rID2];
-            cardStats2.Pick(player.playerID, true, PickerType.Player);
+
+            if (PhotonNetwork.OfflineMode)
+            {
+                // assign cards locally
+                cardStats1.Pick(player.playerID, true, PickerType.Player);
+                cardStats2.Pick(player.playerID, true, PickerType.Player);
+
+            }
+
+            else
+            {
+                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                int[] array2 = new int[array.Length];
+                for (int j = 0; j < array.Length; i++)
+                {
+                    array2[j] = array[j].data.view.ControllerActorNr;
+                }
+
+                // assign cards with RPC
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats1, array2 });
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats2, array2 });
+
+
+            }
+            return;
         }
         public override void OnRemoveCard()
         {
@@ -1127,6 +1271,22 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.TechWhite;
+        }
+        [PunRPC]
+        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        {
+            for (int i = 0; i < actorIDs.Length; i++)
+            {
+                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, PlayerManager.instance,
+                                    new object[] { actorIDs[i] }));
+
+                typeof(ApplyCardStats).InvokeMember("ApplyStats",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+            }
         }
     }
     public class CloseQuartersCard : CustomCard
@@ -1192,4 +1352,5 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.FirepowerYellow;
         }
     }
+
 }
