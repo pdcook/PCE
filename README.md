@@ -28,8 +28,10 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
     - Bullet speed from Laser is now capped at `100`
 
 - v0.1.2.0: various attempts at fixes
-    - Murder should actually work now?
-    - Jackpot, Small Jackpot, Gamble, and Risky Gamble should all work online now
+    - Murder confirmed fixed in online and local versus
+    - Jackpot, Small Jackpot, Gamble, and Risky Gamble still broken
+
+- v0.1.3.0: fixed Jackpot, Small Jackpot, Gamble, and Risky Gamble
 
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------

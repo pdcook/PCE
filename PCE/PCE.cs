@@ -9,16 +9,14 @@ using HarmonyLib; // requires 0Harmony.dll
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
-using Photon;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.2.0")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.3.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -884,27 +882,24 @@ namespace PCE.Cards
             }
 
             // add the card to the player's deck
-            ApplyCardStats cardStats1 = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID];
+            ApplyCardStats randomCardStats = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
+            randomCardStats.GetComponent<CardInfo>().sourceCard = cards[rID];
 
             if (PhotonNetwork.OfflineMode)
             {
                 // assign card locally
-                cardStats1.Pick(player.playerID, true, PickerType.Player);
+                randomCardStats.Pick(player.playerID, true, PickerType.Player);
             }
-
             else
             {
-                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                int[] array2 = new int[array.Length];
-                for (int j = 0; j < array.Length; i++)
-                {
-                    array2[j] = array[j].data.view.ControllerActorNr;
-                }
-
                 // assign card with RPC
-                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] {cardStats1, array2});
 
+                // pickerType == PickerType.Team
+                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                // pickerType == PickerType.Player
+                Player[] array = new Player[] { player };
+
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { randomCardStats, array });
             }
             return;
         }
@@ -939,20 +934,19 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
+        
         [PunRPC]
-        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        public void RPCA_AssignCard(ApplyCardStats randomCardStats, Player[] players)
         {
-            for (int i = 0; i < actorIDs.Length; i++)
+            
+            for (int i = 0; i < players.Length; i++)
             {
-                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance,
-                                    new object[] { actorIDs[i] }));
+                Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(players[i]);
 
                 typeof(ApplyCardStats).InvokeMember("ApplyStats",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
-                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, randomCardStats.GetComponent<CardInfo>().sourceCard);
             }
         }
     }
@@ -987,27 +981,24 @@ namespace PCE.Cards
             }
 
             // add the card to the player's deck
-            ApplyCardStats cardStats1 = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID];
+            ApplyCardStats randomCardStats = cards[rID].gameObject.GetComponentInChildren<ApplyCardStats>();
+            randomCardStats.GetComponent<CardInfo>().sourceCard = cards[rID];
 
             if (PhotonNetwork.OfflineMode)
             {
                 // assign card locally
-                cardStats1.Pick(player.playerID, true, PickerType.Player);
+                randomCardStats.Pick(player.playerID, true, PickerType.Player);
             }
-
             else
             {
-                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                int[] array2 = new int[array.Length];
-                for (int j = 0; j < array.Length; i++)
-                {
-                    array2[j] = array[j].data.view.ControllerActorNr;
-                }
-
                 // assign card with RPC
-                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats1, array2 });
 
+                // pickerType == PickerType.Team
+                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                // pickerType == PickerType.Player
+                Player[] array = new Player[] { player };
+
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { randomCardStats, array });
             }
             return;
         }
@@ -1043,19 +1034,17 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
         [PunRPC]
-        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        public void RPCA_AssignCard(ApplyCardStats randomCardStats, Player[] players)
         {
-            for (int i = 0; i < actorIDs.Length; i++)
+
+            for (int i = 0; i < players.Length; i++)
             {
-                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance,
-                                    new object[] { actorIDs[i] }));
+                Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(players[i]);
 
                 typeof(ApplyCardStats).InvokeMember("ApplyStats",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
-                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, randomCardStats.GetComponent<CardInfo>().sourceCard);
             }
         }
     }
@@ -1095,36 +1084,34 @@ namespace PCE.Cards
                 i++;
             }
 
-            // add the card to the player's deck
-            ApplyCardStats cardStats1 = cards[rID1].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID1];
-            ApplyCardStats cardStats2 = cards[rID2].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats2.GetComponent<CardInfo>().sourceCard = cards[rID2];
+            // add the cards to the player's deck
+            ApplyCardStats randomCardStats1 = cards[rID1].gameObject.GetComponentInChildren<ApplyCardStats>();
+            randomCardStats1.GetComponent<CardInfo>().sourceCard = cards[rID1];
+            ApplyCardStats randomCardStats2 = cards[rID2].gameObject.GetComponentInChildren<ApplyCardStats>();
+            randomCardStats2.GetComponent<CardInfo>().sourceCard = cards[rID2];
 
             if (PhotonNetwork.OfflineMode)
             {
                 // assign cards locally
-                cardStats1.Pick(player.playerID, true, PickerType.Player);
-                cardStats2.Pick(player.playerID, true, PickerType.Player);
+                randomCardStats1.Pick(player.playerID, true, PickerType.Player);
+                randomCardStats2.Pick(player.playerID, true, PickerType.Player);
 
             }
-
             else
             {
-                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                int[] array2 = new int[array.Length];
-                for (int j = 0; j < array.Length; i++)
-                {
-                    array2[j] = array[j].data.view.ControllerActorNr;
-                }
-
                 // assign cards with RPC
-                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats1, array2 });
-                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats2, array2 });
 
+                // pickerType == PickerType.Team
+                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                // pickerType == PickerType.Player
+                Player[] array = new Player[] { player };
+
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { randomCardStats1, array });
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { randomCardStats2, array });
 
             }
             return;
+
         }
         public override void OnRemoveCard()
         {
@@ -1158,19 +1145,17 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
         [PunRPC]
-        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        public void RPCA_AssignCard(ApplyCardStats randomCardStats, Player[] players)
         {
-            for (int i = 0; i < actorIDs.Length; i++)
+
+            for (int i = 0; i < players.Length; i++)
             {
-                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance,
-                                    new object[] { actorIDs[i] }));
+                Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(players[i]);
 
                 typeof(ApplyCardStats).InvokeMember("ApplyStats",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
-                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, randomCardStats.GetComponent<CardInfo>().sourceCard);
             }
         }
     }
@@ -1210,33 +1195,30 @@ namespace PCE.Cards
                 i++;
             }
 
-            // add the card to the player's deck
-            ApplyCardStats cardStats1 = cards[rID1].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats1.GetComponent<CardInfo>().sourceCard = cards[rID1];
-            ApplyCardStats cardStats2 = cards[rID2].gameObject.GetComponentInChildren<ApplyCardStats>();
-            cardStats2.GetComponent<CardInfo>().sourceCard = cards[rID2];
+            // add the cards to the player's deck
+            ApplyCardStats randomCardStats1 = cards[rID1].gameObject.GetComponentInChildren<ApplyCardStats>();
+            randomCardStats1.GetComponent<CardInfo>().sourceCard = cards[rID1];
+            ApplyCardStats randomCardStats2 = cards[rID2].gameObject.GetComponentInChildren<ApplyCardStats>();
+            randomCardStats2.GetComponent<CardInfo>().sourceCard = cards[rID2];
 
             if (PhotonNetwork.OfflineMode)
             {
                 // assign cards locally
-                cardStats1.Pick(player.playerID, true, PickerType.Player);
-                cardStats2.Pick(player.playerID, true, PickerType.Player);
+                randomCardStats1.Pick(player.playerID, true, PickerType.Player);
+                randomCardStats2.Pick(player.playerID, true, PickerType.Player);
 
             }
-
             else
             {
-                Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                int[] array2 = new int[array.Length];
-                for (int j = 0; j < array.Length; i++)
-                {
-                    array2[j] = array[j].data.view.ControllerActorNr;
-                }
-
                 // assign cards with RPC
-                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats1, array2 });
-                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { cardStats2, array2 });
 
+                // pickerType == PickerType.Team
+                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
+                // pickerType == PickerType.Player
+                Player[] array = new Player[] { player };
+
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { randomCardStats1, array });
+                base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { randomCardStats2, array });
 
             }
             return;
@@ -1273,19 +1255,17 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
         [PunRPC]
-        public void RPCA_AssignCard(ApplyCardStats cardStats, int[] actorIDs)
+        public void RPCA_AssignCard(ApplyCardStats randomCardStats, Player[] players)
         {
-            for (int i = 0; i < actorIDs.Length; i++)
+
+            for (int i = 0; i < players.Length; i++)
             {
-                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance,
-                                    new object[] { actorIDs[i] }));
+                Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(players[i]);
 
                 typeof(ApplyCardStats).InvokeMember("ApplyStats",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
-                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, base.GetComponent<CardInfo>().sourceCard);
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
+                CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, randomCardStats.GetComponent<CardInfo>().sourceCard);
             }
         }
     }
