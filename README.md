@@ -33,6 +33,20 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
 
 - v0.1.3.0: fixed Jackpot, Small Jackpot, Gamble, and Risky Gamble
 
+- v0.1.4.0: various bug fixes and balancing
+    - Jackpot, Small Jackpot, Gamble, and Risky Gamble fixed in online and confirmed working
+    - Increased damage debuff on Ghost Bullets to `-75%`
+    - Decreased damage debuff on Laser to `-98%`
+    - Increased rarity of Laser to Rare 
+    - Increased simulation speed of Laser projectiles
+    - Fixed errors/warnings from `CharacterStatModifiers` `Postfix`
+    - Known issues:
+    	- BepInEx warnings from custom cards that return `null` for `CardInfo`
+	- Murder does not work in Sandbox
+	- Laser has issues rendering on the remote side
+	- Ghost Bullets do not penetrate shields
+	- All cards except Laser are missing art
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 
@@ -51,7 +65,7 @@ This mod adds a number of cards to the game. Below they are listed in no particu
 
 ### Laser
 ---------
-**Uncommon**
+***Rare***
 
 Replaces your projectile gun with a laser instead. When fired, the entire laser charge must be used.
 
