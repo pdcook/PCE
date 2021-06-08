@@ -16,7 +16,7 @@ using Photon.Pun;
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.5.0")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.5.1")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -878,7 +878,7 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's a rare or the maximum number of attempts was reached
-            while (cards[rID].rarity != CardInfo.Rarity.Rare && !cards[rID].cardName.Contains("Jackpot") && !cards[rID].cardName.Contains("Gamble") && i < maxAttempts)
+            while ((cards[rID].rarity != CardInfo.Rarity.Rare && i < maxAttempts) || (cards[rID].cardName.Contains("Jackpot") || cards[rID].cardName.Contains("Gamble")))
             {
                 rID = r.Next(0, cards.Length);
                 i++;
@@ -1004,7 +1004,7 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (cards[rID].rarity != CardInfo.Rarity.Uncommon && !cards[rID].cardName.Contains("Jackpot") && !cards[rID].cardName.Contains("Gamble") && i < maxAttempts)
+            while ((cards[rID].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts) || (cards[rID].cardName.Contains("Jackpot") || cards[rID].cardName.Contains("Gamble")))
             {
                 rID = r.Next(0, cards.Length);
                 i++;
@@ -1128,13 +1128,13 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (cards[rID1].rarity != CardInfo.Rarity.Uncommon && !cards[rID1].cardName.Contains("Jackpot") && !cards[rID1].cardName.Contains("Gamble") && i < maxAttempts)
+            while ((cards[rID1].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts) || (cards[rID1].cardName.Contains("Jackpot") || cards[rID1].cardName.Contains("Gamble")))
             {
                 rID1 = r.Next(0, cards.Length);
                 i++;
             }
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (cards[rID2].rarity != CardInfo.Rarity.Uncommon && !cards[rID2].cardName.Contains("Jackpot") && !cards[rID2].cardName.Contains("Gamble") && i < maxAttempts)
+            while ((cards[rID2].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts) || (cards[rID2].cardName.Contains("Jackpot") || cards[rID2].cardName.Contains("Gamble")))
             {
                 rID2 = r.Next(0, cards.Length);
                 i++;
@@ -1265,13 +1265,13 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's a common or the maximum number of attempts was reached
-            while (cards[rID1].rarity != CardInfo.Rarity.Common && !cards[rID1].cardName.Contains("Jackpot") && !cards[rID1].cardName.Contains("Gamble") && i < maxAttempts)
+            while ((cards[rID1].rarity != CardInfo.Rarity.Common && i < maxAttempts) || (cards[rID1].cardName.Contains("Jackpot") || cards[rID1].cardName.Contains("Gamble")))
             {
                 rID1 = r.Next(0, cards.Length);
                 i++;
             }
             // draw a random card until it's a common or the maximum number of attempts was reached
-            while (cards[rID2].rarity != CardInfo.Rarity.Common && !cards[rID2].cardName.Contains("Jackpot") && !cards[rID2].cardName.Contains("Gamble") && i < maxAttempts)
+            while ((cards[rID2].rarity != CardInfo.Rarity.Common && i < maxAttempts) || (cards[rID2].cardName.Contains("Jackpot") || cards[rID2].cardName.Contains("Gamble")))
             {
                 rID2 = r.Next(0, cards.Length);
                 i++;

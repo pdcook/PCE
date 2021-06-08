@@ -53,6 +53,9 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
     - Known issues:
         - Murder does not work with the FFA mod
 
+- v0.1.5.1: typo fix
+    - Fixed logic typo in Jackpot, Small Jackpot, Gamble, and Risky Gamble which caused them to always return another Jackpot/Gamble card 
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 
