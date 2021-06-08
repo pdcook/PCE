@@ -43,11 +43,11 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
     - Increased simulation speed of Laser projectiles
     - Fixed errors/warnings from `CharacterStatModifiers` `Postfix`
     - Known issues:
-    	- BepInEx warnings from custom cards that return `null` for `CardInfo`
-	- Murder does not work in Sandbox
-	- Laser has issues rendering on the remote side
-	- Ghost Bullets do not penetrate shields
-	- All cards except Laser are missing art
+    	* BepInEx warnings from custom cards that return `null` for `CardInfo`
+        * Murder does not work in Sandbox
+        * Laser has issues rendering on the remote side
+        * Ghost Bullets do not penetrate shields
+        * All cards except Laser are missing art
 
 - v0.1.5.0: more bug fixes
     - Jackpot, Small Jackpot, Gamble, and Risky Gamble fixed again (???)
