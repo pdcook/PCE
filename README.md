@@ -73,75 +73,86 @@ If you are having trouble installing this mod, BepInEx, UnboundLib, MMHOOK, or a
 ---------------
 This mod adds a number of cards to the game. Below they are listed in no particular order.
 
+---
 
 ### Laser
----------
 ***Rare***
 
 Replaces your projectile gun with a laser instead. When fired, the entire laser charge must be used.
 
+---
+
 ### Ghost Gun
--------------
 ***Rare***
 
 Makes your bullets completely invisible and go through walls.
 
+---
+
 ### Tractor Beam
-----------------
 **Uncommon**
 
 Reverses the direction of knockback that your bullets do.
 
+---
+
 ### Moon Shoes
---------------
 **Uncommon**
 
 Reduces your gravity to moon gravity (1/6 of normal.)
 
+---
+
 ### Flip
---------
 **Uncommon**
 
 Bullets temporarily flip the direction of victim's gravity.
 
+---
+
 ### Grounded
-------------
 **Uncommon**
 
 Bullets temporarily increase the strength of victim's gravity.
 
+---
+
 ### Murder
-----------
 ***Rare***
 
 Kill your opponent.
 
+---
+
 ### Jackpot
------------
 **Uncommon**
 
 Get a random ***Rare*** card.
 
+---
+
 ### Small Jackpot
------------------
 _Common_
 
 Get a random **Uncommon** card.
 
+---
+
 ### Gamble
-----------
 ***Rare***
 
 Get two random **Uncommon** cards.
 
+---
+
 ### Risky Gamble
-----------------
 **Uncommon**
 
 Get two random _Common_ cards.
 
+---
+
 ### Close Quarters
-------------------
 **Uncommon**
 
 Do significantly more damage when up close, but significantly less at long range.
