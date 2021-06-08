@@ -6,11 +6,13 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 
 ## Installation Instructions
 ----------------------------
-Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
-Install the newest versions of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
+1. Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
 
-Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
-Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
+2. Install the newest versions of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
+
+3. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
+
+4. Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
 
 ### Version Notes
 -----------------
