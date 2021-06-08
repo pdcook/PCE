@@ -47,6 +47,12 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
 	- Ghost Bullets do not penetrate shields
 	- All cards except Laser are missing art
 
+- v0.1.5.0: more bug fixes
+    - Jackpot, Small Jackpot, Gamble, and Risky Gamble fixed again (???)
+        - Can no longer roll a Jackpot/Gamble card from another Jackpot/Gamble card
+    - Known issues:
+        - Murder does not work with the FFA mod
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 

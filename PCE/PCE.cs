@@ -16,7 +16,7 @@ using Photon.Pun;
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.4.0")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.5.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -878,7 +878,7 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's a rare or the maximum number of attempts was reached
-            while (cards[rID].rarity != CardInfo.Rarity.Rare && i < maxAttempts)
+            while (cards[rID].rarity != CardInfo.Rarity.Rare && !cards[rID].cardName.Contains("Jackpot") && !cards[rID].cardName.Contains("Gamble") && i < maxAttempts)
             {
                 rID = r.Next(0, cards.Length);
                 i++;
@@ -906,13 +906,14 @@ namespace PCE.Cards
 
                 for (int j = 0; j < array.Length; j++)
                 {
-                    array2[j] = array[j].playerID;
+                    array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
+                //if (true)
                 {
 
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID, array2 });
-                    
+
                 }
             }
             return;
@@ -950,25 +951,31 @@ namespace PCE.Cards
         }
         
         [PunRPC]
-        public void RPCA_AssignCard(int cardID, int[] playerIDs)
+        public void RPCA_AssignCard(int cardID, int[] actorIDs)
         {
             Player playerToUpgrade;
             
-            for (int i = 0; i < playerIDs.Length; i++)
+            for (int i = 0; i < actorIDs.Length; i++)
             {
                 CardInfo[] cards = global::CardChoice.instance.cards;
                 ApplyCardStats randomCardStats = cards[cardID].gameObject.GetComponentInChildren<ApplyCardStats>();
+                
+                // call Start to initialize card stat components for base-game cards
+                typeof(ApplyCardStats).InvokeMember("Start",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
                 randomCardStats.GetComponent<CardInfo>().sourceCard = cards[cardID];
 
-                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID",
+                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { playerIDs[i]});
+                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { actorIDs[i]});
 
                 Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(playerToUpgrade);
 
                 typeof(ApplyCardStats).InvokeMember("ApplyStats",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
                                     BindingFlags.NonPublic, null, randomCardStats, new object[] { });
+
                 CardBarHandler.instance.AddCard(((Player)Traverse.Create(cardStats).Field("playerToUpgrade").GetValue()).playerID, randomCardStats.GetComponent<CardInfo>().sourceCard);
             }
         }
@@ -997,7 +1004,7 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (cards[rID].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts)
+            while (cards[rID].rarity != CardInfo.Rarity.Uncommon && !cards[rID].cardName.Contains("Jackpot") && !cards[rID].cardName.Contains("Gamble") && i < maxAttempts)
             {
                 rID = r.Next(0, cards.Length);
                 i++;
@@ -1025,9 +1032,10 @@ namespace PCE.Cards
 
                 for (int j = 0; j < array.Length; j++)
                 {
-                    array2[j] = array[j].playerID;
+                    array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
+                //if (true)
                 {
 
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID, array2 });
@@ -1068,19 +1076,24 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
         [PunRPC]
-        public void RPCA_AssignCard(int cardID, int[] playerIDs)
+        public void RPCA_AssignCard(int cardID, int[] actorIDs)
         {
             Player playerToUpgrade;
 
-            for (int i = 0; i < playerIDs.Length; i++)
+            for (int i = 0; i < actorIDs.Length; i++)
             {
                 CardInfo[] cards = global::CardChoice.instance.cards;
                 ApplyCardStats randomCardStats = cards[cardID].gameObject.GetComponentInChildren<ApplyCardStats>();
+
+                // call Start to initialize card stat components for base-game cards
+                typeof(ApplyCardStats).InvokeMember("Start",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
                 randomCardStats.GetComponent<CardInfo>().sourceCard = cards[cardID];
 
-                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID",
+                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { playerIDs[i] });
+                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { actorIDs[i] });
 
                 Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(playerToUpgrade);
 
@@ -1115,13 +1128,13 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (cards[rID1].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts)
+            while (cards[rID1].rarity != CardInfo.Rarity.Uncommon && !cards[rID1].cardName.Contains("Jackpot") && !cards[rID1].cardName.Contains("Gamble") && i < maxAttempts)
             {
                 rID1 = r.Next(0, cards.Length);
                 i++;
             }
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (cards[rID2].rarity != CardInfo.Rarity.Uncommon && i < maxAttempts)
+            while (cards[rID2].rarity != CardInfo.Rarity.Uncommon && !cards[rID2].cardName.Contains("Jackpot") && !cards[rID2].cardName.Contains("Gamble") && i < maxAttempts)
             {
                 rID2 = r.Next(0, cards.Length);
                 i++;
@@ -1143,7 +1156,7 @@ namespace PCE.Cards
             }
             else
             {
-                // assign card with RPC
+                // assign cards with RPC
 
                 // pickerType == PickerType.Team
                 // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
@@ -1153,14 +1166,17 @@ namespace PCE.Cards
 
                 for (int j = 0; j < array.Length; j++)
                 {
-                    array2[j] = array[j].playerID;
+                    array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
+                //if (true)
                 {
+
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID1, array2 });
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID2, array2 });
+
+
                 }
-                
             }
             return;
 
@@ -1197,19 +1213,24 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
         [PunRPC]
-        public void RPCA_AssignCard(int cardID, int[] playerIDs)
+        public void RPCA_AssignCard(int cardID, int[] actorIDs)
         {
             Player playerToUpgrade;
 
-            for (int i = 0; i < playerIDs.Length; i++)
+            for (int i = 0; i < actorIDs.Length; i++)
             {
                 CardInfo[] cards = global::CardChoice.instance.cards;
                 ApplyCardStats randomCardStats = cards[cardID].gameObject.GetComponentInChildren<ApplyCardStats>();
+
+                // call Start to initialize card stat components for base-game cards
+                typeof(ApplyCardStats).InvokeMember("Start",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
                 randomCardStats.GetComponent<CardInfo>().sourceCard = cards[cardID];
 
-                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID",
+                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { playerIDs[i] });
+                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { actorIDs[i] });
 
                 Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(playerToUpgrade);
 
@@ -1244,13 +1265,13 @@ namespace PCE.Cards
             int maxAttempts = 1000;
 
             // draw a random card until it's a common or the maximum number of attempts was reached
-            while (cards[rID1].rarity != CardInfo.Rarity.Common && i < maxAttempts)
+            while (cards[rID1].rarity != CardInfo.Rarity.Common && !cards[rID1].cardName.Contains("Jackpot") && !cards[rID1].cardName.Contains("Gamble") && i < maxAttempts)
             {
                 rID1 = r.Next(0, cards.Length);
                 i++;
             }
             // draw a random card until it's a common or the maximum number of attempts was reached
-            while (cards[rID2].rarity != CardInfo.Rarity.Common && i < maxAttempts)
+            while (cards[rID2].rarity != CardInfo.Rarity.Common && !cards[rID2].cardName.Contains("Jackpot") && !cards[rID2].cardName.Contains("Gamble") && i < maxAttempts)
             {
                 rID2 = r.Next(0, cards.Length);
                 i++;
@@ -1271,7 +1292,7 @@ namespace PCE.Cards
             }
             else
             {
-                // assign card with RPC
+                // assign cards with RPC
 
                 // pickerType == PickerType.Team
                 // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
@@ -1281,13 +1302,16 @@ namespace PCE.Cards
 
                 for (int j = 0; j < array.Length; j++)
                 {
-                    array2[j] = array[j].playerID;
+                    array2[j] = array[j].data.view.ControllerActorNr;
                 }
-
                 if (base.GetComponent<PhotonView>().IsMine)
+                //if (true)
                 {
+
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID1, array2 });
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID2, array2 });
+
+
                 }
             }
             return;
@@ -1324,19 +1348,24 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.TechWhite;
         }
         [PunRPC]
-        public void RPCA_AssignCard(int cardID, int[] playerIDs)
+        public void RPCA_AssignCard(int cardID, int[] actorIDs)
         {
             Player playerToUpgrade;
 
-            for (int i = 0; i < playerIDs.Length; i++)
+            for (int i = 0; i < actorIDs.Length; i++)
             {
                 CardInfo[] cards = global::CardChoice.instance.cards;
                 ApplyCardStats randomCardStats = cards[cardID].gameObject.GetComponentInChildren<ApplyCardStats>();
+
+                // call Start to initialize card stat components for base-game cards
+                typeof(ApplyCardStats).InvokeMember("Start",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, randomCardStats, new object[] { });
                 randomCardStats.GetComponent<CardInfo>().sourceCard = cards[cardID];
 
-                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID",
+                playerToUpgrade = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { playerIDs[i] });
+                                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { actorIDs[i] });
 
                 Traverse.Create(randomCardStats).Field("playerToUpgrade").SetValue(playerToUpgrade);
 
