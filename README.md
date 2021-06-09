@@ -6,11 +6,13 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 
 ## Installation Instructions
 ----------------------------
-Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
-Install the newest versions of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
+1. Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
 
-Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
-Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
+2. Install the newest versions of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
+
+3. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
+
+4. Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
 
 ### Version Notes
 -----------------
@@ -41,11 +43,11 @@ Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/Str
     - Increased simulation speed of Laser projectiles
     - Fixed errors/warnings from `CharacterStatModifiers` `Postfix`
     - Known issues:
-    	- BepInEx warnings from custom cards that return `null` for `CardInfo`
-	- Murder does not work in Sandbox
-	- Laser has issues rendering on the remote side
-	- Ghost Bullets do not penetrate shields
-	- All cards except Laser are missing art
+    	* BepInEx warnings from custom cards that return `null` for `CardInfo`
+        * Murder does not work in Sandbox
+        * Laser has issues rendering on the remote side
+        * Ghost Bullets do not penetrate shields
+        * All cards except Laser are missing art
 
 - v0.1.5.0: more bug fixes
     - Jackpot, Small Jackpot, Gamble, and Risky Gamble fixed again (???)
@@ -71,75 +73,86 @@ If you are having trouble installing this mod, BepInEx, UnboundLib, MMHOOK, or a
 ---------------
 This mod adds a number of cards to the game. Below they are listed in no particular order.
 
+---
 
 ### Laser
----------
 ***Rare***
 
 Replaces your projectile gun with a laser instead. When fired, the entire laser charge must be used.
 
+---
+
 ### Ghost Gun
--------------
 ***Rare***
 
 Makes your bullets completely invisible and go through walls.
 
+---
+
 ### Tractor Beam
-----------------
 **Uncommon**
 
 Reverses the direction of knockback that your bullets do.
 
+---
+
 ### Moon Shoes
---------------
 **Uncommon**
 
 Reduces your gravity to moon gravity (1/6 of normal.)
 
+---
+
 ### Flip
---------
 **Uncommon**
 
 Bullets temporarily flip the direction of victim's gravity.
 
+---
+
 ### Grounded
-------------
 **Uncommon**
 
 Bullets temporarily increase the strength of victim's gravity.
 
+---
+
 ### Murder
-----------
 ***Rare***
 
 Kill your opponent.
 
+---
+
 ### Jackpot
------------
 **Uncommon**
 
 Get a random ***Rare*** card.
 
+---
+
 ### Small Jackpot
------------------
 _Common_
 
 Get a random **Uncommon** card.
 
+---
+
 ### Gamble
-----------
 ***Rare***
 
 Get two random **Uncommon** cards.
 
+---
+
 ### Risky Gamble
-----------------
 **Uncommon**
 
 Get two random _Common_ cards.
 
+---
+
 ### Close Quarters
-------------------
 **Uncommon**
 
 Do significantly more damage when up close, but significantly less at long range.
