@@ -12,7 +12,7 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 
 3. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
 
-4. Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/Rounds_Data/StreamingAssets/` (if the folder doesn't already exist, create it)
+4. Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/` (if the folder doesn't already exist, create it) ***this has changed since previous versions***
 
 ### Version Notes
 -----------------
