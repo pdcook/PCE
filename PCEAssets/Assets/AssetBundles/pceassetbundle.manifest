@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3706058276
+CRC: 3302982546
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ddd3a427236758b3aff7490b83c4b919
+    Hash: 6235fb71f6fd55f4930f459c4f121876
   TypeTreeHash:
     serializedVersion: 2
     Hash: c7b05412e14aaa6a1d36686ce75cc12a
@@ -58,29 +58,56 @@ Assets:
 - Assets/Prefabs/Images/reel3.anim
 - Assets/Prefabs/Images/BigLaserScatter.png
 - Assets/Prefabs/C_Jackpot.prefab
+- Assets/Prefabs/Images/bulletpack3.anim
 - Assets/Prefabs/C_Laser.prefab
+- Assets/Prefabs/Images/bullets.controller
+- Assets/Prefabs/Images/bulletpack1.controller
 - Assets/Prefabs/Images/invertedscatter.png
+- Assets/Prefabs/Images/bullet40.anim
+- Assets/Prefabs/C_Murder.prefab
 - Assets/Prefabs/Images/LaserIn.png
+- Assets/Prefabs/Images/mouthtop.controller
+- Assets/Prefabs/Images/bulletpack2.anim
+- Assets/Prefabs/Images/bullet10blur.controller
 - Assets/Prefabs/Images/Circle_Quarter1.png
 - Assets/Prefabs/Images/LaserCard.png
 - Assets/Prefabs/Sample Card.prefab
 - Assets/Prefabs/AnimationClip/Anim_BgDots1.anim
+- Assets/Prefabs/Images/bullets.anim
+- Assets/Prefabs/Images/mouthtop.anim
+- Assets/Prefabs/Images/bullet50.anim
+- Assets/Prefabs/Images/eye.png
+- Assets/Prefabs/Images/bullet50percblur.png
 - Assets/Prefabs/Images/invertedbigscatter.png
 - Assets/Prefabs/Images/lasertriangleinverted.controller
+- Assets/Prefabs/Images/mouthbottom.png
 - Assets/Prefabs/Images/laserpoint.anim
 - Assets/Prefabs/Images/reels mask 1.controller
+- Assets/Prefabs/Images/bullet40blur.controller
+- Assets/Prefabs/Images/mouthbottom.anim
+- Assets/Prefabs/Images/mouthbottom2.png
+- Assets/Prefabs/Images/bulletpack3.controller
+- Assets/Prefabs/Images/bullet40percblur.png
 - Assets/Prefabs/Images/slots.controller
 - Assets/Prefabs/C_QuickReload.prefab
 - Assets/Prefabs/Images/invertedlaserin.controller
 - Assets/Prefabs/Images/Triangle.png
+- Assets/Prefabs/Images/mouth.png
+- Assets/Prefabs/Images/bullet50blur.controller
 - Assets/Prefabs/C_Laser 1.controller
 - Assets/Prefabs/Images/reels mask.controller
+- Assets/Prefabs/Images/bullet.png
 - Assets/Prefabs/Images/invertedtriangle.png
+- Assets/Prefabs/Images/eye.controller
 - Assets/Prefabs/Images/Triangle2.png
+- Assets/Prefabs/Images/bullet.anim
 - Assets/Prefabs/C_SmallJackpot.prefab
 - Assets/Prefabs/Images/7.png
+- Assets/Prefabs/Images/bullet30blur.controller
 - Assets/Prefabs/AnimatorController/BG_Dots.controller
 - Assets/Prefabs/Images/reel2.controller
+- Assets/Prefabs/Images/mouth.anim
+- Assets/Prefabs/C_GhostGun.prefab
 - Assets/Prefabs/Images/strawberry.png
 - Assets/Prefabs/Images/reel3.controller
 - Assets/Prefabs/AnimationClip/Anim_Circle1.anim
@@ -89,30 +116,49 @@ Assets:
 - Assets/Prefabs/Images/DotsDetail_2.png
 - Assets/Prefabs/AnimationClip/Anim_Bg1.anim
 - Assets/Prefabs/Images/reel2.anim
+- Assets/Prefabs/Images/squiggle.png
 - Assets/Prefabs/Images/lasertriangle.png.png
 - Assets/Prefabs/Images/rectangle.png
+- Assets/Prefabs/Images/bullet10percblur.png
+- Assets/Prefabs/Images/bullet30.anim
+- Assets/Prefabs/Images/eye.anim
 - Assets/Prefabs/Images/dollarsign.png
 - Assets/Prefabs/Images/Triangle1.png
 - Assets/Prefabs/Images/laserin.anim
+- Assets/Prefabs/Images/eye1.anim
+- Assets/Prefabs/Images/mouth.controller
 - Assets/Prefabs/Images/reels.anim
 - Assets/Prefabs/Images/TriangleSpriteHalf.png
 - Assets/Prefabs/Images/bar.png
+- Assets/Prefabs/Images/mouthbottom.controller
 - Assets/Prefabs/Images/invertedlaserin.png
 - Assets/Prefabs/Images/LaserPoint.png
 - Assets/Prefabs/Images/Square.png
 - Assets/Prefabs/Images/triangle.anim
 - Assets/Prefabs/Images/bigscatter.anim
+- Assets/Prefabs/Images/bullet20blur.controller
 - Assets/Prefabs/Images/reel1.controller
+- Assets/Prefabs/Images/ghostgunBG.anim
 - Assets/Prefabs/C_Laser.anim
+- Assets/Prefabs/Images/mouthtop.png
 - Assets/Prefabs/Images/reel1.anim
 - Assets/Prefabs/Images/cherry.png
 - Assets/Prefabs/C_Laser.controller
 - Assets/Prefabs/Images/CardBG.png
+- Assets/Prefabs/Images/bulletpack2.controller
 - Assets/Prefabs/Images/spade.png
+- Assets/Prefabs/Images/bullet.controller
 - Assets/Prefabs/Images/Grid3.png
 - Assets/Prefabs/AnimatorController/BG (2) 1.controller
 - Assets/Prefabs/Images/invertedlasercard.png
+- Assets/Prefabs/Images/bullet30percblur.png
+- Assets/Prefabs/Images/bullet20percblur.png
+- Assets/Prefabs/Images/bullet20.anim
+- Assets/Prefabs/Images/eye (1).controller
 - Assets/Prefabs/Images/invertedlaserpoint.png
+- Assets/Prefabs/Images/bullet10.anim
+- Assets/Prefabs/Images/bulletpack1.anim
 - Assets/Prefabs/Images/reels.controller
 - Assets/Prefabs/Images/Bg_Pattern2.png
+- Assets/Prefabs/Images/BG.controller
 Dependencies: []
