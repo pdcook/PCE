@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3665133837
+CRC: 3706058276
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 353c309428961cc643b5f030b2751911
+    Hash: ddd3a427236758b3aff7490b83c4b919
   TypeTreeHash:
     serializedVersion: 2
     Hash: c7b05412e14aaa6a1d36686ce75cc12a
@@ -77,6 +77,7 @@ Assets:
 - Assets/Prefabs/Images/reels mask.controller
 - Assets/Prefabs/Images/invertedtriangle.png
 - Assets/Prefabs/Images/Triangle2.png
+- Assets/Prefabs/C_SmallJackpot.prefab
 - Assets/Prefabs/Images/7.png
 - Assets/Prefabs/AnimatorController/BG_Dots.controller
 - Assets/Prefabs/Images/reel2.controller

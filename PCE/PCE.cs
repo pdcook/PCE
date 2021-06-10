@@ -26,8 +26,10 @@ namespace PCE
         }
         private void Start()
         {
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var path = Path.Combine(dir, "pceassetbundle");
 
-            PCE.ArtAssets = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "pceAssetBundle"));
+            PCE.ArtAssets = AssetBundle.LoadFromFile(path);
             if (PCE.ArtAssets == null)
             {
                 global::Debug.Log("Failed to load PCE art asset bundle");
@@ -1059,7 +1061,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_SmallJackpot");
         }
 
         protected override CardInfo.Rarity GetRarity()
