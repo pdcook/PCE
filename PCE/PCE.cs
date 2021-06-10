@@ -16,7 +16,7 @@ using Photon.Pun;
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.5.1")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.5.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -822,7 +822,25 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            characterStats.GetAdditionalData().murder += 1;
+
+            if (GM_Test.instance != null && GM_Test.instance.gameObject.activeInHierarchy)
+            {
+                // are we in sandbox mode? if so, just kill the other player
+                Player oppPlayer = PlayerManager.instance.GetOtherPlayer(player);
+                Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                {
+                    typeof(HealthHandler).InvokeMember("RPCA_Die",
+                                BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
+                                new object[] { new Vector2(0, 1) });
+
+                });
+            }
+            else
+            {
+                // otherwise, let the GM_ArmsRace patch handle it
+                characterStats.GetAdditionalData().murder += 1;
+            }
 
         }
         public override void OnRemoveCard()
