@@ -60,10 +60,10 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
     - ***pceAssetBundle now goes in the BepInEx plugins folder***
     - Murder now works in Sandbox, local versus, and online versus
     - Added art to a number of cards
-    	- Jackpot
-	- Small Jackpot
-	- Murder
-	- Ghost Bullets
+    	* Jackpot
+        * Small Jackpot
+        * Murder
+        * Ghost Bullets
 
 - v0.1.5.3: bugfixes, Jotunn, balancing
     - ***Assets are now included directly in*** `PCE.dll` ***no need to download or place any asset files anywhere***
