@@ -8,11 +8,9 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 ----------------------------
 1. Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
 
-2. Install the newest versions of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
+2. Install the *newest versions* of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
 
 3. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
-
-4. Copy `pceAssetBundle` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/` (if the folder doesn't already exist, create it) ***this has changed since previous versions***
 
 ### Version Notes
 -----------------
@@ -66,6 +64,18 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 	- Small Jackpot
 	- Murder
 	- Ghost Bullets
+
+- v0.1.5.3: bugfixes, Jotunn, balancing
+    - ***Assets are now included directly in*** `PCE.dll` ***no need to download or place any asset files anywhere***
+    - ***REQUIRES THE NEWEST VERSION OF UNBOUNDLIB***
+    - Fixed issue where gravity effects would not properly reset between rounds if player was shot multiple times in quick succession
+    - Increased damage debuff on Laser to `-99%`
+
+- v0.1.6.0: new card
+    - new card: Discombobulate
+    - Known issues:
+        - Cards without art do not display properly in the card bar, this is an issue with the newest version of UnboundLib
+        - Discombobulate does not have any particle effects when activated
 
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
@@ -165,3 +175,10 @@ Get two random _Common_ cards.
 **Uncommon**
 
 Do significantly more damage when up close, but significantly less at long range.
+
+---
+
+### Discombobulate
+**Uncommon**
+
+Blocking reverses nearby player's controls

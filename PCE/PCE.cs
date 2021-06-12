@@ -2,6 +2,7 @@
 using BepInEx; // requires BepInEx.dll and BepInEx.Harmony.dll
 using UnboundLib; // requires UnboundLib.dll
 using UnboundLib.Cards; // " "
+using UnboundLib.Networking; // " "
 using UnityEngine; // requires UnityEngine.dll, UnityEngine.CoreModule.dll, and UnityEngine.AssetBundleModule.dll
 using PCE.Cards;
 using System.IO;
@@ -10,13 +11,15 @@ using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Collections;
 using Photon.Pun;
+using Jotunn.Utils;
+using InControl;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.5.2")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.6.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -26,10 +29,11 @@ namespace PCE
         }
         private void Start()
         {
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var path = Path.Combine(dir, "pceassetbundle");
+            //var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //var path = Path.Combine(dir, "pceassetbundle");
 
-            PCE.ArtAssets = AssetBundle.LoadFromFile(path);
+            //PCE.ArtAssets = AssetBundle.LoadFromFile(path);
+            PCE.ArtAssets = AssetUtils.LoadAssetBundleFromResources("pceassetbundle", typeof(PCE).Assembly);
             if (PCE.ArtAssets == null)
             {
                 global::Debug.Log("Failed to load PCE art asset bundle");
@@ -48,6 +52,7 @@ namespace PCE
             CustomCard.BuildCard<GambleCard>();
             CustomCard.BuildCard<RiskyGambleCard>();
             CustomCard.BuildCard<CloseQuartersCard>();
+            CustomCard.BuildCard<DiscombobulateCard>();
 
 
         }
@@ -64,8 +69,7 @@ namespace PCE
     {
         public float gravityMultiplierOnDoDamage;
         public float gravityDurationOnDoDamage;
-        public float timeOfLastWasDealtDamage;
-        public bool defaultGravity;
+        public bool normalGravity;
         public float defaultGravityForce;
         public float defaultGravityExponent;
         public int murder;
@@ -75,8 +79,7 @@ namespace PCE
         {
             gravityMultiplierOnDoDamage = 1f;
             gravityDurationOnDoDamage = 0f;
-            timeOfLastWasDealtDamage = -1f;
-            defaultGravity = true;
+            normalGravity = true;
             murder = 0;
         }
     }
@@ -123,38 +126,32 @@ namespace PCE
                 
                 
                 CharacterStatModifiers opstats = damagedPlayer.GetComponent<CharacterStatModifiers>();
-                if (opstats.GetAdditionalData().defaultGravity)
+                if (opstats.GetAdditionalData().normalGravity)
                 {
                     Gravity opgrav = damagedPlayer.GetComponent<Gravity>();
                     float orig_gravityForce = opgrav.gravityForce;
-                    opstats.GetAdditionalData().defaultGravity = false;
+                    opstats.GetAdditionalData().normalGravity = false;
                     opgrav.gravityForce *= __instance.GetAdditionalData().gravityMultiplierOnDoDamage;
 
-                    Unbound.Instance.ExecuteAfterSeconds(__instance.GetAdditionalData().gravityDurationOnDoDamage, delegate
-                    {
-                        if (!opstats.GetAdditionalData().defaultGravity && Time.realtimeSinceStartup > __instance.GetAdditionalData().timeOfLastWasDealtDamage)
-                        {
-                            opgrav.gravityForce = orig_gravityForce;
-                            opstats.GetAdditionalData().defaultGravity = true;
-                        }
-                    });
+                    __instance.StartCoroutine(GravityEffectCountDown(__instance, opstats, opgrav, orig_gravityForce, Time.realtimeSinceStartup, __instance.GetAdditionalData().gravityDurationOnDoDamage));
+
                 }
 
             }
         }
-    }
-    [HarmonyPatch(typeof(CharacterStatModifiers), "WasDealtDamage")]
-    class CharacterStatModifiersPatchWasDealtDamage
-    {
-        private static void Prefix(CharacterStatModifiers __instance, Vector2 damage, bool selfDamage)
+
+        private static IEnumerator GravityEffectCountDown(CharacterStatModifiers CSM_instance, CharacterStatModifiers damaged_CSM, Gravity damaged_gravity, float orig_gravityForce, float effectStart, float effectDuration)
         {
-            float curTime = Time.realtimeSinceStartup;
-            if (curTime > __instance.GetAdditionalData().timeOfLastWasDealtDamage)
+            while(!damaged_CSM.GetAdditionalData().normalGravity && Time.realtimeSinceStartup < effectStart+effectDuration)
             {
-                __instance.GetAdditionalData().timeOfLastWasDealtDamage = Time.realtimeSinceStartup;
+                yield return new WaitForSecondsRealtime(0.1f);
             }
+            damaged_gravity.gravityForce = orig_gravityForce;
+            damaged_CSM.GetAdditionalData().normalGravity = true;
+            yield break;
         }
     }
+
     // reset player gravity effects when ResetStats is called
     [HarmonyPatch(typeof(CharacterStatModifiers), "ResetStats")]
     class CharacterStatModifiersPatchResetStats
@@ -164,8 +161,7 @@ namespace PCE
 
             __instance.GetAdditionalData().gravityMultiplierOnDoDamage = 1f;
             __instance.GetAdditionalData().gravityDurationOnDoDamage = 0f;
-            __instance.GetAdditionalData().timeOfLastWasDealtDamage = -1f;
-            __instance.GetAdditionalData().defaultGravity = true;
+            __instance.GetAdditionalData().normalGravity = true;
             __instance.GetAdditionalData().murder = 0;
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
@@ -178,8 +174,6 @@ namespace PCE
     public class GunAdditionalData
     {
         public float minDistanceMultiplier;
-
-
 
         public GunAdditionalData()
         {
@@ -217,9 +211,55 @@ namespace PCE
         }
     }
 
+    // ADD FIELDS TO BLOCK
+    public class BlockAdditionalData
+    {
+        public float discombobulateRange;
+        public float discombobulateDuration;
+
+
+        public BlockAdditionalData()
+        {
+            discombobulateRange = 0f;
+            discombobulateDuration = 0f;
+        }
+    }
+    public static class BlockExtension
+    {
+        public static readonly ConditionalWeakTable<Block, BlockAdditionalData> data =
+            new ConditionalWeakTable<Block, BlockAdditionalData>();
+
+        public static BlockAdditionalData GetAdditionalData(this Block block)
+        {
+            return data.GetOrCreateValue(block);
+        }
+
+        public static void AddData(this Block block, BlockAdditionalData value)
+        {
+            try
+            {
+                data.Add(block, value);
+            }
+            catch (Exception) { }
+        }
+    }
+    // reset additional block fields when ResetStats is called
+    [HarmonyPatch(typeof(Block), "ResetStats")]
+    class BlockPatchResetStats
+    {
+        private static void Prefix(Block __instance)
+        {
+
+            __instance.GetAdditionalData().discombobulateRange = 0f;
+            __instance.GetAdditionalData().discombobulateDuration = 0f;
+
+
+        }
+    }
+
     // patch for murder card
     [HarmonyPatch(typeof(GM_ArmsRace), "RoundTransition")]
-    class GM_ArmsRacePatchRoundTransition : MonoBehaviour
+    class GM_ArmsRacePatchRoundTransition
     {
         private static bool Prefix(GM_ArmsRace __instance, int winningTeamID, int killedTeamID)
         {
@@ -241,10 +281,6 @@ namespace PCE
                     Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
                     Unbound.Instance.ExecuteAfterSeconds(2f, delegate
                     {
-                        /*typeof(HealthHandler).InvokeMember("RPCA_Die",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
-                                    new object[] { new Vector2(0, 1) });*/
                         oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
                         {
                             new Vector2(0, 1)
@@ -290,7 +326,7 @@ namespace PCE.Cards
             }
             gun.multiplySpread = 0f;
             gun.shakeM = 0f;
-            gun.bulletDamageMultiplier = 0.02f;
+            gun.bulletDamageMultiplier = 0.01f;
             gunAmmo.reloadTimeMultiplier *= 1.5f;
             gunAmmo.maxAmmo = 1;
             gun.destroyBulletAfter = 1f;
@@ -339,7 +375,7 @@ namespace PCE.Cards
                 {
                 positive = false,
                 stat = "Damage",
-                amount = "-98%",
+                amount = "-99%",
                 simepleAmount = CardInfoStat.SimpleAmount.aLotLower
                 },
                 new CardInfoStat
@@ -1457,6 +1493,120 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.FirepowerYellow;
+        }
+    }
+
+    public class DiscombobulateCard : CustomCard
+    {
+        /*
+        *  Blocking temporarily inverts nearby players' controls
+        */
+
+        
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            block.cdAdd += 0.25f;
+            block.GetAdditionalData().discombobulateRange += 5f;
+            block.GetAdditionalData().discombobulateDuration += 1f;
+
+            block.BlockAction = delegate (BlockTrigger.BlockTriggerType trigger)
+            {
+                if (trigger != BlockTrigger.BlockTriggerType.None)
+                {
+                    Vector2 pos = block.transform.position;
+                    Player[] players = PlayerManager.instance.players.ToArray();
+
+                    for (int i = 0; i < players.Length; i++)
+                    {
+                        // don't apply the effect to the player who activated it...
+                        if (players[i].playerID == player.playerID) { continue; }
+
+                        // apply to players within range
+                        if (Vector2.Distance(pos, players[i].transform.position) < block.GetAdditionalData().discombobulateRange)
+                        {
+                            /*
+                            if (PhotonNetwork.OfflineMode)
+                            {
+                                OnDiscombobulateActivate(players[i].playerID, block.GetAdditionalData().discombobulateDuration);
+                            }
+                            else if (base.GetComponent<PhotonView>().IsMine)
+                            {*/
+                                NetworkingManager.RPC(typeof(DiscombobulateCard), "OnDiscombobulateActivate", new object[] { players[i].playerID, block.GetAdditionalData().discombobulateDuration });
+                            //}
+                        }
+                    }
+
+
+                }
+            };
+        }
+        public override void OnRemoveCard()
+        {
+        }
+
+        protected override string GetTitle()
+        {
+            return "Discombobulate";
+        }
+        protected override string GetDescription()
+        {
+            return "Blocking temporarily reverses nearby players' controls";
+        }
+
+        protected override GameObject GetCardArt()
+        {
+            return null;
+        }
+
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Uncommon;
+        }
+
+        protected override CardInfoStat[] GetStats()
+        {
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = false,
+                stat = "Block Cooldown",
+                amount = "+0.25s",
+                simepleAmount = CardInfoStat.SimpleAmount.aLittleBitOf
+                },
+
+            };
+        }
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.MagicPink;
+        }
+        [UnboundRPC]
+        public static void OnDiscombobulateActivate(int playerID, float duration)
+        {
+            Player player = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID",
+                BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
+                null, PlayerManager.instance, new object[] { playerID });
+            CharacterData data = player.data;
+            CharacterStatModifiers stats = data.stats;
+
+            float orig_movementspeed = stats.movementSpeed;
+
+            stats.movementSpeed *= -1f;
+
+            Unbound.Instance.StartCoroutine(DiscombobulateEffectCountdown(stats, orig_movementspeed, Time.realtimeSinceStartup, duration));
+        }
+        private static IEnumerator DiscombobulateEffectCountdown(CharacterStatModifiers CSM_instance, float orig_movementspeed, float effectStart, float effectDuration)
+        {
+            while (CSM_instance.movementSpeed != orig_movementspeed && Time.realtimeSinceStartup < effectStart + effectDuration)
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+            }
+            CSM_instance.movementSpeed = orig_movementspeed;
+            yield break;
         }
     }
 
