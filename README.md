@@ -8,7 +8,7 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 ----------------------------
 1. Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
 
-2. Install the *newest versions* of [UnboundLib and MMHOOK](https://github.com/willis81808/UnboundLib/releases).
+2. Install the *newest versions* of [UnboundLib and MMHOOK](https://github.com/Rounds-Modding/UnboundLib/releases).
 
 3. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
 
