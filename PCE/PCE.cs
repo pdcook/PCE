@@ -19,7 +19,7 @@ using InControl;
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.6.0")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.6.1")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -133,16 +133,16 @@ namespace PCE
                     opstats.GetAdditionalData().normalGravity = false;
                     opgrav.gravityForce *= __instance.GetAdditionalData().gravityMultiplierOnDoDamage;
 
-                    __instance.StartCoroutine(GravityEffectCountDown(__instance, opstats, opgrav, orig_gravityForce, Time.realtimeSinceStartup, __instance.GetAdditionalData().gravityDurationOnDoDamage));
+                    __instance.StartCoroutine(GravityEffectCountDown(__instance, damagedPlayer, opstats, opgrav, orig_gravityForce, Time.realtimeSinceStartup, __instance.GetAdditionalData().gravityDurationOnDoDamage));
 
                 }
 
             }
         }
 
-        private static IEnumerator GravityEffectCountDown(CharacterStatModifiers CSM_instance, CharacterStatModifiers damaged_CSM, Gravity damaged_gravity, float orig_gravityForce, float effectStart, float effectDuration)
+        private static IEnumerator GravityEffectCountDown(CharacterStatModifiers CSM_instance, Player damagedPlayer, CharacterStatModifiers damaged_CSM, Gravity damaged_gravity, float orig_gravityForce, float effectStart, float effectDuration)
         {
-            while(!damaged_CSM.GetAdditionalData().normalGravity && Time.realtimeSinceStartup < effectStart+effectDuration)
+            while((!damaged_CSM.GetAdditionalData().normalGravity && Time.realtimeSinceStartup < effectStart+effectDuration) || damagedPlayer.data.dead)
             {
                 yield return new WaitForSecondsRealtime(0.1f);
             }
@@ -1597,11 +1597,11 @@ namespace PCE.Cards
 
             stats.movementSpeed *= -1f;
 
-            Unbound.Instance.StartCoroutine(DiscombobulateEffectCountdown(stats, orig_movementspeed, Time.realtimeSinceStartup, duration));
+            Unbound.Instance.StartCoroutine(DiscombobulateEffectCountdown(stats, player, orig_movementspeed, Time.realtimeSinceStartup, duration));
         }
-        private static IEnumerator DiscombobulateEffectCountdown(CharacterStatModifiers CSM_instance, float orig_movementspeed, float effectStart, float effectDuration)
+        private static IEnumerator DiscombobulateEffectCountdown(CharacterStatModifiers CSM_instance, Player effectedPlayer, float orig_movementspeed, float effectStart, float effectDuration)
         {
-            while (CSM_instance.movementSpeed != orig_movementspeed && Time.realtimeSinceStartup < effectStart + effectDuration)
+            while ((CSM_instance.movementSpeed != orig_movementspeed && Time.realtimeSinceStartup < effectStart + effectDuration) || effectedPlayer.data.dead)
             {
                 yield return new WaitForSecondsRealtime(0.1f);
             }

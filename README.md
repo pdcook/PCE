@@ -77,6 +77,9 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
         - Cards without art do not display properly in the card bar, this is an issue with the newest version of UnboundLib
         - Discombobulate does not have any particle effects when activated
 
+- v0.1.6.1: bugfix
+    - Once again, fixing gravity effects between rounds
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 
