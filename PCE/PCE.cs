@@ -69,17 +69,17 @@ namespace PCE
     {
         public float gravityMultiplierOnDoDamage;
         public float gravityDurationOnDoDamage;
-        public bool normalGravity;
+        public float normalGravityForce;
         public float defaultGravityForce;
         public float defaultGravityExponent;
         public int murder;
+        public Coroutine gravityEffectCountdownCO;
 
 
         public CharacterStatModifiersAdditionalData()
         {
             gravityMultiplierOnDoDamage = 1f;
             gravityDurationOnDoDamage = 0f;
-            normalGravity = true;
             murder = 0;
         }
     }
@@ -101,6 +101,67 @@ namespace PCE
             }
             catch (Exception) { }
         }
+        public static bool IsNormalGravity(this CharacterStatModifiers characterstats)
+        {
+            return (characterstats.GetAdditionalData().normalGravityForce == characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce);
+        }
+        public static void UpdateGravityForce(this CharacterStatModifiers characterstats, float newgravforce)
+        {
+            characterstats.GetAdditionalData().normalGravityForce = newgravforce;
+            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = newgravforce;
+        }
+        public static void ResetToDefaultGravity(this CharacterStatModifiers characterstats)
+        {
+            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = characterstats.GetAdditionalData().defaultGravityForce;
+            characterstats.GetComponent<Player>().GetComponent<Gravity>().exponent = characterstats.GetAdditionalData().defaultGravityExponent;
+        }
+        public static void ResetAllGravityToDefault(this CharacterStatModifiers characterstats)
+        {
+            characterstats.ResetToDefaultGravity();
+            characterstats.GetAdditionalData().normalGravityForce = characterstats.GetAdditionalData().defaultGravityForce;
+        }
+        public static void ResetToNormalGravityForce(this CharacterStatModifiers characterstats)
+        {
+            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = characterstats.GetAdditionalData().normalGravityForce;
+        }
+
+        public static void TempChangeGravityForce(this CharacterStatModifiers characterstats, float tempgravforce, float duration)
+        {
+            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = tempgravforce;
+
+            characterstats.GetAdditionalData().gravityEffectCountdownCO = characterstats.StartCoroutine(characterstats.GravityEffectCountDown(Time.realtimeSinceStartup, duration));
+
+        }
+        public static void TempChangeGravityForceSAFE(this CharacterStatModifiers characterstats, float tempgravforce, float duration)
+        {
+            if (characterstats.IsNormalGravity() && tempgravforce != characterstats.GetAdditionalData().normalGravityForce && duration > 0)
+            {
+                TempChangeGravityForce(characterstats, tempgravforce, duration);
+            }
+            else if (duration > 0)
+            {
+                // stop the old coroutine and start a new one
+                characterstats.StopCoroutine(characterstats.GetAdditionalData().gravityEffectCountdownCO);
+                characterstats.GetAdditionalData().gravityEffectCountdownCO = characterstats.StartCoroutine(characterstats.GravityEffectCountDown(Time.realtimeSinceStartup, duration));
+            }
+
+        }
+
+        private static IEnumerator GravityEffectCountDown(this CharacterStatModifiers characterstats, float effectStart, float effectDuration)
+        {
+            while((!characterstats.IsNormalGravity() && Time.realtimeSinceStartup < effectStart+effectDuration) || characterstats.GetComponent<Player>().data.dead)
+            {
+                yield return 0; // wait for one frame
+            }
+            if (!characterstats.IsNormalGravity())
+            {
+                characterstats.ResetToNormalGravityForce();
+            }
+            yield break;
+        }
+
+
+
     }
     [HarmonyPatch(typeof(CharacterStatModifiers), "Start")]
     class CharacterStatModifiersPatchStart
@@ -111,6 +172,7 @@ namespace PCE
             {
                 __instance.GetAdditionalData().defaultGravityExponent = __instance.GetComponent<Player>().GetComponent<Gravity>().exponent;
                 __instance.GetAdditionalData().defaultGravityForce = __instance.GetComponent<Player>().GetComponent<Gravity>().gravityForce;
+                __instance.GetAdditionalData().normalGravityForce = __instance.GetComponent<Player>().GetComponent<Gravity>().gravityForce;
             }
 
         }
@@ -123,32 +185,12 @@ namespace PCE
 
             if (__instance.GetAdditionalData().gravityMultiplierOnDoDamage != 1f)
             {
-                
-                
-                CharacterStatModifiers opstats = damagedPlayer.GetComponent<CharacterStatModifiers>();
-                if (opstats.GetAdditionalData().normalGravity)
-                {
-                    Gravity opgrav = damagedPlayer.GetComponent<Gravity>();
-                    float orig_gravityForce = opgrav.gravityForce;
-                    opstats.GetAdditionalData().normalGravity = false;
-                    opgrav.gravityForce *= __instance.GetAdditionalData().gravityMultiplierOnDoDamage;
 
-                    __instance.StartCoroutine(GravityEffectCountDown(__instance, damagedPlayer, opstats, opgrav, orig_gravityForce, Time.realtimeSinceStartup, __instance.GetAdditionalData().gravityDurationOnDoDamage));
+                damagedPlayer.GetComponent<CharacterStatModifiers>().TempChangeGravityForceSAFE(damagedPlayer.GetComponent<CharacterStatModifiers>().GetAdditionalData().normalGravityForce * __instance.GetAdditionalData().gravityMultiplierOnDoDamage, __instance.GetAdditionalData().gravityDurationOnDoDamage);
+                
 
-                }
 
             }
-        }
-
-        private static IEnumerator GravityEffectCountDown(CharacterStatModifiers CSM_instance, Player damagedPlayer, CharacterStatModifiers damaged_CSM, Gravity damaged_gravity, float orig_gravityForce, float effectStart, float effectDuration)
-        {
-            while((!damaged_CSM.GetAdditionalData().normalGravity && Time.realtimeSinceStartup < effectStart+effectDuration) || damagedPlayer.data.dead)
-            {
-                yield return new WaitForSecondsRealtime(0.1f);
-            }
-            damaged_gravity.gravityForce = orig_gravityForce;
-            damaged_CSM.GetAdditionalData().normalGravity = true;
-            yield break;
         }
     }
 
@@ -161,11 +203,8 @@ namespace PCE
 
             __instance.GetAdditionalData().gravityMultiplierOnDoDamage = 1f;
             __instance.GetAdditionalData().gravityDurationOnDoDamage = 0f;
-            __instance.GetAdditionalData().normalGravity = true;
             __instance.GetAdditionalData().murder = 0;
-            Gravity gravity = __instance.GetComponent<Gravity>();
-            gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
-            gravity.exponent = __instance.GetAdditionalData().defaultGravityExponent;
+            __instance.ResetAllGravityToDefault();
 
         }
     }
@@ -532,7 +571,9 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            gravity.gravityForce /= 6f;
+            //gravity.gravityForce /= 6f;
+            //characterStats.GetAdditionalData().normalGravityForce /= 6f;
+            characterStats.UpdateGravityForce(characterStats.GetAdditionalData().normalGravityForce / 6);
         }
         public override void OnRemoveCard()
         {
