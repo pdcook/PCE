@@ -80,6 +80,10 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
 - v0.1.6.1: bugfix
     - Once again, fixing gravity effects between rounds
 
+- v0.1.6.2: bugfixes, custom gamemode support
+    - Fixed gravity effects reset between rounds
+    - Murder and other cards should work with custom gamemodes now
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 
