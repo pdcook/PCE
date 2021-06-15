@@ -13,13 +13,15 @@ using System.Collections;
 using Photon.Pun;
 using Jotunn.Utils;
 using InControl;
+using System.Linq;
+using UnboundLib.GameModes;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
 namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.6.1")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.6.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -29,10 +31,7 @@ namespace PCE
         }
         private void Start()
         {
-            //var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //var path = Path.Combine(dir, "pceassetbundle");
 
-            //PCE.ArtAssets = AssetBundle.LoadFromFile(path);
             PCE.ArtAssets = AssetUtils.LoadAssetBundleFromResources("pceassetbundle", typeof(PCE).Assembly);
             if (PCE.ArtAssets == null)
             {
@@ -55,11 +54,135 @@ namespace PCE
             CustomCard.BuildCard<DiscombobulateCard>();
 
 
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => 
+            {
+                Player[] players = PlayerManager.instance.players.ToArray();
+                for (int j = 0; j < players.Length; j++)
+                {
+                    // clear player gravity effects on respawn
+                    if (players[j].GetComponent<GravityEffect>() != null)
+                    {
+                        players[j].GetComponent<GravityEffect>().Destroy();
+                    }
+
+                    // commit any pending murders
+                    if (players[j].data.stats.GetAdditionalData().murder >= 1)
+                    {
+                        players[j].data.stats.GetAdditionalData().murder--;
+                        Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
+                        Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                        {
+                            oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                            {
+                                new Vector2(0, 1)
+                            });
+
+                        });
+                    }
+                }
+
+            });
+
         }
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 
         private const string ModName = "Pykess's Card Expansion (PCE)";
         internal static AssetBundle ArtAssets;
+    }
+    public class GravityDealtDamageEffect : DealtDamageEffect
+    {
+        private Player player;
+        private CharacterStatModifiers characterStat;
+        public override void DealtDamage(Vector2 damage, bool selfDamage, Player damagedPlayer = null)
+        {
+            GravityEffect thisGravityEffect = damagedPlayer.gameObject.GetOrAddComponent<GravityEffect>();
+            thisGravityEffect.SetDuration(this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityDurationOnDoDamage);
+            thisGravityEffect.SetGravityForceMultiplier(this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityMultiplierOnDoDamage);
+            thisGravityEffect.ResetTimer();
+        }
+        public void SetPlayer(Player player)
+        {
+            this.player = player;
+            this.characterStat = player.GetComponent<CharacterStatModifiers>();
+        }
+        public void Destroy()
+        {
+            UnityEngine.Object.Destroy(this);
+        }
+
+    }
+    public class GravityEffect : MonoBehaviour
+    {
+        private Player playerToModify;
+        private Player playerWhoModifies = null;
+        private Gravity gravityToModify;
+        private float
+          startTime,
+          duration,
+          gravityForceMultiplier = 1f,
+          directGravityForce,
+          origGravityForce;
+        bool direct = false;
+
+
+        void Awake()
+        {
+            this.playerToModify = gameObject.GetComponent<Player>();
+            this.gravityToModify = gameObject.GetComponent<Gravity>();
+            ResetTimer();
+        }
+
+        void Start()
+        {
+            this.origGravityForce = this.gravityToModify.gravityForce;
+            if (direct)
+            {
+                this.gravityToModify.gravityForce = this.directGravityForce;
+            }
+            else
+            {
+                this.gravityToModify.gravityForce *= this.gravityForceMultiplier;
+            }
+        }
+
+        void Update()
+        {
+            if (Time.time - this.startTime >= this.duration)
+            {
+                UnityEngine.Object.Destroy(this);
+            }
+        }
+        public void OnDestroy()
+        {
+            this.gravityToModify.gravityForce = this.origGravityForce;
+        }
+
+        public void Destroy()
+        {
+            UnityEngine.Object.Destroy(this);
+        }
+        public void SetPlayerWhoModifies(Player owner)
+        {
+            this.playerWhoModifies = owner;
+        }
+        public void ResetTimer()
+        {
+            startTime = Time.time;
+        }
+        public void SetDuration(float duration)
+        {
+            this.duration = duration;
+        }
+        public void SetGravityForceMultiplier(float mult)
+        {
+            this.gravityForceMultiplier = mult;
+        }
+
+        public void SetDirectGravityForce(float directGravityForce)
+        {
+            this.directGravityForce = directGravityForce;
+            this.direct = true;
+        }
     }
 
 
@@ -69,11 +192,9 @@ namespace PCE
     {
         public float gravityMultiplierOnDoDamage;
         public float gravityDurationOnDoDamage;
-        public float normalGravityForce;
         public float defaultGravityForce;
         public float defaultGravityExponent;
         public int murder;
-        public Coroutine gravityEffectCountdownCO;
 
 
         public CharacterStatModifiersAdditionalData()
@@ -101,96 +222,20 @@ namespace PCE
             }
             catch (Exception) { }
         }
-        public static bool IsNormalGravity(this CharacterStatModifiers characterstats)
-        {
-            return (characterstats.GetAdditionalData().normalGravityForce == characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce);
-        }
-        public static void UpdateGravityForce(this CharacterStatModifiers characterstats, float newgravforce)
-        {
-            characterstats.GetAdditionalData().normalGravityForce = newgravforce;
-            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = newgravforce;
-        }
-        public static void ResetToDefaultGravity(this CharacterStatModifiers characterstats)
-        {
-            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = characterstats.GetAdditionalData().defaultGravityForce;
-            characterstats.GetComponent<Player>().GetComponent<Gravity>().exponent = characterstats.GetAdditionalData().defaultGravityExponent;
-        }
-        public static void ResetAllGravityToDefault(this CharacterStatModifiers characterstats)
-        {
-            characterstats.ResetToDefaultGravity();
-            characterstats.GetAdditionalData().normalGravityForce = characterstats.GetAdditionalData().defaultGravityForce;
-        }
-        public static void ResetToNormalGravityForce(this CharacterStatModifiers characterstats)
-        {
-            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = characterstats.GetAdditionalData().normalGravityForce;
-        }
-
-        public static void TempChangeGravityForce(this CharacterStatModifiers characterstats, float tempgravforce, float duration)
-        {
-            characterstats.GetComponent<Player>().GetComponent<Gravity>().gravityForce = tempgravforce;
-
-            characterstats.GetAdditionalData().gravityEffectCountdownCO = characterstats.StartCoroutine(characterstats.GravityEffectCountDown(Time.realtimeSinceStartup, duration));
-
-        }
-        public static void TempChangeGravityForceSAFE(this CharacterStatModifiers characterstats, float tempgravforce, float duration)
-        {
-            if (characterstats.IsNormalGravity() && tempgravforce != characterstats.GetAdditionalData().normalGravityForce && duration > 0)
-            {
-                TempChangeGravityForce(characterstats, tempgravforce, duration);
-            }
-            else if (duration > 0)
-            {
-                // stop the old coroutine and start a new one
-                characterstats.StopCoroutine(characterstats.GetAdditionalData().gravityEffectCountdownCO);
-                characterstats.GetAdditionalData().gravityEffectCountdownCO = characterstats.StartCoroutine(characterstats.GravityEffectCountDown(Time.realtimeSinceStartup, duration));
-            }
-
-        }
-
-        private static IEnumerator GravityEffectCountDown(this CharacterStatModifiers characterstats, float effectStart, float effectDuration)
-        {
-            while((!characterstats.IsNormalGravity() && Time.realtimeSinceStartup < effectStart+effectDuration) || characterstats.GetComponent<Player>().data.dead)
-            {
-                yield return 0; // wait for one frame
-            }
-            if (!characterstats.IsNormalGravity())
-            {
-                characterstats.ResetToNormalGravityForce();
-            }
-            yield break;
-        }
-
-
 
     }
+
     [HarmonyPatch(typeof(CharacterStatModifiers), "Start")]
     class CharacterStatModifiersPatchStart
     {
         private static void Postfix(CharacterStatModifiers __instance)
         {
-            if (__instance != null && __instance.GetComponent<Player>() != null && __instance.GetComponent<Player>().GetComponent<Gravity>()!=null)
+            if (__instance != null && __instance.GetComponent<Player>() != null && __instance.GetComponent<Player>().GetComponent<Gravity>() != null)
             {
                 __instance.GetAdditionalData().defaultGravityExponent = __instance.GetComponent<Player>().GetComponent<Gravity>().exponent;
                 __instance.GetAdditionalData().defaultGravityForce = __instance.GetComponent<Player>().GetComponent<Gravity>().gravityForce;
-                __instance.GetAdditionalData().normalGravityForce = __instance.GetComponent<Player>().GetComponent<Gravity>().gravityForce;
             }
 
-        }
-    }
-    [HarmonyPatch(typeof(CharacterStatModifiers), "DealtDamage")]
-    class CharacterStatModifiersPatchDealtDamage
-    {
-        private static void Prefix(CharacterStatModifiers __instance, Vector2 damage, bool selfDamage, Player damagedPlayer = null)
-        {
-
-            if (__instance.GetAdditionalData().gravityMultiplierOnDoDamage != 1f)
-            {
-
-                damagedPlayer.GetComponent<CharacterStatModifiers>().TempChangeGravityForceSAFE(damagedPlayer.GetComponent<CharacterStatModifiers>().GetAdditionalData().normalGravityForce * __instance.GetAdditionalData().gravityMultiplierOnDoDamage, __instance.GetAdditionalData().gravityDurationOnDoDamage);
-                
-
-
-            }
         }
     }
 
@@ -200,11 +245,24 @@ namespace PCE
     {
         private static void Prefix(CharacterStatModifiers __instance)
         {
-
             __instance.GetAdditionalData().gravityMultiplierOnDoDamage = 1f;
             __instance.GetAdditionalData().gravityDurationOnDoDamage = 0f;
             __instance.GetAdditionalData().murder = 0;
-            __instance.ResetAllGravityToDefault();
+
+            
+            if (__instance.GetComponent<GravityEffect>() != null)
+            {
+                //UnityEngine.Object.Destroy(__instance.GetComponent<GravityEffect>());
+                __instance.GetComponent<GravityEffect>().Destroy();
+            }
+            if (__instance.GetComponent<GravityDealtDamageEffect>() != null)
+            {
+                //UnityEngine.Object.Destroy(__instance.GetComponent<GravityDealtDamageEffect>());
+                __instance.GetComponent<GravityDealtDamageEffect>().Destroy();
+            }
+            Gravity gravity = __instance.GetComponent<Gravity>();
+            gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
+            gravity.exponent = __instance.GetAdditionalData().defaultGravityExponent;
 
         }
     }
@@ -296,41 +354,6 @@ namespace PCE
         }
     }
 
-    // patch for murder card
-    [HarmonyPatch(typeof(GM_ArmsRace), "RoundTransition")]
-    class GM_ArmsRacePatchRoundTransition
-    {
-        private static bool Prefix(GM_ArmsRace __instance, int winningTeamID, int killedTeamID)
-        {
-            __instance.StartCoroutine(murderOnRoundStart(PlayerManager.instance.players.ToArray()));
-
-            return true;
-
-        }
-        private static IEnumerator murderOnRoundStart(Player[] players)
-        {
-            while(!GameManager.instance.battleOngoing) { yield return null; }
-
-
-            for (int j = 0; j < players.Length; j++)
-            {
-                if (players[j].data.stats.GetAdditionalData().murder >= 1)
-                {
-                    players[j].data.stats.GetAdditionalData().murder--;
-                    Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
-                    Unbound.Instance.ExecuteAfterSeconds(2f, delegate
-                    {
-                        oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
-                        {
-                            new Vector2(0, 1)
-                        });
-
-                    });
-                }
-            }
-            yield break;
-        }
-    }
 }
 
 namespace PCE.Cards
@@ -571,9 +594,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            //gravity.gravityForce /= 6f;
-            //characterStats.GetAdditionalData().normalGravityForce /= 6f;
-            characterStats.UpdateGravityForce(characterStats.GetAdditionalData().normalGravityForce / 6);
+            gravity.gravityForce /= 6f;
         }
         public override void OnRemoveCard()
         {
@@ -706,12 +727,17 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-
+            
             characterStats.GetAdditionalData().gravityMultiplierOnDoDamage = -1f * Math.Abs(characterStats.GetAdditionalData().gravityMultiplierOnDoDamage);
             if (characterStats.GetAdditionalData().gravityDurationOnDoDamage < 4f)
             {
                 characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
             }
+
+            player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
+
+
+
 
         }
         public override void OnRemoveCard()
@@ -767,12 +793,13 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-
             characterStats.GetAdditionalData().gravityMultiplierOnDoDamage *= 2f;
             if (characterStats.GetAdditionalData().gravityDurationOnDoDamage < 4f)
             {
                 characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
             }
+
+            player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
 
 
         }
@@ -1644,7 +1671,8 @@ namespace PCE.Cards
         {
             while ((CSM_instance.movementSpeed != orig_movementspeed && Time.realtimeSinceStartup < effectStart + effectDuration) || effectedPlayer.data.dead)
             {
-                yield return new WaitForSecondsRealtime(0.1f);
+                // wait one frame
+                yield return 0;
             }
             CSM_instance.movementSpeed = orig_movementspeed;
             yield break;
