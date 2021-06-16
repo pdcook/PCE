@@ -84,6 +84,12 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
     - Fixed gravity effects reset between rounds
     - Murder and other cards should work with custom gamemodes now
 
+- v0.1.6.3: bugfixes, balancing
+    - Fixed Discombobulate not resetting after death
+    - Fixed Close Quarters not resetting between games
+    - Balanced gravity effects
+    - Gravity effects no longer launch you at the ground once finished
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 

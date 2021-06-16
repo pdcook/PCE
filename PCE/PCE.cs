@@ -154,6 +154,8 @@ namespace PCE
         }
         public void OnDestroy()
         {
+            this.playerToModify.data.sinceGrounded = 0f;
+            this.playerToModify.data.sinceWallGrab = 0f;
             this.gravityToModify.gravityForce = this.origGravityForce;
         }
 
@@ -182,6 +184,65 @@ namespace PCE
         {
             this.directGravityForce = directGravityForce;
             this.direct = true;
+        }
+    }
+
+    public class DiscombobulateEffect : MonoBehaviour
+    {
+        private Player playerToModify;
+        private Player playerWhoModifies = null;
+        private CharacterStatModifiers charStatsToModify;
+        private float
+          startTime,
+          duration,
+          movementspeedMultiplier = 1f,
+          origMovementSpeed;
+
+        void Awake()
+        {
+            this.playerToModify = gameObject.GetComponent<Player>();
+            this.charStatsToModify = gameObject.GetComponent<CharacterStatModifiers>();
+            ResetTimer();
+        }
+
+        void Start()
+        {
+            this.origMovementSpeed = this.charStatsToModify.movementSpeed;
+            this.charStatsToModify.movementSpeed *= this.movementspeedMultiplier;
+
+        }
+
+        void Update()
+        {
+            if (Time.time - this.startTime >= this.duration)
+            {
+                UnityEngine.Object.Destroy(this);
+            }
+        }
+        public void OnDestroy()
+        {
+            this.charStatsToModify.movementSpeed = this.origMovementSpeed;
+        }
+
+        public void Destroy()
+        {
+            UnityEngine.Object.Destroy(this);
+        }
+        public void SetPlayerWhoModifies(Player owner)
+        {
+            this.playerWhoModifies = owner;
+        }
+        public void ResetTimer()
+        {
+            startTime = Time.time;
+        }
+        public void SetDuration(float duration)
+        {
+            this.duration = duration;
+        }
+        public void SetMovementSpeedMultiplier(float mult)
+        {
+            this.movementspeedMultiplier = mult;
         }
     }
 
@@ -305,6 +366,15 @@ namespace PCE
             {
                 obj.AddComponent<ChangeDamageMultiplierAfterDistanceTravelled>().distance *= __instance.GetAdditionalData().minDistanceMultiplier;
             }
+        }
+    }
+    // reset extra gun attributes when resetstats is called
+    [HarmonyPatch(typeof(Gun), "ResetStats")]
+    class GunPatchResetStats
+    {
+        private static void Prefix(Gun __instance)
+        {
+            __instance.GetAdditionalData().minDistanceMultiplier = 1f;
         }
     }
 
@@ -728,16 +798,16 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             
-            characterStats.GetAdditionalData().gravityMultiplierOnDoDamage = -1f * Math.Abs(characterStats.GetAdditionalData().gravityMultiplierOnDoDamage);
+            if (characterStats.GetAdditionalData().gravityMultiplierOnDoDamage > 0)
+            {
+                characterStats.GetAdditionalData().gravityMultiplierOnDoDamage = -0.2f * Math.Abs(characterStats.GetAdditionalData().gravityMultiplierOnDoDamage);
+            }
             if (characterStats.GetAdditionalData().gravityDurationOnDoDamage < 4f)
             {
                 characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
             }
 
             player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
-
-
-
 
         }
         public override void OnRemoveCard()
@@ -793,10 +863,10 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            characterStats.GetAdditionalData().gravityMultiplierOnDoDamage *= 2f;
+            characterStats.GetAdditionalData().gravityMultiplierOnDoDamage *= 3f;
             if (characterStats.GetAdditionalData().gravityDurationOnDoDamage < 4f)
             {
-                characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
+                characterStats.GetAdditionalData().gravityDurationOnDoDamage += 2f;
             }
 
             player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
@@ -1022,9 +1092,6 @@ namespace PCE.Cards
             {
                 // assign card with RPC
 
-                // pickerType == PickerType.Team
-                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                // pickerType == PickerType.Player
                 Player[] array = new Player[] { player };
                 int[] array2 = new int[array.Length];
 
@@ -1033,7 +1100,6 @@ namespace PCE.Cards
                     array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
-                //if (true)
                 {
 
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID, array2 });
@@ -1147,10 +1213,6 @@ namespace PCE.Cards
             else
             {
                 // assign card with RPC
-
-                // pickerType == PickerType.Team
-                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                // pickerType == PickerType.Player
                 Player[] array = new Player[] { player };
                 int[] array2 = new int[array.Length];
 
@@ -1159,7 +1221,6 @@ namespace PCE.Cards
                     array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
-                //if (true)
                 {
 
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID, array2 });
@@ -1281,10 +1342,6 @@ namespace PCE.Cards
             else
             {
                 // assign cards with RPC
-
-                // pickerType == PickerType.Team
-                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                // pickerType == PickerType.Player
                 Player[] array = new Player[] { player };
                 int[] array2 = new int[array.Length];
 
@@ -1293,7 +1350,6 @@ namespace PCE.Cards
                     array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
-                //if (true)
                 {
 
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID1, array2 });
@@ -1418,9 +1474,6 @@ namespace PCE.Cards
             {
                 // assign cards with RPC
 
-                // pickerType == PickerType.Team
-                // Player[] array = PlayerManager.instance.GetPlayersInTeam(player.teamID);
-                // pickerType == PickerType.Player
                 Player[] array = new Player[] { player };
                 int[] array2 = new int[array.Length];
 
@@ -1429,7 +1482,6 @@ namespace PCE.Cards
                     array2[j] = array[j].data.view.ControllerActorNr;
                 }
                 if (base.GetComponent<PhotonView>().IsMine)
-                //if (true)
                 {
 
                     base.GetComponent<PhotonView>().RPC("RPCA_AssignCard", RpcTarget.All, new object[] { rID1, array2 });
@@ -1595,15 +1647,7 @@ namespace PCE.Cards
                         // apply to players within range
                         if (Vector2.Distance(pos, players[i].transform.position) < block.GetAdditionalData().discombobulateRange)
                         {
-                            /*
-                            if (PhotonNetwork.OfflineMode)
-                            {
-                                OnDiscombobulateActivate(players[i].playerID, block.GetAdditionalData().discombobulateDuration);
-                            }
-                            else if (base.GetComponent<PhotonView>().IsMine)
-                            {*/
-                                NetworkingManager.RPC(typeof(DiscombobulateCard), "OnDiscombobulateActivate", new object[] { players[i].playerID, block.GetAdditionalData().discombobulateDuration });
-                            //}
+                            NetworkingManager.RPC(typeof(DiscombobulateCard), "OnDiscombobulateActivate", new object[] { players[i].playerID, block.GetAdditionalData().discombobulateDuration });
                         }
                     }
 
@@ -1658,25 +1702,14 @@ namespace PCE.Cards
             Player player = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID",
                 BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
                 null, PlayerManager.instance, new object[] { playerID });
-            CharacterData data = player.data;
-            CharacterStatModifiers stats = data.stats;
 
-            float orig_movementspeed = stats.movementSpeed;
+            DiscombobulateEffect thisDiscombobulateEffect = player.gameObject.GetOrAddComponent<DiscombobulateEffect>();
+            thisDiscombobulateEffect.SetDuration(duration);
+            thisDiscombobulateEffect.SetMovementSpeedMultiplier(-1f);
+            thisDiscombobulateEffect.ResetTimer();
 
-            stats.movementSpeed *= -1f;
-
-            Unbound.Instance.StartCoroutine(DiscombobulateEffectCountdown(stats, player, orig_movementspeed, Time.realtimeSinceStartup, duration));
         }
-        private static IEnumerator DiscombobulateEffectCountdown(CharacterStatModifiers CSM_instance, Player effectedPlayer, float orig_movementspeed, float effectStart, float effectDuration)
-        {
-            while ((CSM_instance.movementSpeed != orig_movementspeed && Time.realtimeSinceStartup < effectStart + effectDuration) || effectedPlayer.data.dead)
-            {
-                // wait one frame
-                yield return 0;
-            }
-            CSM_instance.movementSpeed = orig_movementspeed;
-            yield break;
-        }
+
     }
 
 }
