@@ -90,6 +90,10 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
     - Balanced gravity effects
     - Gravity effects no longer launch you at the ground once finished
 
+- v0.1.7.0: new card, Old Jetpack
+    - New card
+    - Patched PlayerJump logic so that arbitrary numbers of jumps are possible
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 
