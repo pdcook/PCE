@@ -23,7 +23,7 @@ namespace PCE
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.playerjumppatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.7.1")]
+    [BepInPlugin("pykess.rounds.plugins.pykesscardexpansion", "Pykess's Card Expansion (PCE)", "0.1.7.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -55,37 +55,47 @@ namespace PCE
             CustomCard.BuildCard<CloseQuartersCard>();
             CustomCard.BuildCard<DiscombobulateCard>();
 
-
-            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => 
-            {
-                Player[] players = PlayerManager.instance.players.ToArray();
-                for (int j = 0; j < players.Length; j++)
-                {
-                    // clear player gravity effects on respawn
-                    if (players[j].GetComponent<GravityEffect>() != null)
-                    {
-                        players[j].GetComponent<GravityEffect>().Destroy();
-                    }
-
-                    // commit any pending murders
-                    if (players[j].data.stats.GetAdditionalData().murder >= 1)
-                    {
-                        players[j].data.stats.GetAdditionalData().murder--;
-                        Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
-                        Unbound.Instance.ExecuteAfterSeconds(2f, delegate
-                        {
-                            oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
-                            {
-                                new Vector2(0, 1)
-                            });
-
-                        });
-                    }
-                }
-
-            });
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => CommitMurders());
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => ResetGravity());
 
         }
+
+        private IEnumerator CommitMurders()
+        {
+            Player[] players = PlayerManager.instance.players.ToArray();
+            for (int j = 0; j < players.Length; j++)
+            {
+                // commit any pending murders
+                if (players[j].data.stats.GetAdditionalData().murder >= 1)
+                {
+                    players[j].data.stats.GetAdditionalData().murder--;
+                    Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
+                    Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                    {
+                        oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                        {
+                                    new Vector2(0, 1)
+                        });
+
+                    });
+                }
+            }
+            yield break;
+        }
+        private IEnumerator ResetGravity()
+        {
+            Player[] players = PlayerManager.instance.players.ToArray();
+            for (int j = 0; j < players.Length; j++)
+            {
+                // clear player gravity effects on respawn
+                if (players[j].GetComponent<GravityEffect>() != null)
+                {
+                    players[j].GetComponent<GravityEffect>().Destroy();
+                }
+            }
+            yield break;
+        }
+
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 
         private const string ModName = "Pykess's Card Expansion (PCE)";

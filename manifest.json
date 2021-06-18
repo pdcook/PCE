@@ -1,6 +1,6 @@
 {
     "name": "PCE",
-    "version_number": "1.7.1",
+    "version_number": "1.7.2",
     "website_url": "https://github.com/pdcook/PCE",
     "description": "Adds a number of new cards to the game",
     "dependencies": [

@@ -4,13 +4,20 @@ This is a BepInEx compatible mod for Rounds that adds a number of new cards to t
 
 A massive thanks to the people who helped me learn how to mod, especially Ascyst, Willis, and Tilastokeskus.
 
-## Installation Instructions
+## Easy Installation Instructions
+---------------------------------
+
+Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set up a Rounds profile, and add `PCE` to the profile. All dependencies will be automatically installed. Just click `Start Modded` to start playing!
+
+## Manual Installation Instructions
 ----------------------------
-1. Install BepInEx, you can find it [here](https://discord.gg/tAQxJbV9RG).
+1. Install BepInEx, you can find it [here](https://rounds.thunderstore.io/package/BepInEx/BepInExPack_ROUNDS/).
 
 2. Install the *newest versions* of [UnboundLib and MMHOOK](https://github.com/Rounds-Modding/UnboundLib/releases).
 
-3. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
+3. Install `PlayerJumpPatch` which you can find [here](https://rounds.thunderstore.io/package/Pykess/PlayerJumpPatch/).
+
+4. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
 
 ### Version Notes
 -----------------
@@ -95,6 +102,8 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
     - Patched PlayerJump logic so that arbitrary numbers of jumps are possible
 
 - v0.1.7.1: moved PlayerJump Patch to separate utility mod
+
+- v0.1.7.2: bugfix - updated Gamemode hooks to be compatible with newest version of unbound
 
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
