@@ -26,10 +26,8 @@ namespace PCE.Cards
             gun.size = 0f;
             gun.bursts = 50;
             gun.knockback *= 0.005f;
-            //gun.projectileSpeed = Math.Min(Math.Max(gun.projectileSpeed*100f, 0f), 100f); // why the hell doesn't Clamp work?
-            //gun.projectielSimulatonSpeed *= 100f;
-            gun.projectileSpeed = Math.Min(Math.Max(gun.projectileSpeed + 50f, 0f), 100f);
-            gun.projectielSimulatonSpeed = Math.Min(Math.Max(gun.projectielSimulatonSpeed + 50f, 0f), 100f);
+            gun.projectileSpeed = Math.Min(Math.Max(gun.projectileSpeed + 10f, 0f), 20f);
+            gun.projectielSimulatonSpeed = Math.Min(Math.Max(gun.projectielSimulatonSpeed + 10f, 0f), 20f);
             gun.drag = 0f;
             gun.gravity = 0f;
             gun.timeBetweenBullets = 0.001f;
