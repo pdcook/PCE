@@ -94,6 +94,8 @@ A massive thanks to the people who helped me learn how to mod, especially Ascyst
     - New card
     - Patched PlayerJump logic so that arbitrary numbers of jumps are possible
 
+- v0.1.7.1: moved PlayerJump Patch to separate utility mod
+
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
 
