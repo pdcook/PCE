@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using UnboundLib.Cards;
 using UnityEngine;
+using UnboundLib;
+using PCE.MonoBehaviours;
 
 namespace PCE.Cards
 {
@@ -17,6 +19,13 @@ namespace PCE.Cards
             data.maxHealth /= 2f;
             characterStats.sizeMultiplier /= 2f;
             gun.bulletDamageMultiplier *= 2f;
+            characterStats.movementSpeed *= 1.25f;
+            characterStats.jump *= 0.75f;
+
+            AntSquishEffect thisAntSquishEffect = player.gameObject.GetOrAddComponent<AntSquishEffect>();
+
+            thisAntSquishEffect.IncreaseDamagePerc(0.25f);
+
         }
         public override void OnRemoveCard()
         {
@@ -28,7 +37,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Halve in size; double in strength";
+            return "Halve in size; double in strength. Be careful not to get stepped on.";
         }
 
         protected override GameObject GetCardArt()
