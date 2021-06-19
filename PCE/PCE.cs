@@ -10,6 +10,9 @@ using UnboundLib.GameModes;
 using PCE.Cards;
 using PCE.Extensions;
 using PCE.MonoBehaviours;
+using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -52,9 +55,11 @@ namespace PCE
             CustomCard.BuildCard<RiskyGambleCard>();
             CustomCard.BuildCard<CloseQuartersCard>();
             CustomCard.BuildCard<DiscombobulateCard>();
+            CustomCard.BuildCard<DemonicPossessionCard>();
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
-            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetGravity());
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
+            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ResetAllEffects());
 
         }
 
@@ -80,7 +85,7 @@ namespace PCE
             }
             yield break;
         }
-        private IEnumerator ResetGravity()
+        private IEnumerator ResetEffectsBetweenBattles()
         {
             Player[] players = PlayerManager.instance.players.ToArray();
             for (int j = 0; j < players.Length; j++)
@@ -90,6 +95,40 @@ namespace PCE
                 {
                     players[j].GetComponent<GravityEffect>().Destroy();
                 }
+                // clear player discombobulate effects on respawn
+                if (players[j].GetComponent<DiscombobulateEffect>() != null)
+                {
+                    players[j].GetComponent<DiscombobulateEffect>().Destroy();
+                }
+            }
+            yield break;
+        }
+
+        private IEnumerator ResetAllEffects ()
+        {
+
+            // reset all effects made from PCE.MonoBehaviours
+
+            Player[] players = PlayerManager.instance.players.ToArray();
+            for (int j = 0; j < players.Length; j++)
+            {
+                if (players[j].GetComponent<GravityEffect>() != null)
+                {
+                    players[j].GetComponent<GravityEffect>().Destroy();
+                }
+                if (players[j].GetComponent<AntSquishEffect>() != null)
+                {
+                    players[j].GetComponent<AntSquishEffect>().Destroy();
+                }
+                if (players[j].GetComponent<DiscombobulateEffect>() != null)
+                {
+                    players[j].GetComponent<DiscombobulateEffect>().Destroy();
+                }
+                if (players[j].GetComponent<DemonicPossessionEffect>() != null)
+                {
+                    players[j].GetComponent<DemonicPossessionEffect>().Destroy();
+                }
+
             }
             yield break;
         }
