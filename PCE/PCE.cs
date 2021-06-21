@@ -56,6 +56,7 @@ namespace PCE
             CustomCard.BuildCard<CloseQuartersCard>();
             CustomCard.BuildCard<DiscombobulateCard>();
             CustomCard.BuildCard<DemonicPossessionCard>();
+            CustomCard.BuildCard<LowGroundCard>();
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
@@ -127,6 +128,10 @@ namespace PCE
                 if (players[j].GetComponent<DemonicPossessionEffect>() != null)
                 {
                     players[j].GetComponent<DemonicPossessionEffect>().Destroy();
+                }
+                if (players[j].GetComponent<InConeEffect>() != null)
+                {
+                    players[j].GetComponent<InConeEffect>().Destroy();
                 }
 
             }

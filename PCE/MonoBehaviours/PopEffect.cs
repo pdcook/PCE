@@ -6,6 +6,7 @@ using UnboundLib;
 using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
+using Photon.Pun;
 
 namespace PCE.MonoBehaviours
 {
@@ -40,18 +41,45 @@ namespace PCE.MonoBehaviours
             if (Time.time >= this.startTime + this.currentDuration)
             {
                 int i = 0;
-                Player otherPlayer = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)];
+                int otherPlayerID = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)].playerID;
 
-                while (otherPlayer.playerID == this.player.playerID && i < this.maxAttemps)
+                while (otherPlayerID == this.player.playerID && i < this.maxAttemps)
                 {
-                    otherPlayer = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)];
+                    otherPlayerID = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)].playerID;
                     i++;
                 }
 
                 float rangle = (float)(rng.NextDouble() * 2 * Math.PI);
                 float rradius = spacing * (float)rng.NextGaussianDouble();
 
-                this.player.transform.position = otherPlayer.transform.position + new Vector3(rradius * (float)Math.Cos(rangle), rradius * (float)Math.Sin(rangle), 0f);
+                Player otherPlayer = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { otherPlayerID });
+
+                Vector3 newPos = otherPlayer.transform.position + new Vector3(rradius * (float)Math.Cos(rangle), rradius * (float)Math.Sin(rangle), 0f);
+
+                if (PhotonNetwork.OfflineMode)
+                {
+                    // teleport player locally
+                    this.player.transform.position = newPos;
+
+                }
+                else
+                {
+                    // teleport player with RPC
+
+                    Player[] array = new Player[] { player };
+                    int[] array2 = new int[array.Length];
+
+                    for (int j = 0; j < array.Length; j++)
+                    {
+                        array2[j] = array[j].data.view.ControllerActorNr;
+                    }
+                    if (base.GetComponent<PhotonView>().IsMine)
+                    {
+
+                        base.GetComponent<PhotonView>().RPC("RPCA_Teleport", RpcTarget.All, new object[] { newPos });
+
+                    }
+                }
 
                 this.ResetTimer();
                 this.GetNewDuration();
@@ -85,5 +113,12 @@ namespace PCE.MonoBehaviours
         {
             this.period = period;
         }
+
+        [PunRPC]
+        public void RPCA_Teleport(Vector3 pos)
+        {
+            this.player.transform.position = pos;
+        }
+
     }
 }

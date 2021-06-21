@@ -36,8 +36,8 @@ namespace PCE.MonoBehaviours
         internal float xshakemag = 0.04f;
         internal float yshakemag = 0.02f;
 
-        private List<Func<Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, MonoBehaviour>> effectFuncs = new List<Func<Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, MonoBehaviour>>();
-        private MonoBehaviour currentEffect;
+        private List<Func<Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, List<MonoBehaviour>>> effectFuncs = new List<Func<Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, List<MonoBehaviour>>>();
+        private List<MonoBehaviour> currentEffects;
         private int effectID;
         private float effectDuration = 0f;
         private float timeOfLastEffect;
@@ -56,13 +56,17 @@ namespace PCE.MonoBehaviours
             this.gunAmmo = this.gun.GetComponentInChildren<GunAmmo>();
             this.statModifiers = this.player.GetComponent<CharacterStatModifiers>();
 
-
+            /*
             this.effectFuncs.Add(this.Effect_NullEffect);
             this.effectFuncs.Add(this.Effect_NoGravityEffect);
             this.effectFuncs.Add(this.Effect_InvisibleEffect);
             this.effectFuncs.Add(this.Effect_ShakeEffect);
             this.effectFuncs.Add(this.Effect_PopEffect);
-            this.effectFuncs.Add(this.Effect_NukeEffect);
+            this.effectFuncs.Add(this.Effect_NukeEffect);*/
+            this.effectFuncs.Add(this.Effect_BulletSpeedEffect);
+            this.effectFuncs.Add(this.Effect_BulletDamageEffect);
+            this.effectFuncs.Add(this.Effect_BulletBounceEffect);
+            this.effectFuncs.Add(this.Effect_MovementSpeed);
 
         }
 
@@ -71,9 +75,6 @@ namespace PCE.MonoBehaviours
             this.ready = false;
             this.timeOfLastEffect = -1f;
             this.effectDuration = -1f;
-            //this.GetNewEffect();
-            //this.GetNewDuration();
-            //this.ApplyCurrentEffect();
         }
 
         void Update()
@@ -133,7 +134,7 @@ namespace PCE.MonoBehaviours
         }
         public void ApplyCurrentEffect()
         {
-            this.currentEffect = this.effectFuncs[this.effectID](this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.statModifiers);
+            this.currentEffects = this.effectFuncs[this.effectID](this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.statModifiers);
             ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
             thisColorFlash.SetNumberOfFlashes(3);
             thisColorFlash.SetDuration(0.25f);
@@ -150,11 +151,17 @@ namespace PCE.MonoBehaviours
         }
         public void ClearEffects()
         {
-            if (this.currentEffect != null)
+            if (this.currentEffects != null)
             {
-                Destroy(this.currentEffect);
+                foreach (MonoBehaviour currentEffect in this.currentEffects)
+                {
+                    if (currentEffect != null)
+                    {
+                        Destroy(currentEffect);
+                    }
+                }
             }
-
+            this.currentEffects = new List<MonoBehaviour>();
             if (!this.ready && this.framesWaited < this.framesToWait)
             {
                 this.framesWaited++;
@@ -166,39 +173,39 @@ namespace PCE.MonoBehaviours
             }
 
         }
-        public MonoBehaviour Effect_NoGravityEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        public List<MonoBehaviour> Effect_NoGravityEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             GravityEffect effect = player.gameObject.GetOrAddComponent<GravityEffect>();
             effect.SetGravityForceMultiplier(0f);
             effect.SetDuration(this.effectDuration);
-            return effect;
+            return new List<MonoBehaviour> { effect };
         }
-        public MonoBehaviour Effect_InvisibleEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        public List<MonoBehaviour> Effect_InvisibleEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             ColorEffect effect = player.gameObject.GetOrAddComponent<ColorEffect>();
             effect.SetColorMax(Color.clear);
             effect.SetColorMin(Color.clear);
-            return effect;
+            return new List<MonoBehaviour> { effect };
         }
-        public MonoBehaviour Effect_ShakeEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        public List<MonoBehaviour> Effect_ShakeEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             DemonicPossessionShakeEffect effect = player.gameObject.GetOrAddComponent<DemonicPossessionShakeEffect>();
             effect.SetXMagMult(10f);
             effect.SetYMagMult(10f);
-            return effect;
+            return new List<MonoBehaviour> { effect };
         }
-        public MonoBehaviour Effect_NullEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        public List<MonoBehaviour> Effect_NullEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            return null;
+            return new List<MonoBehaviour>();
         }
-        public MonoBehaviour Effect_PopEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        public List<MonoBehaviour> Effect_PopEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             PopEffect effect = player.gameObject.GetOrAddComponent<PopEffect>();
             effect.SetPeriod(3f);
             effect.SetSpacing(5f);
-            return effect;
+            return new List<MonoBehaviour> { effect };
         }
-        public MonoBehaviour Effect_NukeEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        public List<MonoBehaviour> Effect_NukeEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Gun newGun = this.gameObject.AddComponent<Gun>();
 
@@ -211,7 +218,6 @@ namespace PCE.MonoBehaviours
 
             newGun.damage = 1000f;
             newGun.reloadTime = float.MaxValue;
-            newGun.ammoReg = 1;
             newGun.ammo = 1;
             newGun.projectileSpeed = 2f;
             newGun.projectielSimulatonSpeed = 2f;
@@ -229,7 +235,90 @@ namespace PCE.MonoBehaviours
             thisColorFlash.SetColorMax(Color.red);
             thisColorFlash.SetColorMin(Color.red);
 
-            return effect;
+            return new List<MonoBehaviour> { effect };
+        }
+        public List<MonoBehaviour> Effect_BulletSpeedEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Gun newGun = this.gameObject.AddComponent<Gun>();
+            GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
+            GunEffect.CopyGunStats(gun, newGun);
+            //GunAmmo newGunAmmo = this.gameObject.AddComponent<GunAmmo>();
+            //GunEffect.CopyGunAmmoStats(gunAmmo, newGunAmmo);
+            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
+
+            newGun.projectileSpeed *= 2f;
+            newGun.projectielSimulatonSpeed *= 2f;
+
+            newGun.projectileColor = Color.cyan;
+
+            //effect.SetGun(newGun);
+            //effect.SetGunAmmo(newGunAmmo);
+            effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
+
+            return new List<MonoBehaviour> { effect };
+        }
+        public List<MonoBehaviour> Effect_BulletDamageEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Gun newGun = this.gameObject.AddComponent<Gun>();
+            GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
+            GunEffect.CopyGunStats(gun, newGun);
+            //GunAmmo newGunAmmo = this.gameObject.AddComponent<GunAmmo>();
+            //GunEffect.CopyGunAmmoStats(gunAmmo, newGunAmmo);
+            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
+
+            newGun.damage *= 2f;
+            newGun.projectileSize *= 2f;
+
+            newGun.projectileColor = Color.red;
+
+            //effect.SetGun(newGun);
+            //effect.SetGunAmmo(newGunAmmo);
+            effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
+
+            return new List<MonoBehaviour> { effect };
+        }
+        public List<MonoBehaviour> Effect_BulletBounceEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Gun newGun = this.gameObject.AddComponent<Gun>();
+            GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
+            GunEffect.CopyGunStats(gun, newGun);
+            //GunAmmo newGunAmmo = this.gameObject.AddComponent<GunAmmo>();
+            //GunEffect.CopyGunAmmoStats(gunAmmo, newGunAmmo);
+            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
+
+            newGun.reflects = 100;
+            newGun.speedMOnBounce = 1.05f;
+            newGun.dmgMOnBounce *= 0.95f;
+
+            newGun.projectileColor = Color.yellow;
+            //ScreenEdgeBounce screenBounceEffect = newGun.gameObject.AddComponent<ScreenEdgeBounce>();
+            //ScreenEdgeBounceEffect screenEdgeBounceEffect = gun.gameObject.GetOrAddComponent<ScreenEdgeBounceEffect>();
+            ObjectsToSpawn screenbounce = new ObjectsToSpawn();
+            screenbounce.direction = ObjectsToSpawn.Direction.forward;
+            screenbounce.spawnOn = ObjectsToSpawn.SpawnOn.all;
+            GameObject A_ScreenEdge = GameObject.Find("A_ScreenEdge");
+            A_ScreenEdge.gameObject.GetOrAddComponent<ScreenEdgeBounce>();
+            screenbounce.AddToProjectile = A_ScreenEdge;
+
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { screenbounce };
+
+            //effect.SetGun(newGun);
+            //effect.SetGunAmmo(newGunAmmo);
+            effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
+
+            return new List<MonoBehaviour> { effect };
+        }
+        public List<MonoBehaviour> Effect_MovementSpeed(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            CharacterStatModifiers newStats = player.gameObject.AddComponent<CharacterStatModifiers>();
+            CharacterStatModifiersEffect effect = player.gameObject.GetOrAddComponent<CharacterStatModifiersEffect>();
+            CharacterStatModifiersEffect.CopyStats(characterStats, newStats);
+
+            newStats.movementSpeed *= 5f;
+
+            effect.SetStats(newStats);
+
+            return new List<MonoBehaviour> { effect };
         }
 
         [PunRPC]
