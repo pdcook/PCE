@@ -16,8 +16,6 @@ namespace PCE.Cards
         /*
         *  Blocking temporarily inverts nearby players' controls
         */
-
-
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
         }
@@ -27,7 +25,12 @@ namespace PCE.Cards
             block.GetAdditionalData().discombobulateRange += 5f;
             block.GetAdditionalData().discombobulateDuration += 1f;
 
-            block.BlockAction = delegate (BlockTrigger.BlockTriggerType trigger)
+            block.BlockAction = (Action<BlockTrigger.BlockTriggerType>)Delegate.Combine(block.BlockAction, new Action<BlockTrigger.BlockTriggerType>(this.GetDoBlockAction(player, block)));
+            
+        }
+        public Action<BlockTrigger.BlockTriggerType> GetDoBlockAction(Player player, Block block)
+        {
+            return delegate (BlockTrigger.BlockTriggerType trigger)
             {
                 if (trigger != BlockTrigger.BlockTriggerType.None)
                 {
@@ -50,6 +53,30 @@ namespace PCE.Cards
                 }
             };
         }
+        /*
+        public void DoBlock(BlockTrigger.BlockTriggerType trigger)
+        {
+            Block block = this.GetComponentInParent<Block>();
+            Player player = this.GetComponent<Player>();
+
+            if (trigger != BlockTrigger.BlockTriggerType.None)
+            {
+                Vector2 pos = block.transform.position;
+                Player[] players = PlayerManager.instance.players.ToArray();
+
+                for (int i = 0; i < players.Length; i++)
+                {
+                    // don't apply the effect to the player who activated it...
+                    if (players[i].playerID == player.playerID) { continue; }
+
+                    // apply to players within range
+                    if (Vector2.Distance(pos, players[i].transform.position) < block.GetAdditionalData().discombobulateRange)
+                    {
+                        NetworkingManager.RPC(typeof(DiscombobulateCard), "OnDiscombobulateActivate", new object[] { players[i].playerID, block.GetAdditionalData().discombobulateDuration });
+                    }
+                }
+            }
+        }*/
         public override void OnRemoveCard()
         {
         }

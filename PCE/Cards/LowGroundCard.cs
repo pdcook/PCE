@@ -68,7 +68,6 @@ namespace PCE.Cards
             List<MonoBehaviour> effects = new List<MonoBehaviour>();
 
             Gun newGun = player.gameObject.AddComponent<Gun>();
-            //GunAmmo newGunAmmo = player.gameObject.AddComponent<GunAmmo>();
             GunEffect gunEffect = player.gameObject.GetOrAddComponent<GunEffect>();
             GunEffect.CopyGunStats(gun, newGun);
             GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
@@ -81,9 +80,6 @@ namespace PCE.Cards
 
             newGunAmmoStats.maxAmmo += 3;
             newGunAmmoStats.reloadTime *= 0.75f;
-
-            //gunEffect.SetGun(newGun);
-            //gunEffect.SetGunAmmo(newGunAmmo);
 
             gunEffect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
 

@@ -30,12 +30,7 @@ namespace PCE.MonoBehaviours
 
         void Start()
         {
-			if (this.directionToShoot != Vector3.zero)
-            {
-				Traverse.Create(this.gunToShootFrom).Field("forceShootDir").SetValue(this.directionToShoot);
-			}
 			Shoot();
-
 		}
 
         void Update()
@@ -62,8 +57,16 @@ namespace PCE.MonoBehaviours
 			{
 				for (int j = 0; j < currentNumberOfProjectiles; j++)
 				{
-					GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, this.positionToShootFrom, (Quaternion)typeof(Gun).InvokeMember("getShootRotation", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, this.gunToShootFrom, new object[] { j, currentNumberOfProjectiles, 0f }), 0, null);
-					
+					Vector3 directionToShootThisBullet = this.directionToShoot;
+					if (this.gunToShootFrom.spread != 0f)
+					{
+						// randomly spread shots
+						float d = this.gunToShootFrom.multiplySpread;
+						float num = UnityEngine.Random.Range(-this.gunToShootFrom.spread, this.gunToShootFrom.spread);
+						num /= (1f + this.gunToShootFrom.projectileSpeed * 0.5f) * 0.5f;
+						directionToShootThisBullet += Vector3.Cross(directionToShootThisBullet, Vector3.forward) * num * d;
+					}
+					GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, this.positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
 
 					if (PhotonNetwork.OfflineMode)
 					{
@@ -112,58 +115,89 @@ namespace PCE.MonoBehaviours
         }
 		public static void CopyGunStats(Gun copyFromGun, Gun copyToGun)
 		{
-			copyToGun.unblockable = copyFromGun.unblockable;
-			copyToGun.ignoreWalls = copyFromGun.ignoreWalls;
-			copyToGun.damage = copyFromGun.damage;
-			copyToGun.size += copyFromGun.size;
-			copyToGun.chargeDamageMultiplier = copyFromGun.chargeDamageMultiplier;
-			copyToGun.knockback = copyFromGun.knockback;
-			copyToGun.projectileSpeed = copyFromGun.projectileSpeed;
-			copyToGun.projectielSimulatonSpeed = copyFromGun.projectielSimulatonSpeed;
-			copyToGun.gravity = copyFromGun.gravity;
-			copyToGun.multiplySpread = copyFromGun.multiplySpread;
+			copyToGun.ammo = copyFromGun.ammo;
+			copyToGun.ammoReg = copyFromGun.ammoReg;
+			copyToGun.attackID = copyFromGun.attackID;
 			copyToGun.attackSpeed = copyFromGun.attackSpeed;
-			copyToGun.bodyRecoil = copyFromGun.recoilMuiltiplier;
-			copyToGun.speedMOnBounce = copyFromGun.speedMOnBounce;
-			copyToGun.dmgMOnBounce = copyFromGun.dmgMOnBounce;
+			copyToGun.attackSpeedMultiplier = copyFromGun.attackSpeedMultiplier;
+			copyToGun.bodyRecoil = copyFromGun.bodyRecoil;
 			copyToGun.bulletDamageMultiplier = copyFromGun.bulletDamageMultiplier;
-			copyToGun.spread = copyFromGun.spread;
-			copyToGun.drag = copyFromGun.drag;
-			copyToGun.timeBetweenBullets = copyFromGun.timeBetweenBullets;
-			copyToGun.dragMinSpeed = copyFromGun.dragMinSpeed;
-			copyToGun.evenSpread = copyFromGun.evenSpread;
-			copyToGun.numberOfProjectiles = copyFromGun.numberOfProjectiles;
-			copyToGun.reflects = copyFromGun.reflects;
-			copyToGun.smartBounce = copyFromGun.smartBounce;
 			copyToGun.bulletPortal = copyFromGun.bulletPortal;
-			copyToGun.randomBounces = copyFromGun.randomBounces;
 			copyToGun.bursts = copyFromGun.bursts;
-			copyToGun.slow = copyFromGun.slow;
-			copyToGun.overheatMultiplier = copyFromGun.overheatMultiplier;
-			copyToGun.projectileSize = copyFromGun.projectileSize;
-			copyToGun.percentageDamage = copyFromGun.percentageDamage;
-			copyToGun.damageAfterDistanceMultiplier = copyFromGun.damageAfterDistanceMultiplier;
-			copyToGun.timeToReachFullMovementMultiplier = copyFromGun.timeToReachFullMovementMultiplier;
-			copyToGun.cos = copyFromGun.cos;
-			copyToGun.dontAllowAutoFire = copyFromGun.dontAllowAutoFire;
-			copyToGun.destroyBulletAfter = copyFromGun.destroyBulletAfter;
-			copyToGun.chargeSpreadTo = copyFromGun.chargeSpreadTo;
-			copyToGun.chargeSpeedTo = copyFromGun.chargeSpeedTo;
+			copyToGun.chargeDamageMultiplier = copyFromGun.chargeDamageMultiplier;
 			copyToGun.chargeEvenSpreadTo = copyFromGun.chargeEvenSpreadTo;
 			copyToGun.chargeNumberOfProjectilesTo = copyFromGun.chargeNumberOfProjectilesTo;
 			copyToGun.chargeRecoilTo = copyFromGun.chargeRecoilTo;
+			copyToGun.chargeSpeedTo = copyFromGun.chargeSpeedTo;
+			copyToGun.chargeSpreadTo = copyFromGun.chargeSpreadTo;
+			copyToGun.cos = copyFromGun.cos;
+			copyToGun.currentCharge = copyFromGun.currentCharge;
+			copyToGun.damage = copyFromGun.damage;
+			copyToGun.damageAfterDistanceMultiplier = copyFromGun.damageAfterDistanceMultiplier;
+			copyToGun.defaultCooldown = copyFromGun.defaultCooldown;
+			copyToGun.dmgMOnBounce = copyFromGun.dmgMOnBounce;
+			copyToGun.dontAllowAutoFire = copyFromGun.dontAllowAutoFire;
+			copyToGun.drag = copyFromGun.drag;
+			copyToGun.dragMinSpeed = copyFromGun.dragMinSpeed;
+			copyToGun.evenSpread = copyFromGun.evenSpread;
+			copyToGun.explodeNearEnemyDamage = copyFromGun.explodeNearEnemyDamage;
+			copyToGun.explodeNearEnemyRange = copyFromGun.explodeNearEnemyRange;
+			copyToGun.forceSpecificAttackSpeed = copyFromGun.forceSpecificAttackSpeed;
+			copyToGun.forceSpecificShake = copyFromGun.forceSpecificShake;
+			copyToGun.gravity = copyFromGun.gravity;
+			copyToGun.hitMovementMultiplier = copyFromGun.hitMovementMultiplier;
+			//copyToGun.holdable = copyFromGun.holdable;
+			copyToGun.ignoreWalls = copyFromGun.ignoreWalls;
+			copyToGun.isProjectileGun = copyFromGun.isProjectileGun;
+			copyToGun.isReloading = copyFromGun.isReloading;
+			copyToGun.knockback = copyFromGun.knockback;
+			copyToGun.lockGunToDefault = copyFromGun.lockGunToDefault;
+			copyToGun.multiplySpread = copyFromGun.multiplySpread;
+			copyToGun.numberOfProjectiles = copyFromGun.numberOfProjectiles;
+			copyToGun.objectsToSpawn = copyFromGun.objectsToSpawn;
+			copyToGun.overheatMultiplier = copyFromGun.overheatMultiplier;
+			copyToGun.percentageDamage = copyFromGun.percentageDamage;
+			copyToGun.player = copyFromGun.player;
+			copyToGun.projectielSimulatonSpeed = copyFromGun.projectielSimulatonSpeed;
 			copyToGun.projectileColor = copyFromGun.projectileColor;
+			copyToGun.projectiles = copyFromGun.projectiles;
+			copyToGun.projectileSize = copyFromGun.projectileSize;
+			copyToGun.projectileSpeed = copyFromGun.projectileSpeed;
+			copyToGun.randomBounces = copyFromGun.randomBounces;
+			copyToGun.recoil = copyFromGun.recoil;
+			copyToGun.recoilMuiltiplier = copyFromGun.recoilMuiltiplier;
+			copyToGun.reflects = copyFromGun.reflects;
+			copyToGun.reloadTime = copyFromGun.reloadTime;
+			copyToGun.reloadTimeAdd = copyFromGun.reloadTimeAdd;
+			copyToGun.shake = copyFromGun.shake;
+			copyToGun.shakeM = copyFromGun.shakeM;
+			copyToGun.ShootPojectileAction = copyFromGun.ShootPojectileAction;
+			//copyToGun.shootPosition = copyFromGun.shootPosition;
+			copyToGun.sinceAttack = copyFromGun.sinceAttack;
+			copyToGun.size = copyFromGun.size;
+			copyToGun.slow = copyFromGun.slow;
+			copyToGun.smartBounce = copyFromGun.smartBounce;
+			copyToGun.soundDisableRayHitBulletSound = copyFromGun.soundDisableRayHitBulletSound;
+			copyToGun.soundGun = copyFromGun.soundGun;
+			copyToGun.soundImpactModifier = copyFromGun.soundImpactModifier;
+			copyToGun.soundShotModifier = copyFromGun.soundShotModifier;
+			copyToGun.spawnSkelletonSquare = copyFromGun.spawnSkelletonSquare;
+			copyToGun.speedMOnBounce = copyFromGun.speedMOnBounce;
+			copyToGun.spread = copyFromGun.spread;
+			copyToGun.teleport = copyFromGun.teleport;
+			copyToGun.timeBetweenBullets = copyFromGun.timeBetweenBullets;
+			copyToGun.timeToReachFullMovementMultiplier = copyFromGun.timeToReachFullMovementMultiplier;
+			copyToGun.unblockable = copyFromGun.unblockable;
+			copyToGun.useCharge = copyFromGun.useCharge;
+			copyToGun.waveMovement = copyFromGun.waveMovement;
+
+			Traverse.Create(copyToGun).Field("attackAction").SetValue((Action)Traverse.Create(copyFromGun).Field("attackAction").GetValue());
+			//Traverse.Create(copyToGun).Field("gunAmmo").SetValue((GunAmmo)Traverse.Create(copyFromGun).Field("gunAmmo").GetValue());
+			Traverse.Create(copyToGun).Field("gunID").SetValue((int)Traverse.Create(copyFromGun).Field("gunID").GetValue());
+			Traverse.Create(copyToGun).Field("spreadOfLastBullet").SetValue((float)Traverse.Create(copyFromGun).Field("spreadOfLastBullet").GetValue());
 
 			Traverse.Create(copyToGun).Field("forceShootDir").SetValue((Vector3)Traverse.Create(copyFromGun).Field("forceShootDir").GetValue());
-			Traverse.Create(copyToGun).Field("gunID").SetValue((int)Traverse.Create(copyFromGun).Field("gunID").GetValue());
 
-			copyToGun.soundGun = copyFromGun.soundGun;
-
-			copyToGun.objectsToSpawn = copyFromGun.objectsToSpawn;
-			copyToGun.projectiles = copyFromGun.projectiles;
-			copyToGun.shootPosition = copyFromGun.shootPosition;
-			copyToGun.useCharge = copyFromGun.useCharge;
-			copyToGun.lockGunToDefault = copyFromGun.lockGunToDefault;
 		}
 
 	}

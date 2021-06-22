@@ -7,6 +7,8 @@ using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
 using Photon.Pun;
+using System.Linq;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -42,7 +44,7 @@ namespace PCE.MonoBehaviours
         private float effectDuration = 0f;
         private float timeOfLastEffect;
         private bool ready = false;
-        private readonly int framesToWait = 1;
+        private readonly int framesToWait = 5;
         private int framesWaited = 0;
 
         void Awake()
@@ -56,17 +58,21 @@ namespace PCE.MonoBehaviours
             this.gunAmmo = this.gun.GetComponentInChildren<GunAmmo>();
             this.statModifiers = this.player.GetComponent<CharacterStatModifiers>();
 
-            /*
+            
             this.effectFuncs.Add(this.Effect_NullEffect);
             this.effectFuncs.Add(this.Effect_NoGravityEffect);
             this.effectFuncs.Add(this.Effect_InvisibleEffect);
             this.effectFuncs.Add(this.Effect_ShakeEffect);
             this.effectFuncs.Add(this.Effect_PopEffect);
-            this.effectFuncs.Add(this.Effect_NukeEffect);*/
+            this.effectFuncs.Add(this.Effect_NukeEffect);
+            
             this.effectFuncs.Add(this.Effect_BulletSpeedEffect);
             this.effectFuncs.Add(this.Effect_BulletDamageEffect);
             this.effectFuncs.Add(this.Effect_BulletBounceEffect);
             this.effectFuncs.Add(this.Effect_MovementSpeed);
+            this.effectFuncs.Add(this.Effect_RainEffect);
+            this.effectFuncs.Add(this.Effect_WallEffect);
+
 
         }
 
@@ -79,13 +85,21 @@ namespace PCE.MonoBehaviours
 
         void Update()
         {
-            if (this.ready)
+            // if the player is not active (i.e. simulated) then clear all effects
+            if (!(bool)Traverse.Create(this.player.data.playerVel).Field("simulated").GetValue())
+            {
+                this.ClearEffects();
+                return;
+            }
+            // get and apply a new effect if things are ready
+            else if (this.ready)
             {
                 this.ready = false;
                 this.GetNewEffect();
                 this.GetNewDuration();
                 this.ApplyCurrentEffect();
             }
+            // if the duration of the effect has passed, clear all effects
             else if (Time.time >= this.timeOfLastEffect + this.effectDuration)
             {
                 this.ClearEffects();
@@ -93,7 +107,6 @@ namespace PCE.MonoBehaviours
 
             float rx = (float)this.rng.NextGaussianDouble();
             float ry = (float)this.rng.NextGaussianDouble();
-
 
             Vector3 position = new Vector3(xshakemag*rx, yshakemag*ry, 0.0f);
 
@@ -224,7 +237,9 @@ namespace PCE.MonoBehaviours
             newGun.explodeNearEnemyRange = 5f;
             newGun.explodeNearEnemyDamage = 1000f;
             newGun.projectileSize = 100f;
-            newGun.projectileColor = Color.white;
+            newGun.projectileColor = Color.red;
+            newGun.spread = 0f;
+            newGun.multiplySpread = 0f;
 
             effect.SetGun(newGun);
 
@@ -242,8 +257,6 @@ namespace PCE.MonoBehaviours
             Gun newGun = this.gameObject.AddComponent<Gun>();
             GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
             GunEffect.CopyGunStats(gun, newGun);
-            //GunAmmo newGunAmmo = this.gameObject.AddComponent<GunAmmo>();
-            //GunEffect.CopyGunAmmoStats(gunAmmo, newGunAmmo);
             GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
 
             newGun.projectileSpeed *= 2f;
@@ -251,8 +264,6 @@ namespace PCE.MonoBehaviours
 
             newGun.projectileColor = Color.cyan;
 
-            //effect.SetGun(newGun);
-            //effect.SetGunAmmo(newGunAmmo);
             effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
 
             return new List<MonoBehaviour> { effect };
@@ -262,8 +273,6 @@ namespace PCE.MonoBehaviours
             Gun newGun = this.gameObject.AddComponent<Gun>();
             GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
             GunEffect.CopyGunStats(gun, newGun);
-            //GunAmmo newGunAmmo = this.gameObject.AddComponent<GunAmmo>();
-            //GunEffect.CopyGunAmmoStats(gunAmmo, newGunAmmo);
             GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
 
             newGun.damage *= 2f;
@@ -271,8 +280,7 @@ namespace PCE.MonoBehaviours
 
             newGun.projectileColor = Color.red;
 
-            //effect.SetGun(newGun);
-            //effect.SetGunAmmo(newGunAmmo);
+
             effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
 
             return new List<MonoBehaviour> { effect };
@@ -282,28 +290,26 @@ namespace PCE.MonoBehaviours
             Gun newGun = this.gameObject.AddComponent<Gun>();
             GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
             GunEffect.CopyGunStats(gun, newGun);
-            //GunAmmo newGunAmmo = this.gameObject.AddComponent<GunAmmo>();
-            //GunEffect.CopyGunAmmoStats(gunAmmo, newGunAmmo);
             GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
 
-            newGun.reflects = 100;
-            newGun.speedMOnBounce = 1.05f;
+            newGun.reflects = 1000;
+            newGun.speedMOnBounce = 1.02f;
             newGun.dmgMOnBounce *= 0.95f;
+            newGun.destroyBulletAfter = 1000000f;
+            newGun.ignoreWalls = false;
 
             newGun.projectileColor = Color.yellow;
-            //ScreenEdgeBounce screenBounceEffect = newGun.gameObject.AddComponent<ScreenEdgeBounce>();
-            //ScreenEdgeBounceEffect screenEdgeBounceEffect = gun.gameObject.GetOrAddComponent<ScreenEdgeBounceEffect>();
-            ObjectsToSpawn screenbounce = new ObjectsToSpawn();
-            screenbounce.direction = ObjectsToSpawn.Direction.forward;
-            screenbounce.spawnOn = ObjectsToSpawn.SpawnOn.all;
-            GameObject A_ScreenEdge = GameObject.Find("A_ScreenEdge");
-            A_ScreenEdge.gameObject.GetOrAddComponent<ScreenEdgeBounce>();
-            screenbounce.AddToProjectile = A_ScreenEdge;
 
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { screenbounce };
+            // get the screenEdge (with screenEdgeBounce component) from the TargetBounce card
+            CardInfo[] cards = global::CardChoice.instance.cards;
+            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+            Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
+            ObjectsToSpawn screenEdgeToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<ScreenEdgeBounce>() != null).ToList()[0];
 
-            //effect.SetGun(newGun);
-            //effect.SetGunAmmo(newGunAmmo);
+            List<ObjectsToSpawn> newGunObjects = new List<ObjectsToSpawn>(newGun.objectsToSpawn);
+            newGunObjects.Add(screenEdgeToSpawn);
+            newGun.objectsToSpawn = newGunObjects.ToArray();
+
             effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
 
             return new List<MonoBehaviour> { effect };
@@ -317,6 +323,78 @@ namespace PCE.MonoBehaviours
             newStats.movementSpeed *= 5f;
 
             effect.SetStats(newStats);
+
+            return new List<MonoBehaviour> { effect };
+        }
+        public List<MonoBehaviour> Effect_RainEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Gun newGun = this.gameObject.AddComponent<Gun>();
+
+            SpawnBulletsEffect effect = player.gameObject.GetOrAddComponent<SpawnBulletsEffect>();
+            effect.SetDirection(new Vector3(0f, -1f, 0f));
+            effect.SetPosition(new Vector3(0f, 100f, 0f));
+            effect.SetNumBullets(400);
+
+            SpawnBulletsEffect.CopyGunStats(gun, newGun);
+
+            newGun.damage = 0.15f;
+            newGun.damageAfterDistanceMultiplier = 1f;
+            newGun.reflects = 0;
+            newGun.bulletDamageMultiplier = 1f;
+            newGun.projectileSpeed = 1f;
+            newGun.projectielSimulatonSpeed = 1f;
+            newGun.projectileSize = 1f;
+            newGun.projectileColor = Color.blue;
+            newGun.spread = 0.75f;
+            newGun.destroyBulletAfter = 100f;
+            newGun.numberOfProjectiles = 1;
+            newGun.ignoreWalls = false;
+
+            effect.SetGun(newGun);
+
+            ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
+            thisColorFlash.SetNumberOfFlashes(10);
+            thisColorFlash.SetDuration(0.15f);
+            thisColorFlash.SetDelayBetweenFlashes(0.15f);
+            thisColorFlash.SetColorMax(Color.blue);
+            thisColorFlash.SetColorMin(Color.blue);
+
+            return new List<MonoBehaviour> { effect };
+        }
+        public List<MonoBehaviour> Effect_WallEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Gun newGun = this.gameObject.AddComponent<Gun>();
+
+            SpawnBulletsEffect effect = player.gameObject.GetOrAddComponent<SpawnBulletsEffect>();
+            effect.SetDirection(new Vector3(0f, -1f, 0f));
+            effect.SetPosition(new Vector3(0f, 100f, 0f));
+            effect.SetNumBullets(100);
+            effect.SetTimeBetweenShots(0.05f);
+
+            SpawnBulletsEffect.CopyGunStats(gun, newGun);
+
+            newGun.damage = 10f;
+            newGun.damageAfterDistanceMultiplier = 1f;
+            newGun.reflects = 0;
+            newGun.bulletDamageMultiplier = 1f;
+            newGun.projectileSpeed = 1f;
+            newGun.projectielSimulatonSpeed = 1f;
+            newGun.projectileSize = 1f;
+            newGun.projectileColor = Color.white;
+            newGun.spread = 0f;
+            newGun.destroyBulletAfter = 20f;
+            newGun.numberOfProjectiles = 1;
+            newGun.ignoreWalls = true;
+            Traverse.Create(newGun).Field("spreadOfLastBullet").SetValue(0f);
+
+            effect.SetGun(newGun);
+
+            ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
+            thisColorFlash.SetNumberOfFlashes(10);
+            thisColorFlash.SetDuration(0.15f);
+            thisColorFlash.SetDelayBetweenFlashes(0.15f);
+            thisColorFlash.SetColorMax(Color.white);
+            thisColorFlash.SetColorMin(Color.white);
 
             return new List<MonoBehaviour> { effect };
         }

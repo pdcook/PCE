@@ -8,6 +8,7 @@ using System.Reflection;
 using PCE.MonoBehaviours;
 using UnityEngine.UI;
 using Sonigon;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -16,20 +17,17 @@ namespace PCE.MonoBehaviours
     {
 
 		private Gun originalGun = null;
-		//private GunAmmo originalGunAmmo = null;
 		private GunAmmoStats originalGunAmmoStats;
 		
 		private Player player;
 		private GunAmmo playersGunAmmo; 
 		private Gun gunToSet = null;
-		//private GunAmmo gunAmmoToSet = null;
 		private GunAmmoStats gunAmmoStatsToSet;
 
 		void Awake()
 		{
 
 			this.originalGun = this.gameObject.AddComponent<Gun>();
-			//this.originalGunAmmo = this.gameObject.AddComponent<GunAmmo>();
 
             this.player = this.gameObject.GetComponent<Player>();
 			this.playersGunAmmo = this.player.data.weaponHandler.gun.GetComponentInChildren<GunAmmo>();
@@ -37,7 +35,6 @@ namespace PCE.MonoBehaviours
 
 			GunEffect.CopyGunStats(this.player.data.weaponHandler.gun, this.originalGun);
 			this.originalGunAmmoStats = GunEffect.GetGunAmmoStats(this.playersGunAmmo);
-			//GunEffect.CopyGunAmmoStats(this.playersGunAmmo, this.originalGunAmmo);		
 		}
 
 		void Start()
@@ -68,15 +65,10 @@ namespace PCE.MonoBehaviours
 				GunEffect.ApplyGunAmmoStats(this.originalGunAmmoStats, this.playersGunAmmo);
 
 			}
-			//if (this.originalGunAmmo != null)
-			//{
-			//	GunEffect.CopyGunAmmoStats(this.originalGunAmmo, this.playersGunAmmo);
-			//}
-			// destroy the new gun, gunAmmo, and the copies of the originals
+
+			// destroy the new gun and the copy of the original
 			if (this.gunToSet != null) { Destroy(this.gunToSet); }
-			//if (this.gunAmmoToSet != null) { Destroy(this.gunAmmoToSet); }
 			if (this.originalGun != null) { Destroy(this.originalGun); }
-			//if (this.originalGunAmmo != null) { Destroy(this.originalGunAmmo); }
 
 		}
 		public void Destroy()
@@ -87,10 +79,6 @@ namespace PCE.MonoBehaviours
 		{
 			this.gunToSet = gun;
 		}
-		//public void SetGunAmmo(GunAmmo gunAmmo)
-        //{
-		//	this.gunAmmoToSet = gunAmmo;
-        //}
 		private void SetGunAmmoStats(GunAmmoStats gunAmmoStats)
         {
 			this.gunAmmoStatsToSet = gunAmmoStats;
@@ -184,36 +172,7 @@ namespace PCE.MonoBehaviours
 			Traverse.Create(copyToGun).Field("gunID").SetValue((int)Traverse.Create(copyFromGun).Field("gunID").GetValue());
 			Traverse.Create(copyToGun).Field("spreadOfLastBullet").SetValue((float)Traverse.Create(copyFromGun).Field("spreadOfLastBullet").GetValue());
 			
-
-
-
-
 		}
-		/*
-		public static void CopyGunAmmoStats(GunAmmo copyFromGunAmmo, GunAmmo copyToGunAmmo)
-        {
-			copyToGunAmmo.maxAmmo = copyFromGunAmmo.maxAmmo;
-			copyToGunAmmo.reloadTime = copyFromGunAmmo.reloadTime;
-			copyToGunAmmo.reloadTimeMultiplier = copyFromGunAmmo.reloadTimeMultiplier;
-			copyToGunAmmo.reloadTimeAdd = copyFromGunAmmo.reloadTimeAdd;
-			copyToGunAmmo.ammoReg = copyFromGunAmmo.ammoReg;
-			//copyToGunAmmo.populate = copyFromGunAmmo.populate;
-			//copyToGunAmmo.reloadAnim = copyFromGunAmmo.reloadAnim;
-			//Traverse.Create(copyToGunAmmo).Field("gun").SetValue((Gun)Traverse.Create(copyFromGunAmmo).Field("gun").GetValue());
-			//Traverse.Create(copyToGunAmmo).Field("reloadRing").SetValue((Image)Traverse.Create(copyFromGunAmmo).Field("reloadRing").GetValue());
-			copyToGunAmmo.soundReloadComplete = copyFromGunAmmo.soundReloadComplete;
-			Traverse.Create(copyToGunAmmo).Field("soundReloadInProgressIntensity").SetValue((SoundParameterIntensity)Traverse.Create(copyFromGunAmmo).Field("soundReloadInProgressIntensity").GetValue());
-			copyToGunAmmo.soundReloadInProgressLoop = copyFromGunAmmo.soundReloadInProgressLoop;
-			Traverse.Create(copyToGunAmmo).Field("soundReloadInProgressPlaying").SetValue((bool)Traverse.Create(copyFromGunAmmo).Field("soundReloadInProgressPlaying").GetValue());
-			Traverse.Create(copyToGunAmmo).Field("soundReloadTime").SetValue((float)Traverse.Create(copyFromGunAmmo).Field("soundReloadTime").GetValue());
-			
-			copyToGunAmmo.cooldownRing = copyFromGunAmmo.cooldownRing;
-			Traverse.Create(copyToGunAmmo).Field("currentAmmo").SetValue((int)Traverse.Create(copyFromGunAmmo).Field("currentAmmo").GetValue());
-			Traverse.Create(copyToGunAmmo).Field("currentRegCounter").SetValue((float)Traverse.Create(copyFromGunAmmo).Field("currentRegCounter").GetValue());
-			Traverse.Create(copyToGunAmmo).Field("freeReloadCounter").SetValue((float)Traverse.Create(copyFromGunAmmo).Field("freeReloadCounter").GetValue());
-			Traverse.Create(copyToGunAmmo).Field("lastMaxAmmo").SetValue((int)Traverse.Create(copyFromGunAmmo).Field("lastMaxAmmo").GetValue());
-			Traverse.Create(copyToGunAmmo).Field("reloadCounter").SetValue((float)Traverse.Create(copyFromGunAmmo).Field("reloadCounter").GetValue());
-		}*/
 
 		public static GunAmmoStats GetGunAmmoStats(GunAmmo gunAmmo)
         {
@@ -234,12 +193,4 @@ namespace PCE.MonoBehaviours
 			gunAmmo.reloadTimeAdd = gunAmmoStats.reloadTimeAdd;
         }
 	}
-
-	public struct GunAmmoStats
-    {
-		public int maxAmmo;
-		public float reloadTime;
-		public float reloadTimeMultiplier;
-		public float reloadTimeAdd;
-    }
 }
