@@ -202,7 +202,7 @@ namespace PCE.MonoBehaviours
         }
         public void ApplyColorEffectToSelf()
         {
-            ColorEffect newColorEffect = this.player.gameObject.GetOrAddComponent<ColorEffect>();
+            ColorEffect newColorEffect = this.player.gameObject.AddComponent<ColorEffect>();
             newColorEffect.SetColorMax(this.colorMaxWhileActive);
             newColorEffect.SetColorMin(this.colorMinWhileActive);
 
@@ -210,7 +210,7 @@ namespace PCE.MonoBehaviours
         }
         public void ApplyColorEffectToOtherPlayer(Player otherPlayer)
         {
-            ColorEffect newColorEffect = otherPlayer.gameObject.GetOrAddComponent<ColorEffect>();
+            ColorEffect newColorEffect = otherPlayer.gameObject.AddComponent<ColorEffect>();
             newColorEffect.SetColorMax(this.otherPlayerColorMaxWhileActive);
             newColorEffect.SetColorMin(this.otherPlayerColorMinWhileActive);
 

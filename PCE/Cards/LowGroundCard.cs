@@ -67,35 +67,22 @@ namespace PCE.Cards
         {
             List<MonoBehaviour> effects = new List<MonoBehaviour>();
 
-            Gun newGun = player.gameObject.AddComponent<Gun>();
-            GunEffect gunEffect = player.gameObject.GetOrAddComponent<GunEffect>();
-            GunEffect.CopyGunStats(gun, newGun);
-            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
+            ReversibleEffect effect = player.gameObject.AddComponent<ReversibleEffect>();
+            effect.gunStatModifier.projectielSimulatonSpeed_mult = 2f;
+            effect.gunStatModifier.projectileSpeed_mult = 2f;
+            effect.gunStatModifier.damage_mult = 2f;
+            effect.gunStatModifier.projectileColor = Color.red;
+            effect.gunStatModifier.attackSpeed_mult = 0.5f;
 
-            newGun.projectileSpeed *= 2f;
-            newGun.projectielSimulatonSpeed *= 2f;
-            newGun.damage *= 2f;
-            newGun.projectileColor = Color.red;
-            newGun.attackSpeed *= 0.5f;
+            effect.gunAmmoStatModifier.maxAmmo_add = 3;
+            effect.gunAmmoStatModifier.reloadTimeMultiplier_mult = 0.75f;
 
-            newGunAmmoStats.maxAmmo += 3;
-            newGunAmmoStats.reloadTime *= 0.75f;
+            effect.characterStatModifiersModifier.movementSpeed_mult = 2f;
 
-            gunEffect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
-
-            effects.Add(gunEffect);
-
-            CharacterStatModifiers newStats = player.gameObject.AddComponent<CharacterStatModifiers>();
-            CharacterStatModifiersEffect statsEffect = player.gameObject.GetOrAddComponent<CharacterStatModifiersEffect>();
-            CharacterStatModifiersEffect.CopyStats(characterStats, newStats);
-
-            newStats.movementSpeed *= 2f;
-
-            statsEffect.SetStats(newStats);
-
-            effects.Add(statsEffect);
+            effects.Add(effect);
 
             return effects;
+
         }
 
     }

@@ -133,6 +133,22 @@ namespace PCE
                 {
                     players[j].GetComponent<InConeEffect>().Destroy();
                 }
+                if (players[j].GetComponent<ColorEffectBase>() != null)
+                {
+                    players[j].GetComponent<ColorEffectBase>().Destroy();
+                }
+                if (players[j].GetComponent<ColorEffect>() != null)
+                {
+                    players[j].GetComponent<ColorEffect>().Destroy();
+                }
+                if (players[j].GetComponent<GunColorEffectBase>() != null)
+                {
+                    players[j].GetComponent<GunColorEffectBase>().Destroy();
+                }
+                if (players[j].GetComponent<GunColorEffect>() != null)
+                {
+                    players[j].GetComponent<GunColorEffect>().Destroy();
+                }
 
             }
             yield break;

@@ -60,12 +60,12 @@ namespace PCE.MonoBehaviours
 
             
             this.effectFuncs.Add(this.Effect_NullEffect);
+            
             this.effectFuncs.Add(this.Effect_NoGravityEffect);
             this.effectFuncs.Add(this.Effect_InvisibleEffect);
             this.effectFuncs.Add(this.Effect_ShakeEffect);
             this.effectFuncs.Add(this.Effect_PopEffect);
             this.effectFuncs.Add(this.Effect_NukeEffect);
-            
             this.effectFuncs.Add(this.Effect_BulletSpeedEffect);
             this.effectFuncs.Add(this.Effect_BulletDamageEffect);
             this.effectFuncs.Add(this.Effect_BulletBounceEffect);
@@ -148,10 +148,17 @@ namespace PCE.MonoBehaviours
         public void ApplyCurrentEffect()
         {
             this.currentEffects = this.effectFuncs[this.effectID](this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.statModifiers);
-            ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
-            thisColorFlash.SetNumberOfFlashes(3);
-            thisColorFlash.SetDuration(0.25f);
-            thisColorFlash.SetDelayBetweenFlashes(0.25f);
+            
+            // only add a color flash if there isn't already one active
+            if (this.player.gameObject.GetComponent<ColorFlash>() == null)
+            {
+                ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
+                thisColorFlash.SetNumberOfFlashes(3);
+                thisColorFlash.SetDuration(0.25f);
+                thisColorFlash.SetDelayBetweenFlashes(0.25f);
+                thisColorFlash.SetColorMax(Color.black);
+                thisColorFlash.SetColorMin(Color.black);
+            }
             this.ResetEffectTimer();
         }
         public void ResetEffectTimer()
@@ -195,9 +202,8 @@ namespace PCE.MonoBehaviours
         }
         public List<MonoBehaviour> Effect_InvisibleEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            ColorEffect effect = player.gameObject.GetOrAddComponent<ColorEffect>();
-            effect.SetColorMax(Color.clear);
-            effect.SetColorMin(Color.clear);
+            ColorEffect effect = player.gameObject.AddComponent<ColorEffect>();
+            effect.SetColor(Color.clear);
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_ShakeEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
@@ -222,7 +228,7 @@ namespace PCE.MonoBehaviours
         {
             Gun newGun = this.gameObject.AddComponent<Gun>();
 
-            SpawnBulletsEffect effect = player.gameObject.GetOrAddComponent<SpawnBulletsEffect>();
+            SpawnBulletsEffect effect = player.gameObject.AddComponent<SpawnBulletsEffect>();
             effect.SetDirection(new Vector3(0f, 1f, 0f));
             effect.SetPosition(new Vector3(0f, 100f, 0f));
             effect.SetNumBullets(1);
@@ -247,58 +253,40 @@ namespace PCE.MonoBehaviours
             thisColorFlash.SetNumberOfFlashes(10);
             thisColorFlash.SetDuration(0.15f);
             thisColorFlash.SetDelayBetweenFlashes(0.15f);
-            thisColorFlash.SetColorMax(Color.red);
-            thisColorFlash.SetColorMin(Color.red);
+            thisColorFlash.SetColor(Color.red);
 
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_BulletSpeedEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Gun newGun = this.gameObject.AddComponent<Gun>();
-            GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
-            GunEffect.CopyGunStats(gun, newGun);
-            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
 
-            newGun.projectileSpeed *= 2f;
-            newGun.projectielSimulatonSpeed *= 2f;
-
-            newGun.projectileColor = Color.cyan;
-
-            effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
+            ReversibleEffect effect = this.gameObject.AddComponent<ReversibleEffect>();
+            effect.gunStatModifier.projectileSpeed_mult = 2f;
+            effect.gunStatModifier.projectielSimulatonSpeed_mult = 2f;
+            effect.gunStatModifier.projectileColor = Color.cyan;
 
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_BulletDamageEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Gun newGun = this.gameObject.AddComponent<Gun>();
-            GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
-            GunEffect.CopyGunStats(gun, newGun);
-            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
-
-            newGun.damage *= 2f;
-            newGun.projectileSize *= 2f;
-
-            newGun.projectileColor = Color.red;
-
-
-            effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
-
+            ReversibleEffect effect = this.gameObject.AddComponent<ReversibleEffect>();
+            effect.gunStatModifier.damage_mult = 2f;
+            effect.gunStatModifier.projectileSize_mult = 2f;
+            effect.gunStatModifier.projectileColor = Color.red;
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_BulletBounceEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Gun newGun = this.gameObject.AddComponent<Gun>();
-            GunEffect effect = player.gameObject.GetOrAddComponent<GunEffect>();
-            GunEffect.CopyGunStats(gun, newGun);
-            GunAmmoStats newGunAmmoStats = GunEffect.GetGunAmmoStats(gunAmmo);
-
-            newGun.reflects = 1000;
-            newGun.speedMOnBounce = 1.02f;
-            newGun.dmgMOnBounce *= 0.95f;
-            newGun.destroyBulletAfter = 1000000f;
-            newGun.ignoreWalls = false;
-
-            newGun.projectileColor = Color.yellow;
+            
+            ReversibleEffect effect = this.gameObject.AddComponent<ReversibleEffect>();
+            effect.gunStatModifier.reflects_add = 1000;
+            effect.gunStatModifier.speedMOnBounce_mult = 0f;
+            effect.gunStatModifier.speedMOnBounce_add = 1.02f;
+            effect.gunStatModifier.dmgMOnBounce_mult = 0f;
+            effect.gunStatModifier.dmgMOnBounce_add = 0.95f;
+            effect.gunStatModifier.destroyBulletAfter_mult = 0f;
+            effect.gunStatModifier.destroyBulletAfter_add = 1000000f;
+            effect.gunStatModifier.projectileColor = Color.magenta;
 
             // get the screenEdge (with screenEdgeBounce component) from the TargetBounce card
             CardInfo[] cards = global::CardChoice.instance.cards;
@@ -306,23 +294,16 @@ namespace PCE.MonoBehaviours
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
             ObjectsToSpawn screenEdgeToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<ScreenEdgeBounce>() != null).ToList()[0];
 
-            List<ObjectsToSpawn> newGunObjects = new List<ObjectsToSpawn>(newGun.objectsToSpawn);
-            newGunObjects.Add(screenEdgeToSpawn);
-            newGun.objectsToSpawn = newGunObjects.ToArray();
-
-            effect.SetGunAndGunAmmoStats(newGun, newGunAmmoStats);
+            effect.gunStatModifier.objectsToSpawn_add = new List<ObjectsToSpawn> { screenEdgeToSpawn };
 
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_MovementSpeed(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            CharacterStatModifiers newStats = player.gameObject.AddComponent<CharacterStatModifiers>();
-            CharacterStatModifiersEffect effect = player.gameObject.GetOrAddComponent<CharacterStatModifiersEffect>();
-            CharacterStatModifiersEffect.CopyStats(characterStats, newStats);
-
-            newStats.movementSpeed *= 5f;
-
-            effect.SetStats(newStats);
+            
+            ReversibleEffect effect = player.gameObject.AddComponent<ReversibleEffect>();
+            effect.characterStatModifiersModifier.movementSpeed_mult = 5f;
+            effect.characterStatModifiersModifier.jump_mult = 2f;
 
             return new List<MonoBehaviour> { effect };
         }
@@ -330,10 +311,11 @@ namespace PCE.MonoBehaviours
         {
             Gun newGun = this.gameObject.AddComponent<Gun>();
 
-            SpawnBulletsEffect effect = player.gameObject.GetOrAddComponent<SpawnBulletsEffect>();
+            SpawnBulletsEffect effect = player.gameObject.AddComponent<SpawnBulletsEffect>();
             effect.SetDirection(new Vector3(0f, -1f, 0f));
             effect.SetPosition(new Vector3(0f, 100f, 0f));
-            effect.SetNumBullets(400);
+            effect.SetNumBullets(200);
+            effect.SetTimeBetweenShots(0.05f);
 
             SpawnBulletsEffect.CopyGunStats(gun, newGun);
 
@@ -356,8 +338,7 @@ namespace PCE.MonoBehaviours
             thisColorFlash.SetNumberOfFlashes(10);
             thisColorFlash.SetDuration(0.15f);
             thisColorFlash.SetDelayBetweenFlashes(0.15f);
-            thisColorFlash.SetColorMax(Color.blue);
-            thisColorFlash.SetColorMin(Color.blue);
+            thisColorFlash.SetColor(Color.blue);
 
             return new List<MonoBehaviour> { effect };
         }
@@ -365,7 +346,7 @@ namespace PCE.MonoBehaviours
         {
             Gun newGun = this.gameObject.AddComponent<Gun>();
 
-            SpawnBulletsEffect effect = player.gameObject.GetOrAddComponent<SpawnBulletsEffect>();
+            SpawnBulletsEffect effect = player.gameObject.AddComponent<SpawnBulletsEffect>();
             effect.SetDirection(new Vector3(0f, -1f, 0f));
             effect.SetPosition(new Vector3(0f, 100f, 0f));
             effect.SetNumBullets(100);
@@ -393,8 +374,7 @@ namespace PCE.MonoBehaviours
             thisColorFlash.SetNumberOfFlashes(10);
             thisColorFlash.SetDuration(0.15f);
             thisColorFlash.SetDelayBetweenFlashes(0.15f);
-            thisColorFlash.SetColorMax(Color.white);
-            thisColorFlash.SetColorMin(Color.white);
+            thisColorFlash.SetColor(Color.white);
 
             return new List<MonoBehaviour> { effect };
         }

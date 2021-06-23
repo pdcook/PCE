@@ -13,6 +13,8 @@ namespace PCE.MonoBehaviours
 
     public class SpawnBulletsEffect : MonoBehaviour
     {
+		private readonly float initialDelay = 1f;
+
 		private int numBullets = 1;
 		private int numShot = 0;
 		private Gun gunToShootFrom;
@@ -30,7 +32,8 @@ namespace PCE.MonoBehaviours
 
         void Start()
         {
-			Shoot();
+			this.ResetTimer();
+			this.timeSinceLastShot += this.initialDelay;
 		}
 
         void Update()
