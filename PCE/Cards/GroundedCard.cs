@@ -27,7 +27,7 @@ namespace PCE.Cards
                 characterStats.GetAdditionalData().gravityDurationOnDoDamage += 2f;
             }
 
-            player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
+            player.gameObject.AddComponent<GravityDealtDamageEffect>();
 
 
         }

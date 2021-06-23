@@ -33,7 +33,7 @@ namespace PCE.Cards
                 characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
             }
 
-            player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
+            player.gameObject.AddComponent<GravityDealtDamageEffect>();
 
         }
         public override void OnRemoveCard()

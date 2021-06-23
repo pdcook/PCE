@@ -149,6 +149,11 @@ namespace PCE
                 {
                     players[j].GetComponent<GunColorEffect>().Destroy();
                 }
+                ReversibleEffect[] reversibleEffects = players[j].GetComponents<ReversibleEffect>();
+                foreach (ReversibleEffect reversibleEffect in reversibleEffects)
+                {
+                    if (reversibleEffect!=null) { reversibleEffect.Destroy(); }
+                }
 
             }
             yield break;

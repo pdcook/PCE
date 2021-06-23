@@ -189,9 +189,8 @@ namespace PCE.MonoBehaviours
 
         public List<MonoBehaviour> Effect_NoGravityEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            GravityEffect effect = player.gameObject.GetOrAddComponent<GravityEffect>();
+            GravityEffect effect = player.gameObject.AddComponent<GravityEffect>();
             effect.SetGravityForceMultiplier(0f);
-            effect.SetDuration(this.effectDuration);
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_InvisibleEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)

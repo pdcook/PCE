@@ -17,11 +17,13 @@ namespace PCE.MonoBehaviours
         private CharacterStatModifiers characterStatModifiers;
         private Gun gun;
         private GunAmmo gunAmmo;
+        private Gravity gravity;
 
         public GunStatModifier gunStatModifier = new GunStatModifier();
         public GunAmmoStatModifier gunAmmoStatModifier = new GunAmmoStatModifier();
         //public PlayerColorModifier playerColorModifier = new PlayerColorModifier();
         public CharacterStatModifiersModifier characterStatModifiersModifier = new CharacterStatModifiersModifier();
+        public GravityModifier gravityModifier = new GravityModifier();
 
         public void Awake()
         {
@@ -29,6 +31,7 @@ namespace PCE.MonoBehaviours
             this.characterStatModifiers = this.player.data.stats;
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
             this.gunAmmo = this.gun.GetComponentInChildren<GunAmmo>();
+            this.gravity = this.player.GetComponent<Gravity>();
             this.OnAwake();
         }
         public virtual void OnAwake()
@@ -44,7 +47,7 @@ namespace PCE.MonoBehaviours
             this.gunStatModifier.ApplyGunStatModifier(this.gun);
             this.gunAmmoStatModifier.ApplyGunAmmoStatModifier(this.gunAmmo);
             this.characterStatModifiersModifier.ApplyCharacterStatModifiersModifier(this.characterStatModifiers);
-            //this.playerColorModifier.ApplyPlayerColorModifier(this.player);
+            this.gravityModifier.ApplyGravityModifier(this.gravity);
 
         }
         public virtual void OnStart()
@@ -78,7 +81,7 @@ namespace PCE.MonoBehaviours
             this.gunStatModifier.RemoveGunStatModifier(this.gun);
             this.gunAmmoStatModifier.RemoveGunAmmoStatModifier(this.gunAmmo);
             this.characterStatModifiersModifier.RemoveCharacterStatModifiersModifier(this.characterStatModifiers);
-            //this.playerColorModifier.RemovePlayerColorModifier(this.player);
+            this.gravityModifier.RemoveGravityModifier(this.gravity);
             this.OnOnDestroy();
 		}
         public virtual void OnOnDestroy()

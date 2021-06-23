@@ -44,7 +44,7 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
     - Jackpot, Small Jackpot, Gamble, and Risky Gamble fixed in online and confirmed working
     - Increased damage debuff on Ghost Bullets to `-75%`
     - Decreased damage debuff on Laser to `-98%`
-    - Increased rarity of Laser to Rare 
+    - Increased rarity of Laser to Rare
     - Increased simulation speed of Laser projectiles
     - Fixed errors/warnings from `CharacterStatModifiers` `Postfix`
     - Known issues:
@@ -61,7 +61,7 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
         - Murder does not work with the FFA mod
 
 - v0.1.5.1: typo fix
-    - Fixed logic typo in Jackpot, Small Jackpot, Gamble, and Risky Gamble which caused them to always return another Jackpot/Gamble card 
+    - Fixed logic typo in Jackpot, Small Jackpot, Gamble, and Risky Gamble which caused them to always return another Jackpot/Gamble card
 
 - v0.1.5.2: bugfixes and added art
     - ***pceAssetBundle now goes in the BepInEx plugins folder***
@@ -104,6 +104,28 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 - v0.1.7.1: moved PlayerJump Patch to separate utility mod
 
 - v0.1.7.2: bugfix - updated Gamemode hooks to be compatible with newest version of unbound
+
+- v0.1.8.0: new cards, new code, new bugfixes
+    - New cards:
+        - Ant: become twice as small, but twice as powerful. Be careful not to get stepped on.
+        - Low Ground: Get boosted stats when beneath an enemy player.
+        - Demonic Possession: Become a being of pure chaos.
+    - New code:
+        - PCE now depends on LegRaycastersPatch
+        - Complete refactor and rewrite of many effects to streamline development
+    - New bugfixes:
+        - Gravity effects have been completely rewritten *again* to properly reset
+        - Laser has been adjusted to work better when stacked with other cards
+        - Effects that change the player's color will now properly reset
+        - Effects that change the player's stats (i.e. Discombobulate) will now properly stack and reset
+    - New additions:
+        - Discombobulate now has a color effect on enemy players
+        - Old Jetpack and Moon Shoes are now _common_ cards
+    - New known issues:
+        - Most cards are still missing art because art takes a long time for me
+        - Low Ground's formatting looks terrible
+        - Discombobulate still doesn't have a visual effect like Overpower. If you know how to make/add one, please let me know.
+
 
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
@@ -210,3 +232,24 @@ Do significantly more damage when up close, but significantly less at long range
 **Uncommon**
 
 Blocking reverses nearby player's controls
+
+---
+
+### Old Jetpact
+_Common_
+
+Sputter around in the air for a bit by continually firing an old jetpack
+
+---
+
+### Ant
+**Uncommon**
+
+Halve in size, double in strength.
+
+---
+
+### Demonic Possession
+***Rare***
+
+Become a being of pure chaos.

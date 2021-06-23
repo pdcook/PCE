@@ -42,7 +42,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Increased stats when below an enemy player";
+            return "Get increased stats when below an enemy player.\nWhen active:";
         }
 
         protected override GameObject GetCardArt()
@@ -57,7 +57,52 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Damage",
+                amount = "+100%",
+                simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Bullet Speed",
+                amount = "+100%",
+                simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Attack Speed",
+                amount = "+100%",
+                simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Ammo",
+                amount = "+3",
+                simepleAmount = CardInfoStat.SimpleAmount.Some
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Reload Speed",
+                amount = "+25%",
+                simepleAmount = CardInfoStat.SimpleAmount.Some
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Movement Speed",
+                amount = "+100%",
+                simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
+                },
+
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {

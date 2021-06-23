@@ -5,65 +5,37 @@ using UnityEngine;
 
 namespace PCE.MonoBehaviours
 {
-    public class GravityEffect : MonoBehaviour
+    public class GravityEffect : ReversibleEffect
     {
         private Player playerToModify;
-        private Player playerWhoModifies = null;
-        private Gravity gravityToModify;
         private float
           startTime,
-          duration,
-          gravityForceMultiplier = 1f,
-          directGravityForce,
-          origGravityForce;
-        bool direct = false;
-
-
-        void Awake()
+          duration = float.MaxValue,
+          gravityForceMultiplier = 1f;
+        public override void OnAwake()
         {
             this.playerToModify = gameObject.GetComponent<Player>();
-            this.gravityToModify = gameObject.GetComponent<Gravity>();
-            ResetTimer();
         }
-
-        void Start()
+        public override void OnStart()
         {
-            this.origGravityForce = this.gravityToModify.gravityForce;
-            if (direct)
-            {
-                this.gravityToModify.gravityForce = this.directGravityForce;
-            }
-            else
-            {
-                this.gravityToModify.gravityForce *= this.gravityForceMultiplier;
-            }
+            base.gravityModifier.gravityForce_mult = this.gravityForceMultiplier;
         }
-
-        void Update()
+        public override void OnUpdate()
         {
+            // destroy this effect when time is up, the base class (ReversibleEffect) will handle reseting stats
             if (Time.time - this.startTime >= this.duration)
             {
                 UnityEngine.Object.Destroy(this);
             }
         }
-        public void OnDestroy()
+        public override void OnOnDestroy()
         {
             this.playerToModify.data.sinceGrounded = 0f;
             this.playerToModify.data.sinceWallGrab = 0f;
-            this.gravityToModify.gravityForce = this.origGravityForce;
-        }
-
-        public void Destroy()
-        {
-            UnityEngine.Object.Destroy(this);
-        }
-        public void SetPlayerWhoModifies(Player owner)
-        {
-            this.playerWhoModifies = owner;
         }
         public void ResetTimer()
         {
-            startTime = Time.time;
+            this.startTime = Time.time;
         }
         public void SetDuration(float duration)
         {
@@ -73,11 +45,6 @@ namespace PCE.MonoBehaviours
         {
             this.gravityForceMultiplier = mult;
         }
-
-        public void SetDirectGravityForce(float directGravityForce)
-        {
-            this.directGravityForce = directGravityForce;
-            this.direct = true;
-        }
     }
+
 }

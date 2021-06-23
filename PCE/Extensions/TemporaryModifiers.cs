@@ -525,4 +525,55 @@ namespace PCE.Extensions
 
         }
     }
+    public class GravityModifier
+    {
+        public float gravityForce_add = 0f;
+        public float gravityForce_mult = 1f;
+        public float exponent_add = 0f;
+        public float exponent_mult = 1f;
+
+        private float gravityForce_delta = 0f;
+        private float exponent_delta = 0f;
+
+
+        public static void ApplyGravityModifier(GravityModifier gravityModifier, Gravity gravity)
+        {
+            gravityModifier.gravityForce_delta = gravity.gravityForce * gravityModifier.gravityForce_mult + gravityModifier.gravityForce_add - gravity.gravityForce;
+            gravityModifier.exponent_delta = gravity.exponent * gravityModifier.exponent_mult + gravityModifier.exponent_add - gravity.exponent;
+
+            gravity.gravityForce += gravityModifier.gravityForce_delta;
+            gravity.exponent += gravityModifier.exponent_delta;
+        
+        }
+        public void ApplyGravityModifier(Gravity gravity)
+        {
+            this.gravityForce_delta = gravity.gravityForce * this.gravityForce_mult + this.gravityForce_add - gravity.gravityForce;
+            this.exponent_delta = gravity.exponent * this.exponent_mult + this.exponent_add - gravity.exponent;
+
+            gravity.gravityForce += this.gravityForce_delta;
+            gravity.exponent += this.exponent_delta;
+
+        }
+        public static void RemoveGravityModifier(GravityModifier gravityModifier, Gravity gravity)
+        {
+
+            gravity.gravityForce -= gravityModifier.gravityForce_delta;
+            gravity.exponent -= gravityModifier.exponent_delta;
+
+            gravityModifier.gravityForce_delta = 0f;
+            gravityModifier.exponent_delta = 0f;
+
+        }
+        public void RemoveGravityModifier(Gravity gravity)
+        {
+
+            gravity.gravityForce -= this.gravityForce_delta;
+            gravity.exponent -= this.exponent_delta;
+
+            this.gravityForce_delta = 0f;
+            this.exponent_delta = 0f;
+
+        }
+
+    }
 }

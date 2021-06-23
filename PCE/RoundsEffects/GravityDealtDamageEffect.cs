@@ -14,7 +14,7 @@ namespace PCE.RoundsEffects
         private CharacterStatModifiers characterStat;
         public override void DealtDamage(Vector2 damage, bool selfDamage, Player damagedPlayer = null)
         {
-            GravityEffect thisGravityEffect = damagedPlayer.gameObject.GetOrAddComponent<GravityEffect>();
+            GravityEffect thisGravityEffect = damagedPlayer.gameObject.AddComponent<GravityEffect>();
             thisGravityEffect.SetDuration(this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityDurationOnDoDamage);
             thisGravityEffect.SetGravityForceMultiplier(this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityMultiplierOnDoDamage);
             thisGravityEffect.ResetTimer();

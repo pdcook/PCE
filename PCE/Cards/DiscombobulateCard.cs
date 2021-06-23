@@ -8,6 +8,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using System.Reflection;
 using UnboundLib.Networking;
+using System.Linq;
 
 namespace PCE.Cards
 {
@@ -26,7 +27,7 @@ namespace PCE.Cards
             block.GetAdditionalData().discombobulateDuration += 1f;
 
             block.BlockAction = (Action<BlockTrigger.BlockTriggerType>)Delegate.Combine(block.BlockAction, new Action<BlockTrigger.BlockTriggerType>(this.GetDoBlockAction(player, block)));
-            
+
         }
         public Action<BlockTrigger.BlockTriggerType> GetDoBlockAction(Player player, Block block)
         {
@@ -53,30 +54,7 @@ namespace PCE.Cards
                 }
             };
         }
-        /*
-        public void DoBlock(BlockTrigger.BlockTriggerType trigger)
-        {
-            Block block = this.GetComponentInParent<Block>();
-            Player player = this.GetComponent<Player>();
-
-            if (trigger != BlockTrigger.BlockTriggerType.None)
-            {
-                Vector2 pos = block.transform.position;
-                Player[] players = PlayerManager.instance.players.ToArray();
-
-                for (int i = 0; i < players.Length; i++)
-                {
-                    // don't apply the effect to the player who activated it...
-                    if (players[i].playerID == player.playerID) { continue; }
-
-                    // apply to players within range
-                    if (Vector2.Distance(pos, players[i].transform.position) < block.GetAdditionalData().discombobulateRange)
-                    {
-                        NetworkingManager.RPC(typeof(DiscombobulateCard), "OnDiscombobulateActivate", new object[] { players[i].playerID, block.GetAdditionalData().discombobulateDuration });
-                    }
-                }
-            }
-        }*/
+        
         public override void OnRemoveCard()
         {
         }
@@ -125,9 +103,15 @@ namespace PCE.Cards
                 BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
                 null, PlayerManager.instance, new object[] { playerID });
 
-            DiscombobulateEffect thisDiscombobulateEffect = player.gameObject.GetOrAddComponent<DiscombobulateEffect>();
+            DiscombobulateEffect thisDiscombobulateEffect = player.gameObject.AddComponent<DiscombobulateEffect>();
             thisDiscombobulateEffect.SetDuration(duration);
             thisDiscombobulateEffect.SetMovementSpeedMultiplier(-1f);
+            Color yellow = Color.yellow;
+            float brightness = 0.8f;
+            yellow.r *= brightness;
+            yellow.g *= brightness;
+            yellow.b *= brightness;
+            thisDiscombobulateEffect.SetColor(new Color(yellow.r, yellow.g, yellow.b, 1f));
             thisDiscombobulateEffect.ResetTimer();
 
         }
