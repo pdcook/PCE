@@ -88,7 +88,15 @@ namespace PCE.MonoBehaviours
             // if the player is not active (i.e. simulated) then clear all effects
             if (!(bool)Traverse.Create(this.player.data.playerVel).Field("simulated").GetValue())
             {
-                this.ClearEffects();
+                if (PhotonNetwork.OfflineMode)
+                {
+                    // offline mode
+                    this.RPCA_ClearEffects();
+                }
+                else if (base.GetComponent<PhotonView>().IsMine)
+                {
+                    base.GetComponent<PhotonView>().RPC("RPCA_ClearEffects", RpcTarget.All, new object[] { });
+                }
                 return;
             }
             // get and apply a new effect if things are ready
@@ -97,12 +105,28 @@ namespace PCE.MonoBehaviours
                 this.ready = false;
                 this.GetNewEffect();
                 this.GetNewDuration();
-                this.ApplyCurrentEffect();
+                if (PhotonNetwork.OfflineMode)
+                {
+                    // offline mode
+                    this.RPCA_ApplyCurrentEffect();
+                }
+                else if (base.GetComponent<PhotonView>().IsMine)
+                {
+                    base.GetComponent<PhotonView>().RPC("RPCA_ApplyCurrentEffect", RpcTarget.All, new object[] { });
+                }
             }
             // if the duration of the effect has passed, clear all effects
             else if (Time.time >= this.timeOfLastEffect + this.effectDuration)
             {
-                this.ClearEffects();
+                if (PhotonNetwork.OfflineMode)
+                {
+                    // offline mode
+                    this.RPCA_ClearEffects();
+                }
+                else if (base.GetComponent<PhotonView>().IsMine)
+                {
+                    base.GetComponent<PhotonView>().RPC("RPCA_ClearEffects", RpcTarget.All, new object[] { });
+                }
             }
 
             float rx = (float)this.rng.NextGaussianDouble();
@@ -115,7 +139,15 @@ namespace PCE.MonoBehaviours
         }
         public void OnDestroy()
         {
-            this.ClearEffects();
+            if (PhotonNetwork.OfflineMode)
+            {
+                // offline mode
+                this.RPCA_ClearEffects();
+            }
+            else if (base.GetComponent<PhotonView>().IsMine)
+            {
+                base.GetComponent<PhotonView>().RPC("RPCA_ClearEffects", RpcTarget.All, new object[] { });
+            }
         }
         public void GetNewDuration()
         {
@@ -145,22 +177,7 @@ namespace PCE.MonoBehaviours
                 base.GetComponent<PhotonView>().RPC("RPCA_SetNewEffectID", RpcTarget.All, new object[] { newEffectID });
             }
         }
-        public void ApplyCurrentEffect()
-        {
-            this.currentEffects = this.effectFuncs[this.effectID](this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.statModifiers);
-            
-            // only add a color flash if there isn't already one active
-            if (this.player.gameObject.GetComponent<ColorFlash>() == null)
-            {
-                ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
-                thisColorFlash.SetNumberOfFlashes(3);
-                thisColorFlash.SetDuration(0.25f);
-                thisColorFlash.SetDelayBetweenFlashes(0.25f);
-                thisColorFlash.SetColorMax(Color.black);
-                thisColorFlash.SetColorMin(Color.black);
-            }
-            this.ResetEffectTimer();
-        }
+       
         public void ResetEffectTimer()
         {
             this.timeOfLastEffect = Time.time;
@@ -169,30 +186,7 @@ namespace PCE.MonoBehaviours
         {
             UnityEngine.Object.Destroy(this);
         }
-        public void ClearEffects()
-        {
-            if (this.currentEffects != null)
-            {
-                foreach (MonoBehaviour currentEffect in this.currentEffects)
-                {
-                    if (currentEffect != null)
-                    {
-                        Destroy(currentEffect);
-                    }
-                }
-            }
-            this.currentEffects = new List<MonoBehaviour>();
-            if (!this.ready && this.framesWaited < this.framesToWait)
-            {
-                this.framesWaited++;
-            }
-            else if (!this.ready)
-            {
-                this.framesWaited = 0;
-                this.ready = true;
-            }
 
-        }
         public List<MonoBehaviour> Effect_NoGravityEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             GravityEffect effect = player.gameObject.GetOrAddComponent<GravityEffect>();
@@ -388,6 +382,48 @@ namespace PCE.MonoBehaviours
         public void RPCA_SetNewDuration(float duration)
         {
             this.effectDuration = duration;
+        }
+        [PunRPC]
+        public void RPCA_ApplyCurrentEffect()
+        {
+            this.currentEffects = this.effectFuncs[this.effectID](this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.statModifiers);
+
+            // only add a color flash if there isn't already one active
+            if (this.player.gameObject.GetComponent<ColorFlash>() == null)
+            {
+                ColorFlash thisColorFlash = this.player.gameObject.GetOrAddComponent<ColorFlash>();
+                thisColorFlash.SetNumberOfFlashes(3);
+                thisColorFlash.SetDuration(0.25f);
+                thisColorFlash.SetDelayBetweenFlashes(0.25f);
+                thisColorFlash.SetColorMax(Color.black);
+                thisColorFlash.SetColorMin(Color.black);
+            }
+            this.ResetEffectTimer();
+        }
+        [PunRPC]
+        public void RPCA_ClearEffects()
+        {
+            if (this.currentEffects != null)
+            {
+                foreach (MonoBehaviour currentEffect in this.currentEffects)
+                {
+                    if (currentEffect != null)
+                    {
+                        Destroy(currentEffect);
+                    }
+                }
+            }
+            this.currentEffects = new List<MonoBehaviour>();
+            if (!this.ready && this.framesWaited < this.framesToWait)
+            {
+                this.framesWaited++;
+            }
+            else if (!this.ready)
+            {
+                this.framesWaited = 0;
+                this.ready = true;
+            }
+
         }
 
     }

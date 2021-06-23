@@ -69,28 +69,39 @@ namespace PCE.MonoBehaviours
 						num /= (1f + this.gunToShootFrom.projectileSpeed * 0.5f) * 0.5f;
 						directionToShootThisBullet += Vector3.Cross(directionToShootThisBullet, Vector3.forward) * num * d;
 					}
-					GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, this.positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
 
-					if (PhotonNetwork.OfflineMode)
+					if ((bool)typeof(Gun).InvokeMember("CheckIsMine", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, this.gunToShootFrom, new object[] { }))
 					{
-						typeof(ProjectileInit).InvokeMember("OFFLINE_Init_SeparateGun", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, gameObject.GetComponent<ProjectileInit>(), new object[] { base.GetComponentInParent<Player>().playerID, (int)Traverse.Create(this.gunToShootFrom).Field("gunID").GetValue(), currentNumberOfProjectiles, 1f, UnityEngine.Random.Range(0f, 1f)});
-					}
-					else
-					{
-						gameObject.GetComponent<PhotonView>().RPC("RPCA_Init_SeparateGun", RpcTarget.All, new object[]
+
+						GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, this.positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
+
+						if (PhotonNetwork.OfflineMode)
 						{
+							typeof(ProjectileInit).InvokeMember("OFFLINE_Init_SeparateGun", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, gameObject.GetComponent<ProjectileInit>(), new object[] { base.GetComponentInParent<Player>().playerID, (int)Traverse.Create(this.gunToShootFrom).Field("gunID").GetValue(), currentNumberOfProjectiles, 1f, UnityEngine.Random.Range(0f, 1f) });
+
+						}
+						else
+						{
+							gameObject.GetComponent<PhotonView>().RPC("RPCA_Init_SeparateGun", RpcTarget.All, new object[]
+							{
+
 										base.GetComponentInParent<CharacterData>().view.OwnerActorNr,
 										(int)Traverse.Create(this.gunToShootFrom).Field("gunID").GetValue(),
 										currentNumberOfProjectiles,
 										1f,
 										UnityEngine.Random.Range(0f, 1f)
-						});
+							});
+						}
 					}
 				}
 			}
 			this.ResetTimer();
 
 		}
+		private void RPCA_Shoot(int numProj, float dmgM, float seed)
+        {
+			this.gunToShootFrom.BulletInit(base.gameObject, numProj, dmgM, seed, true);
+        }
 		public void SetGun(Gun gun)
 		{
 			this.gunToShootFrom = this.gameObject.AddComponent<Gun>();
