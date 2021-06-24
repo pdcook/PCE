@@ -19,12 +19,14 @@ namespace PCE.Extensions
         public float defaultGravityForce;
         public float defaultGravityExponent;
         public int murder;
+        public int thankyousirmayihaveanother;
 
         public CharacterStatModifiersAdditionalData()
         {
             gravityMultiplierOnDoDamage = 1f;
             gravityDurationOnDoDamage = 0f;
             murder = 0;
+            thankyousirmayihaveanother = 0;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -70,6 +72,7 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().gravityMultiplierOnDoDamage = 1f;
             __instance.GetAdditionalData().gravityDurationOnDoDamage = 0f;
             __instance.GetAdditionalData().murder = 0;
+            __instance.GetAdditionalData().thankyousirmayihaveanother = 0;
 
 
             if (__instance.GetComponent<GravityEffect>() != null)

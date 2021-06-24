@@ -57,6 +57,7 @@ namespace PCE
             CustomCard.BuildCard<DiscombobulateCard>();
             CustomCard.BuildCard<DemonicPossessionCard>();
             CustomCard.BuildCard<LowGroundCard>();
+            CustomCard.BuildCard<ThankYouSirMayIHaveAnotherCard>();
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
@@ -100,6 +101,11 @@ namespace PCE
                 if (players[j].GetComponent<DiscombobulateEffect>() != null)
                 {
                     players[j].GetComponent<DiscombobulateEffect>().Destroy();
+                }
+                ReversibleEffect[] reversibleEffects = players[j].GetComponents<ReversibleEffect>();
+                foreach (ReversibleEffect reversibleEffect in reversibleEffects)
+                {
+                    if (reversibleEffect != null) { reversibleEffect.Destroy(); }
                 }
             }
             yield break;
