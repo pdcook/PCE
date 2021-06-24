@@ -21,7 +21,7 @@ namespace PCE
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.playerjumppatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.legraycasterspatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.1.7.2")]
+    [BepInPlugin(ModId, ModName, "0.1.8.1")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {

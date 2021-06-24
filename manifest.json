@@ -6,7 +6,7 @@
     "dependencies": [
 	"Pykess-PlayerJumpPatch-0.0.0",
     "Pykess-LegRaycastersPatch-0.0.0",
-        "willis81808-UnboundLib-1.0.9",
+        "willis81808-UnboundLib-2.1.3",
 	"willis81808-MMHook-1.0.0",
 	"BepInEx-BepInExPack_ROUNDS-5.4.1100"
     ]
