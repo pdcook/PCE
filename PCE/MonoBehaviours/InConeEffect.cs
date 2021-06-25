@@ -5,6 +5,7 @@ using UnboundLib;
 using UnityEngine;
 using System.Linq;
 using HarmonyLib;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -72,7 +73,11 @@ namespace PCE.MonoBehaviours
                 centerRay = centerRay.normalized;
             }
             // if the effectFunc has not been set, just destroy this component
-            if (this.effectFunc == null)
+            if (this.applyToSelf && this.effectFunc == null)
+            {
+                this.Destroy();
+            }
+            if (this.applyToOthers && this.otherPlayerEffectFunc == null)
             {
                 this.Destroy();
             }
@@ -83,7 +88,8 @@ namespace PCE.MonoBehaviours
 
         void Update()
         {
-            if (this.ConditionsMet())
+            // if the player is alive, simulated, and the conditions are met
+            if (PlayerStatus.PlayerAliveAndSimulated(this.player) && this.ConditionsMet())
             {
                 if (this.period == 0f && !this.effectApplied)
                 {
@@ -148,6 +154,14 @@ namespace PCE.MonoBehaviours
         }
         public bool OtherPlayerInCone(Player otherPlayer)
         {
+            // is the player:
+            /* In range,
+             * In the cone angle,
+             * Alive,
+             * Simulated,
+             * and in line-of-sight of this player, if required
+             */
+
             bool lineOfSight = true;
             // if the effect needs line-of-sight, then check for it
             if (this.needsLineOfSight)
@@ -157,7 +171,11 @@ namespace PCE.MonoBehaviours
             }
 
             Vector2 displacement = otherPlayer.transform.position - this.player.transform.position;
-            return (lineOfSight && displacement.magnitude <= this.range && Vector2.Angle(this.centerRay, displacement) <= Math.Abs(this.angle / 2));
+            return (PlayerStatus.PlayerAliveAndSimulated(otherPlayer) && lineOfSight && displacement.magnitude <= this.range && Vector2.Angle(this.centerRay, displacement) <= Math.Abs(this.angle / 2));
+        }
+        public void OnDisable()
+        {
+            this.RemoveAllEffects();
         }
         public void OnDestroy()
         {
@@ -288,6 +306,19 @@ namespace PCE.MonoBehaviours
         public void SetColorMax(Color color)
         {
             this.colorMaxWhileActive = color;
+        }
+        public void SetOtherColor(Color color)
+        {
+            this.otherPlayerColorMaxWhileActive = color;
+            this.otherPlayerColorMinWhileActive = color;
+        }
+        public void SetOtherColorMin(Color color)
+        {
+            this.otherPlayerColorMinWhileActive = color;
+        }
+        public void SetOtherColorMax(Color color)
+        {
+            this.otherPlayerColorMaxWhileActive = color;
         }
         public void SetNeedsLineOfSight(bool needsLineOfSight)
         {

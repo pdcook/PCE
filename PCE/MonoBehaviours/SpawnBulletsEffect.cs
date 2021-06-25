@@ -214,5 +214,10 @@ namespace PCE.MonoBehaviours
 
 		}
 
+		public void Destroy()
+        {
+			UnityEngine.GameObject.Destroy(this);
+        }
+
 	}
 }

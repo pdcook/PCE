@@ -20,6 +20,7 @@ namespace PCE.Extensions
         public float defaultGravityExponent;
         public int murder;
         public int thankyousirmayihaveanother;
+        public float glare;
 
         public CharacterStatModifiersAdditionalData()
         {
@@ -27,6 +28,7 @@ namespace PCE.Extensions
             gravityDurationOnDoDamage = 0f;
             murder = 0;
             thankyousirmayihaveanother = 0;
+            glare = 0f;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -73,18 +75,8 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().gravityDurationOnDoDamage = 0f;
             __instance.GetAdditionalData().murder = 0;
             __instance.GetAdditionalData().thankyousirmayihaveanother = 0;
+            __instance.GetAdditionalData().glare = 0f;
 
-
-            if (__instance.GetComponent<GravityEffect>() != null)
-            {
-                //UnityEngine.Object.Destroy(__instance.GetComponent<GravityEffect>());
-                __instance.GetComponent<GravityEffect>().Destroy();
-            }
-            if (__instance.GetComponent<GravityDealtDamageEffect>() != null)
-            {
-                //UnityEngine.Object.Destroy(__instance.GetComponent<GravityDealtDamageEffect>());
-                __instance.GetComponent<GravityDealtDamageEffect>().Destroy();
-            }
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
             gravity.exponent = __instance.GetAdditionalData().defaultGravityExponent;

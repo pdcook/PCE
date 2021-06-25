@@ -20,11 +20,10 @@ namespace PCE.Cards
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            InConeEffect newEffect = player.gameObject.GetOrAddComponent<InConeEffect>();
+            InConeEffect newEffect = player.gameObject.AddComponent<InConeEffect>();
 
             newEffect.SetCenterRay(new Vector2(0f, 1f));
             newEffect.SetColor(Color.green);

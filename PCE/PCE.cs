@@ -21,7 +21,7 @@ namespace PCE
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.playerjumppatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.legraycasterspatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.1.8.1")]
+    [BepInPlugin(ModId, ModName, "0.1.8.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -58,11 +58,10 @@ namespace PCE
             CustomCard.BuildCard<DemonicPossessionCard>();
             CustomCard.BuildCard<LowGroundCard>();
             CustomCard.BuildCard<ThankYouSirMayIHaveAnotherCard>();
+            CustomCard.BuildCard<GlareCard>();
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
-            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ResetAllEffects());
-
         }
 
         private IEnumerator CommitMurders()
@@ -92,75 +91,7 @@ namespace PCE
             Player[] players = PlayerManager.instance.players.ToArray();
             for (int j = 0; j < players.Length; j++)
             {
-                // clear player gravity effects on respawn
-                if (players[j].GetComponent<GravityEffect>() != null)
-                {
-                    players[j].GetComponent<GravityEffect>().Destroy();
-                }
-                // clear player discombobulate effects on respawn
-                if (players[j].GetComponent<DiscombobulateEffect>() != null)
-                {
-                    players[j].GetComponent<DiscombobulateEffect>().Destroy();
-                }
-                ReversibleEffect[] reversibleEffects = players[j].GetComponents<ReversibleEffect>();
-                foreach (ReversibleEffect reversibleEffect in reversibleEffects)
-                {
-                    if (reversibleEffect != null) { reversibleEffect.Destroy(); }
-                }
-            }
-            yield break;
-        }
-
-        private IEnumerator ResetAllEffects ()
-        {
-
-            // reset all effects made from PCE.MonoBehaviours
-
-            Player[] players = PlayerManager.instance.players.ToArray();
-            for (int j = 0; j < players.Length; j++)
-            {
-                if (players[j].GetComponent<GravityEffect>() != null)
-                {
-                    players[j].GetComponent<GravityEffect>().Destroy();
-                }
-                if (players[j].GetComponent<AntSquishEffect>() != null)
-                {
-                    players[j].GetComponent<AntSquishEffect>().Destroy();
-                }
-                if (players[j].GetComponent<DiscombobulateEffect>() != null)
-                {
-                    players[j].GetComponent<DiscombobulateEffect>().Destroy();
-                }
-                if (players[j].GetComponent<DemonicPossessionEffect>() != null)
-                {
-                    players[j].GetComponent<DemonicPossessionEffect>().Destroy();
-                }
-                if (players[j].GetComponent<InConeEffect>() != null)
-                {
-                    players[j].GetComponent<InConeEffect>().Destroy();
-                }
-                if (players[j].GetComponent<ColorEffectBase>() != null)
-                {
-                    players[j].GetComponent<ColorEffectBase>().Destroy();
-                }
-                if (players[j].GetComponent<ColorEffect>() != null)
-                {
-                    players[j].GetComponent<ColorEffect>().Destroy();
-                }
-                if (players[j].GetComponent<GunColorEffectBase>() != null)
-                {
-                    players[j].GetComponent<GunColorEffectBase>().Destroy();
-                }
-                if (players[j].GetComponent<GunColorEffect>() != null)
-                {
-                    players[j].GetComponent<GunColorEffect>().Destroy();
-                }
-                ReversibleEffect[] reversibleEffects = players[j].GetComponents<ReversibleEffect>();
-                foreach (ReversibleEffect reversibleEffect in reversibleEffects)
-                {
-                    if (reversibleEffect!=null) { reversibleEffect.Destroy(); }
-                }
-
+                CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
             }
             yield break;
         }

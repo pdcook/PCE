@@ -5,6 +5,7 @@ using UnboundLib;
 using UnityEngine;
 using System.Linq;
 using HarmonyLib;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -27,8 +28,8 @@ namespace PCE.MonoBehaviours
 
         void Update()
         {
-            // if the Ant player hasn't been squished in the minimum amount of time, check for squish
-            if (Time.time >= this.timeOfLastSquish + this.minTimeBetweenSquishes)
+            // if the Ant player hasn't been squished in the minimum amount of time, and is currently alive, check for squish
+            if (PlayerStatus.PlayerAliveAndSimulated(this.playerToModify) && Time.time >= this.timeOfLastSquish + this.minTimeBetweenSquishes)
             {
                 List<Player> enemyPlayers = PlayerManager.instance.players.Where(player => player.teamID != this.playerToModify.teamID).ToList();
 

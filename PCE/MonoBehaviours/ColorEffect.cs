@@ -84,7 +84,7 @@ namespace PCE.MonoBehaviours
 			UnityEngine.GameObject.Destroy(this);
         }
 	}
-	internal class ColorEffectBase : MonoBehaviour
+	internal sealed class ColorEffectBase : MonoBehaviour
     {
 
 		internal List<ColorEffect> colorEffectDrones = new List<ColorEffect>();
@@ -204,7 +204,7 @@ namespace PCE.MonoBehaviours
 			UnityEngine.GameObject.Destroy(this);
 		}
 	}
-	internal class GunColorEffectBase : MonoBehaviour
+	internal sealed class GunColorEffectBase : MonoBehaviour
 	{
 
 		internal List<GunColorEffect> gunColorEffectDrones = new List<GunColorEffect>();

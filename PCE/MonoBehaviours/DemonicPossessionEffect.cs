@@ -20,8 +20,8 @@ namespace PCE.MonoBehaviours
 
     public class DemonicPossessionEffect : MonoBehaviour
     {
-        private readonly float maxDuration = 10f;
-        private readonly float minDuration = 2f;
+        private readonly float maxDuration = 20f;
+        private readonly float minDuration = 5f;
 
         private Player player;
         private Gun gun;
@@ -85,8 +85,8 @@ namespace PCE.MonoBehaviours
 
         void Update()
         {
-            // if the player is not active (i.e. simulated) then clear all effects
-            if (!(bool)Traverse.Create(this.player.data.playerVel).Field("simulated").GetValue())
+            // if the player is dead or otherwise not active (i.e. simulated) then clear all effects
+            if (this.player.data.dead || !(bool)Traverse.Create(this.player.data.playerVel).Field("simulated").GetValue())
             {
                 if (PhotonNetwork.OfflineMode)
                 {

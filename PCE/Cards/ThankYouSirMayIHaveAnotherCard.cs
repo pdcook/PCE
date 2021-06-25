@@ -11,6 +11,9 @@ using PCE.Extensions;
 
 namespace PCE.Cards
 {
+    /*
+     * Any bullets that hit you are added to your max ammo
+     */
     public class ThankYouSirMayIHaveAnotherCard : CustomCard
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)

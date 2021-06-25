@@ -4,6 +4,7 @@ using System.Text;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 using UnityEngine;
+using UnboundLib;
 
 namespace PCE.Extensions
 {
@@ -45,7 +46,7 @@ namespace PCE.Extensions
         {
             if (__instance.GetAdditionalData().minDistanceMultiplier != 1f)
             {
-                obj.AddComponent<ChangeDamageMultiplierAfterDistanceTravelled>().distance *= __instance.GetAdditionalData().minDistanceMultiplier;
+                obj.GetOrAddComponent<ChangeDamageMultiplierAfterDistanceTravelled>().distance *= __instance.GetAdditionalData().minDistanceMultiplier;
             }
         }
     }

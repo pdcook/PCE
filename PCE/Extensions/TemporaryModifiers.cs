@@ -69,7 +69,72 @@ namespace PCE.Extensions
 
     public class GunStatModifier
     {
-        public float damage_add = 0f;        public float damage_mult = 1f;        public float recoilMuiltiplier_add = 0f;        public float recoilMuiltiplier_mult = 1f;        public float knockback_add = 0f;        public float knockback_mult = 1f;        public float attackSpeed_add = 0f;        public float attackSpeed_mult = 1f;        public float projectileSpeed_add = 0f;        public float projectileSpeed_mult = 1f;        public float projectielSimulatonSpeed_add = 0f;        public float projectielSimulatonSpeed_mult = 1f;        public float gravity_add = 0f;        public float gravity_mult = 1f;        public float damageAfterDistanceMultiplier_add = 0f;        public float damageAfterDistanceMultiplier_mult = 1f;        public float bulletDamageMultiplier_add = 0f;        public float bulletDamageMultiplier_mult = 1f;        public float multiplySpread_add = 0f;        public float multiplySpread_mult = 1f;        public float size_add = 0f;        public float size_mult = 1f;        public float timeToReachFullMovementMultiplier_add = 0f;        public float timeToReachFullMovementMultiplier_mult = 1f;        public int numberOfProjectiles_add = 0;        public int numberOfProjectiles_mult = 1;        public int bursts_add = 0;        public int bursts_mult = 1;        public int reflects_add = 0;        public int reflects_mult = 1;        public int smartBounce_add = 0;        public int smartBounce_mult = 1;        public int randomBounces_add = 0;        public int randomBounces_mult = 1;        public float timeBetweenBullets_add = 0f;        public float timeBetweenBullets_mult = 1f;        public float projectileSize_add = 0f;        public float projectileSize_mult = 1f;        public float speedMOnBounce_add = 0f;        public float speedMOnBounce_mult = 1f;        public float dmgMOnBounce_add = 0f;        public float dmgMOnBounce_mult = 1f;        public float drag_add = 0f;        public float drag_mult = 1f;        public float dragMinSpeed_add = 0f;        public float dragMinSpeed_mult = 1f;        public float spread_add = 0f;        public float spread_mult = 1f;        public float evenSpread_add = 0f;        public float evenSpread_mult = 1f;        public float percentageDamage_add = 0f;        public float percentageDamage_mult = 1f;        public float slow_add = 0f;        public float slow_mult = 1f;        public float destroyBulletAfter_add = 0f;        public float destroyBulletAfter_mult = 1f;        public float forceSpecificAttackSpeed_add = 0f;        public float forceSpecificAttackSpeed_mult = 1f;        public float explodeNearEnemyRange_add = 0f;        public float explodeNearEnemyRange_mult = 1f;        public float explodeNearEnemyDamage_add = 0f;        public float explodeNearEnemyDamage_mult = 1f;        public float hitMovementMultiplier_add = 0f;        public float hitMovementMultiplier_mult = 1f;        public float attackSpeedMultiplier_add = 0f;        public float attackSpeedMultiplier_mult = 1f;
+        public float damage_add = 0f;
+        public float damage_mult = 1f;
+        public float recoilMuiltiplier_add = 0f;
+        public float recoilMuiltiplier_mult = 1f;
+        public float knockback_add = 0f;
+        public float knockback_mult = 1f;
+        public float attackSpeed_add = 0f;
+        public float attackSpeed_mult = 1f;
+        public float projectileSpeed_add = 0f;
+        public float projectileSpeed_mult = 1f;
+        public float projectielSimulatonSpeed_add = 0f;
+        public float projectielSimulatonSpeed_mult = 1f;
+        public float gravity_add = 0f;
+        public float gravity_mult = 1f;
+        public float damageAfterDistanceMultiplier_add = 0f;
+        public float damageAfterDistanceMultiplier_mult = 1f;
+        public float bulletDamageMultiplier_add = 0f;
+        public float bulletDamageMultiplier_mult = 1f;
+        public float multiplySpread_add = 0f;
+        public float multiplySpread_mult = 1f;
+        public float size_add = 0f;
+        public float size_mult = 1f;
+        public float timeToReachFullMovementMultiplier_add = 0f;
+        public float timeToReachFullMovementMultiplier_mult = 1f;
+        public int numberOfProjectiles_add = 0;
+        public int numberOfProjectiles_mult = 1;
+        public int bursts_add = 0;
+        public int bursts_mult = 1;
+        public int reflects_add = 0;
+        public int reflects_mult = 1;
+        public int smartBounce_add = 0;
+        public int smartBounce_mult = 1;
+        public int randomBounces_add = 0;
+        public int randomBounces_mult = 1;
+        public float timeBetweenBullets_add = 0f;
+        public float timeBetweenBullets_mult = 1f;
+        public float projectileSize_add = 0f;
+        public float projectileSize_mult = 1f;
+        public float speedMOnBounce_add = 0f;
+        public float speedMOnBounce_mult = 1f;
+        public float dmgMOnBounce_add = 0f;
+        public float dmgMOnBounce_mult = 1f;
+        public float drag_add = 0f;
+        public float drag_mult = 1f;
+        public float dragMinSpeed_add = 0f;
+        public float dragMinSpeed_mult = 1f;
+        public float spread_add = 0f;
+        public float spread_mult = 1f;
+        public float evenSpread_add = 0f;
+        public float evenSpread_mult = 1f;
+        public float percentageDamage_add = 0f;
+        public float percentageDamage_mult = 1f;
+        public float slow_add = 0f;
+        public float slow_mult = 1f;
+        public float destroyBulletAfter_add = 0f;
+        public float destroyBulletAfter_mult = 1f;
+        public float forceSpecificAttackSpeed_add = 0f;
+        public float forceSpecificAttackSpeed_mult = 1f;
+        public float explodeNearEnemyRange_add = 0f;
+        public float explodeNearEnemyRange_mult = 1f;
+        public float explodeNearEnemyDamage_add = 0f;
+        public float explodeNearEnemyDamage_mult = 1f;
+        public float hitMovementMultiplier_add = 0f;
+        public float hitMovementMultiplier_mult = 1f;
+        public float attackSpeedMultiplier_add = 0f;
+        public float attackSpeedMultiplier_mult = 1f;
         public List<ObjectsToSpawn> objectsToSpawn_add = new List<ObjectsToSpawn>();
         public Color projectileColor = Color.black;
 
@@ -77,7 +142,39 @@ namespace PCE.Extensions
         public float minDistanceMultiplier_add = 0f;
         public float minDistanceMultiplier_mult = 1f;
 
-        private float damage_delta = 0f;        private float recoilMuiltiplier_delta = 0f;        private float knockback_delta = 0f;        private float attackSpeed_delta = 0f;        private float projectileSpeed_delta = 0f;        private float projectielSimulatonSpeed_delta = 0f;        private float gravity_delta = 0f;        private float damageAfterDistanceMultiplier_delta = 0f;        private float bulletDamageMultiplier_delta = 0f;        private float multiplySpread_delta = 0f;        private float size_delta = 0f;        private float timeToReachFullMovementMultiplier_delta = 0f;        private int numberOfProjectiles_delta = 0;        private int bursts_delta = 0;        private int reflects_delta = 0;        private int smartBounce_delta = 0;        private int randomBounces_delta = 0;        private float timeBetweenBullets_delta = 0f;        private float projectileSize_delta = 0f;        private float speedMOnBounce_delta = 0f;        private float dmgMOnBounce_delta = 0f;        private float drag_delta = 0f;        private float dragMinSpeed_delta = 0f;        private float spread_delta = 0f;        private float evenSpread_delta = 0f;        private float percentageDamage_delta = 0f;        private float slow_delta = 0f;        private float destroyBulletAfter_delta = 0f;        private float forceSpecificAttackSpeed_delta = 0f;        private float explodeNearEnemyRange_delta = 0f;        private float explodeNearEnemyDamage_delta = 0f;        private float hitMovementMultiplier_delta = 0f;        private float attackSpeedMultiplier_delta = 0f;
+        private float damage_delta = 0f;
+        private float recoilMuiltiplier_delta = 0f;
+        private float knockback_delta = 0f;
+        private float attackSpeed_delta = 0f;
+        private float projectileSpeed_delta = 0f;
+        private float projectielSimulatonSpeed_delta = 0f;
+        private float gravity_delta = 0f;
+        private float damageAfterDistanceMultiplier_delta = 0f;
+        private float bulletDamageMultiplier_delta = 0f;
+        private float multiplySpread_delta = 0f;
+        private float size_delta = 0f;
+        private float timeToReachFullMovementMultiplier_delta = 0f;
+        private int numberOfProjectiles_delta = 0;
+        private int bursts_delta = 0;
+        private int reflects_delta = 0;
+        private int smartBounce_delta = 0;
+        private int randomBounces_delta = 0;
+        private float timeBetweenBullets_delta = 0f;
+        private float projectileSize_delta = 0f;
+        private float speedMOnBounce_delta = 0f;
+        private float dmgMOnBounce_delta = 0f;
+        private float drag_delta = 0f;
+        private float dragMinSpeed_delta = 0f;
+        private float spread_delta = 0f;
+        private float evenSpread_delta = 0f;
+        private float percentageDamage_delta = 0f;
+        private float slow_delta = 0f;
+        private float destroyBulletAfter_delta = 0f;
+        private float forceSpecificAttackSpeed_delta = 0f;
+        private float explodeNearEnemyRange_delta = 0f;
+        private float explodeNearEnemyDamage_delta = 0f;
+        private float hitMovementMultiplier_delta = 0f;
+        private float attackSpeedMultiplier_delta = 0f;
 
         private GunColorEffect gunColorEffect = null;
 
@@ -128,7 +225,39 @@ namespace PCE.Extensions
 
 
             // apply everything
-            gun.damage += gunStatModifier.damage_delta;            gun.recoilMuiltiplier += gunStatModifier.recoilMuiltiplier_delta;            gun.knockback += gunStatModifier.knockback_delta;            gun.attackSpeed += gunStatModifier.attackSpeed_delta;            gun.projectileSpeed += gunStatModifier.projectileSpeed_delta;            gun.projectielSimulatonSpeed += gunStatModifier.projectielSimulatonSpeed_delta;            gun.gravity += gunStatModifier.gravity_delta;            gun.damageAfterDistanceMultiplier += gunStatModifier.damageAfterDistanceMultiplier_delta;            gun.bulletDamageMultiplier += gunStatModifier.bulletDamageMultiplier_delta;            gun.multiplySpread += gunStatModifier.multiplySpread_delta;            gun.size += gunStatModifier.size_delta;            gun.timeToReachFullMovementMultiplier += gunStatModifier.timeToReachFullMovementMultiplier_delta;            gun.numberOfProjectiles += gunStatModifier.numberOfProjectiles_delta;            gun.bursts += gunStatModifier.bursts_delta;            gun.reflects += gunStatModifier.reflects_delta;            gun.smartBounce += gunStatModifier.smartBounce_delta;            gun.randomBounces += gunStatModifier.randomBounces_delta;            gun.timeBetweenBullets += gunStatModifier.timeBetweenBullets_delta;            gun.projectileSize += gunStatModifier.projectileSize_delta;            gun.speedMOnBounce += gunStatModifier.speedMOnBounce_delta;            gun.dmgMOnBounce += gunStatModifier.dmgMOnBounce_delta;            gun.drag += gunStatModifier.drag_delta;            gun.dragMinSpeed += gunStatModifier.dragMinSpeed_delta;            gun.spread += gunStatModifier.spread_delta;            gun.evenSpread += gunStatModifier.evenSpread_delta;            gun.percentageDamage += gunStatModifier.percentageDamage_delta;            gun.slow += gunStatModifier.slow_delta;            gun.destroyBulletAfter += gunStatModifier.destroyBulletAfter_delta;            gun.forceSpecificAttackSpeed += gunStatModifier.forceSpecificAttackSpeed_delta;            gun.explodeNearEnemyRange += gunStatModifier.explodeNearEnemyRange_delta;            gun.explodeNearEnemyDamage += gunStatModifier.explodeNearEnemyDamage_delta;            gun.hitMovementMultiplier += gunStatModifier.hitMovementMultiplier_delta;            gun.attackSpeedMultiplier += gunStatModifier.attackSpeedMultiplier_delta;
+            gun.damage += gunStatModifier.damage_delta;
+            gun.recoilMuiltiplier += gunStatModifier.recoilMuiltiplier_delta;
+            gun.knockback += gunStatModifier.knockback_delta;
+            gun.attackSpeed += gunStatModifier.attackSpeed_delta;
+            gun.projectileSpeed += gunStatModifier.projectileSpeed_delta;
+            gun.projectielSimulatonSpeed += gunStatModifier.projectielSimulatonSpeed_delta;
+            gun.gravity += gunStatModifier.gravity_delta;
+            gun.damageAfterDistanceMultiplier += gunStatModifier.damageAfterDistanceMultiplier_delta;
+            gun.bulletDamageMultiplier += gunStatModifier.bulletDamageMultiplier_delta;
+            gun.multiplySpread += gunStatModifier.multiplySpread_delta;
+            gun.size += gunStatModifier.size_delta;
+            gun.timeToReachFullMovementMultiplier += gunStatModifier.timeToReachFullMovementMultiplier_delta;
+            gun.numberOfProjectiles += gunStatModifier.numberOfProjectiles_delta;
+            gun.bursts += gunStatModifier.bursts_delta;
+            gun.reflects += gunStatModifier.reflects_delta;
+            gun.smartBounce += gunStatModifier.smartBounce_delta;
+            gun.randomBounces += gunStatModifier.randomBounces_delta;
+            gun.timeBetweenBullets += gunStatModifier.timeBetweenBullets_delta;
+            gun.projectileSize += gunStatModifier.projectileSize_delta;
+            gun.speedMOnBounce += gunStatModifier.speedMOnBounce_delta;
+            gun.dmgMOnBounce += gunStatModifier.dmgMOnBounce_delta;
+            gun.drag += gunStatModifier.drag_delta;
+            gun.dragMinSpeed += gunStatModifier.dragMinSpeed_delta;
+            gun.spread += gunStatModifier.spread_delta;
+            gun.evenSpread += gunStatModifier.evenSpread_delta;
+            gun.percentageDamage += gunStatModifier.percentageDamage_delta;
+            gun.slow += gunStatModifier.slow_delta;
+            gun.destroyBulletAfter += gunStatModifier.destroyBulletAfter_delta;
+            gun.forceSpecificAttackSpeed += gunStatModifier.forceSpecificAttackSpeed_delta;
+            gun.explodeNearEnemyRange += gunStatModifier.explodeNearEnemyRange_delta;
+            gun.explodeNearEnemyDamage += gunStatModifier.explodeNearEnemyDamage_delta;
+            gun.hitMovementMultiplier += gunStatModifier.hitMovementMultiplier_delta;
+            gun.attackSpeedMultiplier += gunStatModifier.attackSpeedMultiplier_delta;
 
             List<ObjectsToSpawn> gunObjectsToSpawn = new List<ObjectsToSpawn>(gun.objectsToSpawn);
 
@@ -184,7 +313,39 @@ namespace PCE.Extensions
             this.minDistanceMultiplier_delta = gun.GetAdditionalData().minDistanceMultiplier * this.minDistanceMultiplier_mult + this.minDistanceMultiplier_add - gun.GetAdditionalData().minDistanceMultiplier;
 
             // apply everything
-            gun.damage += this.damage_delta;            gun.recoilMuiltiplier += this.recoilMuiltiplier_delta;            gun.knockback += this.knockback_delta;            gun.attackSpeed += this.attackSpeed_delta;            gun.projectileSpeed += this.projectileSpeed_delta;            gun.projectielSimulatonSpeed += this.projectielSimulatonSpeed_delta;            gun.gravity += this.gravity_delta;            gun.damageAfterDistanceMultiplier += this.damageAfterDistanceMultiplier_delta;            gun.bulletDamageMultiplier += this.bulletDamageMultiplier_delta;            gun.multiplySpread += this.multiplySpread_delta;            gun.size += this.size_delta;            gun.timeToReachFullMovementMultiplier += this.timeToReachFullMovementMultiplier_delta;            gun.numberOfProjectiles += this.numberOfProjectiles_delta;            gun.bursts += this.bursts_delta;            gun.reflects += this.reflects_delta;            gun.smartBounce += this.smartBounce_delta;            gun.randomBounces += this.randomBounces_delta;            gun.timeBetweenBullets += this.timeBetweenBullets_delta;            gun.projectileSize += this.projectileSize_delta;            gun.speedMOnBounce += this.speedMOnBounce_delta;            gun.dmgMOnBounce += this.dmgMOnBounce_delta;            gun.drag += this.drag_delta;            gun.dragMinSpeed += this.dragMinSpeed_delta;            gun.spread += this.spread_delta;            gun.evenSpread += this.evenSpread_delta;            gun.percentageDamage += this.percentageDamage_delta;            gun.slow += this.slow_delta;            gun.destroyBulletAfter += this.destroyBulletAfter_delta;            gun.forceSpecificAttackSpeed += this.forceSpecificAttackSpeed_delta;            gun.explodeNearEnemyRange += this.explodeNearEnemyRange_delta;            gun.explodeNearEnemyDamage += this.explodeNearEnemyDamage_delta;            gun.hitMovementMultiplier += this.hitMovementMultiplier_delta;            gun.attackSpeedMultiplier += this.attackSpeedMultiplier_delta;
+            gun.damage += this.damage_delta;
+            gun.recoilMuiltiplier += this.recoilMuiltiplier_delta;
+            gun.knockback += this.knockback_delta;
+            gun.attackSpeed += this.attackSpeed_delta;
+            gun.projectileSpeed += this.projectileSpeed_delta;
+            gun.projectielSimulatonSpeed += this.projectielSimulatonSpeed_delta;
+            gun.gravity += this.gravity_delta;
+            gun.damageAfterDistanceMultiplier += this.damageAfterDistanceMultiplier_delta;
+            gun.bulletDamageMultiplier += this.bulletDamageMultiplier_delta;
+            gun.multiplySpread += this.multiplySpread_delta;
+            gun.size += this.size_delta;
+            gun.timeToReachFullMovementMultiplier += this.timeToReachFullMovementMultiplier_delta;
+            gun.numberOfProjectiles += this.numberOfProjectiles_delta;
+            gun.bursts += this.bursts_delta;
+            gun.reflects += this.reflects_delta;
+            gun.smartBounce += this.smartBounce_delta;
+            gun.randomBounces += this.randomBounces_delta;
+            gun.timeBetweenBullets += this.timeBetweenBullets_delta;
+            gun.projectileSize += this.projectileSize_delta;
+            gun.speedMOnBounce += this.speedMOnBounce_delta;
+            gun.dmgMOnBounce += this.dmgMOnBounce_delta;
+            gun.drag += this.drag_delta;
+            gun.dragMinSpeed += this.dragMinSpeed_delta;
+            gun.spread += this.spread_delta;
+            gun.evenSpread += this.evenSpread_delta;
+            gun.percentageDamage += this.percentageDamage_delta;
+            gun.slow += this.slow_delta;
+            gun.destroyBulletAfter += this.destroyBulletAfter_delta;
+            gun.forceSpecificAttackSpeed += this.forceSpecificAttackSpeed_delta;
+            gun.explodeNearEnemyRange += this.explodeNearEnemyRange_delta;
+            gun.explodeNearEnemyDamage += this.explodeNearEnemyDamage_delta;
+            gun.hitMovementMultiplier += this.hitMovementMultiplier_delta;
+            gun.attackSpeedMultiplier += this.attackSpeedMultiplier_delta;
 
             List<ObjectsToSpawn> gunObjectsToSpawn = new List<ObjectsToSpawn>(gun.objectsToSpawn);
 
@@ -204,7 +365,39 @@ namespace PCE.Extensions
 
         public static void RemoveGunStatModifier(GunStatModifier gunStatModifier, Gun gun)
         {
-            gun.damage -= gunStatModifier.damage_delta;            gun.recoilMuiltiplier -= gunStatModifier.recoilMuiltiplier_delta;            gun.knockback -= gunStatModifier.knockback_delta;            gun.attackSpeed -= gunStatModifier.attackSpeed_delta;            gun.projectileSpeed -= gunStatModifier.projectileSpeed_delta;            gun.projectielSimulatonSpeed -= gunStatModifier.projectielSimulatonSpeed_delta;            gun.gravity -= gunStatModifier.gravity_delta;            gun.damageAfterDistanceMultiplier -= gunStatModifier.damageAfterDistanceMultiplier_delta;            gun.bulletDamageMultiplier -= gunStatModifier.bulletDamageMultiplier_delta;            gun.multiplySpread -= gunStatModifier.multiplySpread_delta;            gun.size -= gunStatModifier.size_delta;            gun.timeToReachFullMovementMultiplier -= gunStatModifier.timeToReachFullMovementMultiplier_delta;            gun.numberOfProjectiles -= gunStatModifier.numberOfProjectiles_delta;            gun.bursts -= gunStatModifier.bursts_delta;            gun.reflects -= gunStatModifier.reflects_delta;            gun.smartBounce -= gunStatModifier.smartBounce_delta;            gun.randomBounces -= gunStatModifier.randomBounces_delta;            gun.timeBetweenBullets -= gunStatModifier.timeBetweenBullets_delta;            gun.projectileSize -= gunStatModifier.projectileSize_delta;            gun.speedMOnBounce -= gunStatModifier.speedMOnBounce_delta;            gun.dmgMOnBounce -= gunStatModifier.dmgMOnBounce_delta;            gun.drag -= gunStatModifier.drag_delta;            gun.dragMinSpeed -= gunStatModifier.dragMinSpeed_delta;            gun.spread -= gunStatModifier.spread_delta;            gun.evenSpread -= gunStatModifier.evenSpread_delta;            gun.percentageDamage -= gunStatModifier.percentageDamage_delta;            gun.slow -= gunStatModifier.slow_delta;            gun.destroyBulletAfter -= gunStatModifier.destroyBulletAfter_delta;            gun.forceSpecificAttackSpeed -= gunStatModifier.forceSpecificAttackSpeed_delta;            gun.explodeNearEnemyRange -= gunStatModifier.explodeNearEnemyRange_delta;            gun.explodeNearEnemyDamage -= gunStatModifier.explodeNearEnemyDamage_delta;            gun.hitMovementMultiplier -= gunStatModifier.hitMovementMultiplier_delta;            gun.attackSpeedMultiplier -= gunStatModifier.attackSpeedMultiplier_delta;
+            gun.damage -= gunStatModifier.damage_delta;
+            gun.recoilMuiltiplier -= gunStatModifier.recoilMuiltiplier_delta;
+            gun.knockback -= gunStatModifier.knockback_delta;
+            gun.attackSpeed -= gunStatModifier.attackSpeed_delta;
+            gun.projectileSpeed -= gunStatModifier.projectileSpeed_delta;
+            gun.projectielSimulatonSpeed -= gunStatModifier.projectielSimulatonSpeed_delta;
+            gun.gravity -= gunStatModifier.gravity_delta;
+            gun.damageAfterDistanceMultiplier -= gunStatModifier.damageAfterDistanceMultiplier_delta;
+            gun.bulletDamageMultiplier -= gunStatModifier.bulletDamageMultiplier_delta;
+            gun.multiplySpread -= gunStatModifier.multiplySpread_delta;
+            gun.size -= gunStatModifier.size_delta;
+            gun.timeToReachFullMovementMultiplier -= gunStatModifier.timeToReachFullMovementMultiplier_delta;
+            gun.numberOfProjectiles -= gunStatModifier.numberOfProjectiles_delta;
+            gun.bursts -= gunStatModifier.bursts_delta;
+            gun.reflects -= gunStatModifier.reflects_delta;
+            gun.smartBounce -= gunStatModifier.smartBounce_delta;
+            gun.randomBounces -= gunStatModifier.randomBounces_delta;
+            gun.timeBetweenBullets -= gunStatModifier.timeBetweenBullets_delta;
+            gun.projectileSize -= gunStatModifier.projectileSize_delta;
+            gun.speedMOnBounce -= gunStatModifier.speedMOnBounce_delta;
+            gun.dmgMOnBounce -= gunStatModifier.dmgMOnBounce_delta;
+            gun.drag -= gunStatModifier.drag_delta;
+            gun.dragMinSpeed -= gunStatModifier.dragMinSpeed_delta;
+            gun.spread -= gunStatModifier.spread_delta;
+            gun.evenSpread -= gunStatModifier.evenSpread_delta;
+            gun.percentageDamage -= gunStatModifier.percentageDamage_delta;
+            gun.slow -= gunStatModifier.slow_delta;
+            gun.destroyBulletAfter -= gunStatModifier.destroyBulletAfter_delta;
+            gun.forceSpecificAttackSpeed -= gunStatModifier.forceSpecificAttackSpeed_delta;
+            gun.explodeNearEnemyRange -= gunStatModifier.explodeNearEnemyRange_delta;
+            gun.explodeNearEnemyDamage -= gunStatModifier.explodeNearEnemyDamage_delta;
+            gun.hitMovementMultiplier -= gunStatModifier.hitMovementMultiplier_delta;
+            gun.attackSpeedMultiplier -= gunStatModifier.attackSpeedMultiplier_delta;
 
             List<ObjectsToSpawn> gunObjectsToSpawn = new List<ObjectsToSpawn>(gun.objectsToSpawn);
 
@@ -219,7 +412,39 @@ namespace PCE.Extensions
             gun.GetAdditionalData().minDistanceMultiplier -= gunStatModifier.minDistanceMultiplier_delta;
 
             // reset deltas
-            gunStatModifier.damage_delta = 0f;            gunStatModifier.recoilMuiltiplier_delta = 0f;            gunStatModifier.knockback_delta = 0f;            gunStatModifier.attackSpeed_delta = 0f;            gunStatModifier.projectileSpeed_delta = 0f;            gunStatModifier.projectielSimulatonSpeed_delta = 0f;            gunStatModifier.gravity_delta = 0f;            gunStatModifier.damageAfterDistanceMultiplier_delta = 0f;            gunStatModifier.bulletDamageMultiplier_delta = 0f;            gunStatModifier.multiplySpread_delta = 0f;            gunStatModifier.size_delta = 0f;            gunStatModifier.timeToReachFullMovementMultiplier_delta = 0f;            gunStatModifier.numberOfProjectiles_delta = 0;            gunStatModifier.bursts_delta = 0;            gunStatModifier.reflects_delta = 0;            gunStatModifier.smartBounce_delta = 0;            gunStatModifier.randomBounces_delta = 0;            gunStatModifier.timeBetweenBullets_delta = 0f;            gunStatModifier.projectileSize_delta = 0f;            gunStatModifier.speedMOnBounce_delta = 0f;            gunStatModifier.dmgMOnBounce_delta = 0f;            gunStatModifier.drag_delta = 0f;            gunStatModifier.dragMinSpeed_delta = 0f;            gunStatModifier.spread_delta = 0f;            gunStatModifier.evenSpread_delta = 0f;            gunStatModifier.percentageDamage_delta = 0f;            gunStatModifier.slow_delta = 0f;            gunStatModifier.destroyBulletAfter_delta = 0f;            gunStatModifier.forceSpecificAttackSpeed_delta = 0f;            gunStatModifier.explodeNearEnemyRange_delta = 0f;            gunStatModifier.explodeNearEnemyDamage_delta = 0f;            gunStatModifier.hitMovementMultiplier_delta = 0f;            gunStatModifier.attackSpeedMultiplier_delta = 0f;
+            gunStatModifier.damage_delta = 0f;
+            gunStatModifier.recoilMuiltiplier_delta = 0f;
+            gunStatModifier.knockback_delta = 0f;
+            gunStatModifier.attackSpeed_delta = 0f;
+            gunStatModifier.projectileSpeed_delta = 0f;
+            gunStatModifier.projectielSimulatonSpeed_delta = 0f;
+            gunStatModifier.gravity_delta = 0f;
+            gunStatModifier.damageAfterDistanceMultiplier_delta = 0f;
+            gunStatModifier.bulletDamageMultiplier_delta = 0f;
+            gunStatModifier.multiplySpread_delta = 0f;
+            gunStatModifier.size_delta = 0f;
+            gunStatModifier.timeToReachFullMovementMultiplier_delta = 0f;
+            gunStatModifier.numberOfProjectiles_delta = 0;
+            gunStatModifier.bursts_delta = 0;
+            gunStatModifier.reflects_delta = 0;
+            gunStatModifier.smartBounce_delta = 0;
+            gunStatModifier.randomBounces_delta = 0;
+            gunStatModifier.timeBetweenBullets_delta = 0f;
+            gunStatModifier.projectileSize_delta = 0f;
+            gunStatModifier.speedMOnBounce_delta = 0f;
+            gunStatModifier.dmgMOnBounce_delta = 0f;
+            gunStatModifier.drag_delta = 0f;
+            gunStatModifier.dragMinSpeed_delta = 0f;
+            gunStatModifier.spread_delta = 0f;
+            gunStatModifier.evenSpread_delta = 0f;
+            gunStatModifier.percentageDamage_delta = 0f;
+            gunStatModifier.slow_delta = 0f;
+            gunStatModifier.destroyBulletAfter_delta = 0f;
+            gunStatModifier.forceSpecificAttackSpeed_delta = 0f;
+            gunStatModifier.explodeNearEnemyRange_delta = 0f;
+            gunStatModifier.explodeNearEnemyDamage_delta = 0f;
+            gunStatModifier.hitMovementMultiplier_delta = 0f;
+            gunStatModifier.attackSpeedMultiplier_delta = 0f;
 
             gunStatModifier.gunColorEffect = null;
 
@@ -229,7 +454,39 @@ namespace PCE.Extensions
         }
         public void RemoveGunStatModifier(Gun gun)
         {
-            gun.damage -= this.damage_delta;            gun.recoilMuiltiplier -= this.recoilMuiltiplier_delta;            gun.knockback -= this.knockback_delta;            gun.attackSpeed -= this.attackSpeed_delta;            gun.projectileSpeed -= this.projectileSpeed_delta;            gun.projectielSimulatonSpeed -= this.projectielSimulatonSpeed_delta;            gun.gravity -= this.gravity_delta;            gun.damageAfterDistanceMultiplier -= this.damageAfterDistanceMultiplier_delta;            gun.bulletDamageMultiplier -= this.bulletDamageMultiplier_delta;            gun.multiplySpread -= this.multiplySpread_delta;            gun.size -= this.size_delta;            gun.timeToReachFullMovementMultiplier -= this.timeToReachFullMovementMultiplier_delta;            gun.numberOfProjectiles -= this.numberOfProjectiles_delta;            gun.bursts -= this.bursts_delta;            gun.reflects -= this.reflects_delta;            gun.smartBounce -= this.smartBounce_delta;            gun.randomBounces -= this.randomBounces_delta;            gun.timeBetweenBullets -= this.timeBetweenBullets_delta;            gun.projectileSize -= this.projectileSize_delta;            gun.speedMOnBounce -= this.speedMOnBounce_delta;            gun.dmgMOnBounce -= this.dmgMOnBounce_delta;            gun.drag -= this.drag_delta;            gun.dragMinSpeed -= this.dragMinSpeed_delta;            gun.spread -= this.spread_delta;            gun.evenSpread -= this.evenSpread_delta;            gun.percentageDamage -= this.percentageDamage_delta;            gun.slow -= this.slow_delta;            gun.destroyBulletAfter -= this.destroyBulletAfter_delta;            gun.forceSpecificAttackSpeed -= this.forceSpecificAttackSpeed_delta;            gun.explodeNearEnemyRange -= this.explodeNearEnemyRange_delta;            gun.explodeNearEnemyDamage -= this.explodeNearEnemyDamage_delta;            gun.hitMovementMultiplier -= this.hitMovementMultiplier_delta;            gun.attackSpeedMultiplier -= this.attackSpeedMultiplier_delta;
+            gun.damage -= this.damage_delta;
+            gun.recoilMuiltiplier -= this.recoilMuiltiplier_delta;
+            gun.knockback -= this.knockback_delta;
+            gun.attackSpeed -= this.attackSpeed_delta;
+            gun.projectileSpeed -= this.projectileSpeed_delta;
+            gun.projectielSimulatonSpeed -= this.projectielSimulatonSpeed_delta;
+            gun.gravity -= this.gravity_delta;
+            gun.damageAfterDistanceMultiplier -= this.damageAfterDistanceMultiplier_delta;
+            gun.bulletDamageMultiplier -= this.bulletDamageMultiplier_delta;
+            gun.multiplySpread -= this.multiplySpread_delta;
+            gun.size -= this.size_delta;
+            gun.timeToReachFullMovementMultiplier -= this.timeToReachFullMovementMultiplier_delta;
+            gun.numberOfProjectiles -= this.numberOfProjectiles_delta;
+            gun.bursts -= this.bursts_delta;
+            gun.reflects -= this.reflects_delta;
+            gun.smartBounce -= this.smartBounce_delta;
+            gun.randomBounces -= this.randomBounces_delta;
+            gun.timeBetweenBullets -= this.timeBetweenBullets_delta;
+            gun.projectileSize -= this.projectileSize_delta;
+            gun.speedMOnBounce -= this.speedMOnBounce_delta;
+            gun.dmgMOnBounce -= this.dmgMOnBounce_delta;
+            gun.drag -= this.drag_delta;
+            gun.dragMinSpeed -= this.dragMinSpeed_delta;
+            gun.spread -= this.spread_delta;
+            gun.evenSpread -= this.evenSpread_delta;
+            gun.percentageDamage -= this.percentageDamage_delta;
+            gun.slow -= this.slow_delta;
+            gun.destroyBulletAfter -= this.destroyBulletAfter_delta;
+            gun.forceSpecificAttackSpeed -= this.forceSpecificAttackSpeed_delta;
+            gun.explodeNearEnemyRange -= this.explodeNearEnemyRange_delta;
+            gun.explodeNearEnemyDamage -= this.explodeNearEnemyDamage_delta;
+            gun.hitMovementMultiplier -= this.hitMovementMultiplier_delta;
+            gun.attackSpeedMultiplier -= this.attackSpeedMultiplier_delta;
 
             List<ObjectsToSpawn> gunObjectsToSpawn = new List<ObjectsToSpawn>(gun.objectsToSpawn);
 
@@ -244,7 +501,39 @@ namespace PCE.Extensions
             gun.GetAdditionalData().minDistanceMultiplier -= this.minDistanceMultiplier_delta;
 
             // reset deltas
-            this.damage_delta = 0f;            this.recoilMuiltiplier_delta = 0f;            this.knockback_delta = 0f;            this.attackSpeed_delta = 0f;            this.projectileSpeed_delta = 0f;            this.projectielSimulatonSpeed_delta = 0f;            this.gravity_delta = 0f;            this.damageAfterDistanceMultiplier_delta = 0f;            this.bulletDamageMultiplier_delta = 0f;            this.multiplySpread_delta = 0f;            this.size_delta = 0f;            this.timeToReachFullMovementMultiplier_delta = 0f;            this.numberOfProjectiles_delta = 0;            this.bursts_delta = 0;            this.reflects_delta = 0;            this.smartBounce_delta = 0;            this.randomBounces_delta = 0;            this.timeBetweenBullets_delta = 0f;            this.projectileSize_delta = 0f;            this.speedMOnBounce_delta = 0f;            this.dmgMOnBounce_delta = 0f;            this.drag_delta = 0f;            this.dragMinSpeed_delta = 0f;            this.spread_delta = 0f;            this.evenSpread_delta = 0f;            this.percentageDamage_delta = 0f;            this.slow_delta = 0f;            this.destroyBulletAfter_delta = 0f;            this.forceSpecificAttackSpeed_delta = 0f;            this.explodeNearEnemyRange_delta = 0f;            this.explodeNearEnemyDamage_delta = 0f;            this.hitMovementMultiplier_delta = 0f;            this.attackSpeedMultiplier_delta = 0f;
+            this.damage_delta = 0f;
+            this.recoilMuiltiplier_delta = 0f;
+            this.knockback_delta = 0f;
+            this.attackSpeed_delta = 0f;
+            this.projectileSpeed_delta = 0f;
+            this.projectielSimulatonSpeed_delta = 0f;
+            this.gravity_delta = 0f;
+            this.damageAfterDistanceMultiplier_delta = 0f;
+            this.bulletDamageMultiplier_delta = 0f;
+            this.multiplySpread_delta = 0f;
+            this.size_delta = 0f;
+            this.timeToReachFullMovementMultiplier_delta = 0f;
+            this.numberOfProjectiles_delta = 0;
+            this.bursts_delta = 0;
+            this.reflects_delta = 0;
+            this.smartBounce_delta = 0;
+            this.randomBounces_delta = 0;
+            this.timeBetweenBullets_delta = 0f;
+            this.projectileSize_delta = 0f;
+            this.speedMOnBounce_delta = 0f;
+            this.dmgMOnBounce_delta = 0f;
+            this.drag_delta = 0f;
+            this.dragMinSpeed_delta = 0f;
+            this.spread_delta = 0f;
+            this.evenSpread_delta = 0f;
+            this.percentageDamage_delta = 0f;
+            this.slow_delta = 0f;
+            this.destroyBulletAfter_delta = 0f;
+            this.forceSpecificAttackSpeed_delta = 0f;
+            this.explodeNearEnemyRange_delta = 0f;
+            this.explodeNearEnemyDamage_delta = 0f;
+            this.hitMovementMultiplier_delta = 0f;
+            this.attackSpeedMultiplier_delta = 0f;
 
             this.gunColorEffect = null;
 
@@ -260,31 +549,53 @@ namespace PCE.Extensions
     public class CharacterStatModifiersModifier
     {
         public List<GameObject> objectsToAddToPlayer = new List<GameObject>();
-        public float sizeMultiplier_add = 0f;        public float sizeMultiplier_mult = 1f;
-        public float health_add = 0f;        public float health_mult = 1f;
-        public float movementSpeed_add = 0f;        public float movementSpeed_mult = 1f;
-        public float jump_add = 0f;        public float jump_mult = 1f;
-        public float gravity_add = 0f;        public float gravity_mult = 1f;
-        public float slow_add = 0f;        public float slow_mult = 1f;
-        public float slowSlow_add = 0f;        public float slowSlow_mult = 1f;
-        public float fastSlow_add = 0f;        public float fastSlow_mult = 1f;
-        public float secondsToTakeDamageOver_add = 0f;        public float secondsToTakeDamageOver_mult = 1f;
-        public int numberOfJumps_add = 0;        public int numberOfJumps_mult = 1;
-        public float regen_add = 0f;        public float regen_mult = 1f;
-        public float lifeSteal_add = 0f;        public float lifeSteal_mult = 1f;
-        public int respawns_add = 0;        public int respawns_mult = 1;
-        public float tasteOfBloodSpeed_add = 0f;        public float tasteOfBloodSpeed_mult = 1f;
-        public float rageSpeed_add = 0f;        public float rageSpeed_mult = 1f;
-        public float attackSpeedMultiplier_add = 0f;        public float attackSpeedMultiplier_mult = 1f;
+        public float sizeMultiplier_add = 0f;
+        public float sizeMultiplier_mult = 1f;
+        public float health_add = 0f;
+        public float health_mult = 1f;
+        public float movementSpeed_add = 0f;
+        public float movementSpeed_mult = 1f;
+        public float jump_add = 0f;
+        public float jump_mult = 1f;
+        public float gravity_add = 0f;
+        public float gravity_mult = 1f;
+        public float slow_add = 0f;
+        public float slow_mult = 1f;
+        public float slowSlow_add = 0f;
+        public float slowSlow_mult = 1f;
+        public float fastSlow_add = 0f;
+        public float fastSlow_mult = 1f;
+        public float secondsToTakeDamageOver_add = 0f;
+        public float secondsToTakeDamageOver_mult = 1f;
+        public int numberOfJumps_add = 0;
+        public int numberOfJumps_mult = 1;
+        public float regen_add = 0f;
+        public float regen_mult = 1f;
+        public float lifeSteal_add = 0f;
+        public float lifeSteal_mult = 1f;
+        public int respawns_add = 0;
+        public int respawns_mult = 1;
+        public float tasteOfBloodSpeed_add = 0f;
+        public float tasteOfBloodSpeed_mult = 1f;
+        public float rageSpeed_add = 0f;
+        public float rageSpeed_mult = 1f;
+        public float attackSpeedMultiplier_add = 0f;
+        public float attackSpeedMultiplier_mult = 1f;
 
         // extra stuff from extensions
-        public float gravityMultiplierOnDoDamage_add = 0f;        public float gravityMultiplierOnDoDamage_mult = 1f;
-        public float gravityDurationOnDoDamage_add = 0f;        public float gravityDurationOnDoDamage_mult = 1f;
-        public float defaultGravityForce_add = 0f;        public float defaultGravityForce_mult = 1f;
-        public float defaultGravityExponent_add = 0f;        public float defaultGravityExponent_mult = 1f;
-        public int murder_add = 0;        public int murder_mult = 1;
+        public float gravityMultiplierOnDoDamage_add = 0f;
+        public float gravityMultiplierOnDoDamage_mult = 1f;
+        public float gravityDurationOnDoDamage_add = 0f;
+        public float gravityDurationOnDoDamage_mult = 1f;
+        public float defaultGravityForce_add = 0f;
+        public float defaultGravityForce_mult = 1f;
+        public float defaultGravityExponent_add = 0f;
+        public float defaultGravityExponent_mult = 1f;
+        public int murder_add = 0;
+        public int murder_mult = 1;
 
-        private List<GameObject> objectsAddedToPlayer = new List<GameObject>();        private float sizeMultiplier_delta = 0f;
+        private List<GameObject> objectsAddedToPlayer = new List<GameObject>();
+        private float sizeMultiplier_delta = 0f;
         private float health_delta = 0f;
         private float movementSpeed_delta = 0f;
         private float jump_delta = 0f;
@@ -302,7 +613,12 @@ namespace PCE.Extensions
         private float attackSpeedMultiplier_delta = 0f;
 
         // extra stuff from extensions
-        private float gravityMultiplierOnDoDamage_delta = 0f;        private float gravityDurationOnDoDamage_delta = 0f;        private float defaultGravityForce_delta = 0f;        private float defaultGravityExponent_delta = 0f;        private int murder_delta = 0;
+        private float gravityMultiplierOnDoDamage_delta = 0f;
+        private float gravityDurationOnDoDamage_delta = 0f;
+        private float defaultGravityForce_delta = 0f;
+        private float defaultGravityExponent_delta = 0f;
+        private int murder_delta = 0;
+
         public static void ApplyCharacterStatModifiersModifier(CharacterStatModifiersModifier characterStatModifiersModifier, CharacterStatModifiers characterStatModifiers)
         {
             characterStatModifiersModifier.sizeMultiplier_delta = characterStatModifiers.sizeMultiplier * characterStatModifiersModifier.sizeMultiplier_mult + characterStatModifiersModifier.sizeMultiplier_add - characterStatModifiers.sizeMultiplier;
@@ -323,7 +639,11 @@ namespace PCE.Extensions
             characterStatModifiersModifier.attackSpeedMultiplier_delta = characterStatModifiers.attackSpeedMultiplier * characterStatModifiersModifier.attackSpeedMultiplier_mult + characterStatModifiersModifier.attackSpeedMultiplier_add - characterStatModifiers.attackSpeedMultiplier;
 
             // extra stuff from extensions
-            characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage * characterStatModifiersModifier.gravityMultiplierOnDoDamage_mult + characterStatModifiersModifier.gravityMultiplierOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage;            characterStatModifiersModifier.gravityDurationOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage * characterStatModifiersModifier.gravityDurationOnDoDamage_mult + characterStatModifiersModifier.gravityDurationOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage;            characterStatModifiersModifier.defaultGravityForce_delta = characterStatModifiers.GetAdditionalData().defaultGravityForce * characterStatModifiersModifier.defaultGravityForce_mult + characterStatModifiersModifier.defaultGravityForce_add - characterStatModifiers.GetAdditionalData().defaultGravityForce;            characterStatModifiersModifier.defaultGravityExponent_delta = characterStatModifiers.GetAdditionalData().defaultGravityExponent * characterStatModifiersModifier.defaultGravityExponent_mult + characterStatModifiersModifier.defaultGravityExponent_add - characterStatModifiers.GetAdditionalData().defaultGravityExponent;            characterStatModifiersModifier.murder_delta = characterStatModifiers.GetAdditionalData().murder * characterStatModifiersModifier.murder_mult + characterStatModifiersModifier.murder_add - characterStatModifiers.GetAdditionalData().murder;
+            characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage * characterStatModifiersModifier.gravityMultiplierOnDoDamage_mult + characterStatModifiersModifier.gravityMultiplierOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage;
+            characterStatModifiersModifier.gravityDurationOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage * characterStatModifiersModifier.gravityDurationOnDoDamage_mult + characterStatModifiersModifier.gravityDurationOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage;
+            characterStatModifiersModifier.defaultGravityForce_delta = characterStatModifiers.GetAdditionalData().defaultGravityForce * characterStatModifiersModifier.defaultGravityForce_mult + characterStatModifiersModifier.defaultGravityForce_add - characterStatModifiers.GetAdditionalData().defaultGravityForce;
+            characterStatModifiersModifier.defaultGravityExponent_delta = characterStatModifiers.GetAdditionalData().defaultGravityExponent * characterStatModifiersModifier.defaultGravityExponent_mult + characterStatModifiersModifier.defaultGravityExponent_add - characterStatModifiers.GetAdditionalData().defaultGravityExponent;
+            characterStatModifiersModifier.murder_delta = characterStatModifiers.GetAdditionalData().murder * characterStatModifiersModifier.murder_mult + characterStatModifiersModifier.murder_add - characterStatModifiers.GetAdditionalData().murder;
 
             characterStatModifiers.sizeMultiplier += characterStatModifiersModifier.sizeMultiplier_delta;
             characterStatModifiers.health += characterStatModifiersModifier.health_delta;
@@ -343,7 +663,11 @@ namespace PCE.Extensions
             characterStatModifiers.attackSpeedMultiplier += characterStatModifiersModifier.attackSpeedMultiplier_delta;
 
             // extra stuff from extensions
-            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage += characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage += characterStatModifiersModifier.gravityDurationOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().defaultGravityForce += characterStatModifiersModifier.defaultGravityForce_delta;            characterStatModifiers.GetAdditionalData().defaultGravityExponent += characterStatModifiersModifier.defaultGravityExponent_delta;            characterStatModifiers.GetAdditionalData().murder += characterStatModifiersModifier.murder_delta;
+            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage += characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage += characterStatModifiersModifier.gravityDurationOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityForce += characterStatModifiersModifier.defaultGravityForce_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityExponent += characterStatModifiersModifier.defaultGravityExponent_delta;
+            characterStatModifiers.GetAdditionalData().murder += characterStatModifiersModifier.murder_delta;
 
             // special stuff
             Player player = characterStatModifiers.GetComponent<Player>();
@@ -378,7 +702,11 @@ namespace PCE.Extensions
             this.attackSpeedMultiplier_delta = characterStatModifiers.attackSpeedMultiplier * this.attackSpeedMultiplier_mult + this.attackSpeedMultiplier_add - characterStatModifiers.attackSpeedMultiplier;
 
             // extra stuff from extensions
-            this.gravityMultiplierOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage * this.gravityMultiplierOnDoDamage_mult + this.gravityMultiplierOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage;            this.gravityDurationOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage * this.gravityDurationOnDoDamage_mult + this.gravityDurationOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage;            this.defaultGravityForce_delta = characterStatModifiers.GetAdditionalData().defaultGravityForce * this.defaultGravityForce_mult + this.defaultGravityForce_add - characterStatModifiers.GetAdditionalData().defaultGravityForce;            this.defaultGravityExponent_delta = characterStatModifiers.GetAdditionalData().defaultGravityExponent * this.defaultGravityExponent_mult + this.defaultGravityExponent_add - characterStatModifiers.GetAdditionalData().defaultGravityExponent;            this.murder_delta = characterStatModifiers.GetAdditionalData().murder * this.murder_mult + this.murder_add - characterStatModifiers.GetAdditionalData().murder;
+            this.gravityMultiplierOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage * this.gravityMultiplierOnDoDamage_mult + this.gravityMultiplierOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage;
+            this.gravityDurationOnDoDamage_delta = characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage * this.gravityDurationOnDoDamage_mult + this.gravityDurationOnDoDamage_add - characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage;
+            this.defaultGravityForce_delta = characterStatModifiers.GetAdditionalData().defaultGravityForce * this.defaultGravityForce_mult + this.defaultGravityForce_add - characterStatModifiers.GetAdditionalData().defaultGravityForce;
+            this.defaultGravityExponent_delta = characterStatModifiers.GetAdditionalData().defaultGravityExponent * this.defaultGravityExponent_mult + this.defaultGravityExponent_add - characterStatModifiers.GetAdditionalData().defaultGravityExponent;
+            this.murder_delta = characterStatModifiers.GetAdditionalData().murder * this.murder_mult + this.murder_add - characterStatModifiers.GetAdditionalData().murder;
             
             
             characterStatModifiers.sizeMultiplier += this.sizeMultiplier_delta;
@@ -399,7 +727,11 @@ namespace PCE.Extensions
             characterStatModifiers.attackSpeedMultiplier += this.attackSpeedMultiplier_delta;
 
             // extra stuff from extensions
-            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage += this.gravityMultiplierOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage += this.gravityDurationOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().defaultGravityForce += this.defaultGravityForce_delta;            characterStatModifiers.GetAdditionalData().defaultGravityExponent += this.defaultGravityExponent_delta;            characterStatModifiers.GetAdditionalData().murder += this.murder_delta;
+            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage += this.gravityMultiplierOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage += this.gravityDurationOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityForce += this.defaultGravityForce_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityExponent += this.defaultGravityExponent_delta;
+            characterStatModifiers.GetAdditionalData().murder += this.murder_delta;
 
             // special stuff
             Player player = characterStatModifiers.GetComponent<Player>();
@@ -435,7 +767,11 @@ namespace PCE.Extensions
             characterStatModifiers.attackSpeedMultiplier -= characterStatModifiersModifier.attackSpeedMultiplier_delta;
 
             // extra stuff from extensions
-            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage -= characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage -= characterStatModifiersModifier.gravityDurationOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().defaultGravityForce -= characterStatModifiersModifier.defaultGravityForce_delta;            characterStatModifiers.GetAdditionalData().defaultGravityExponent -= characterStatModifiersModifier.defaultGravityExponent_delta;            characterStatModifiers.GetAdditionalData().murder -= characterStatModifiersModifier.murder_delta;
+            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage -= characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage -= characterStatModifiersModifier.gravityDurationOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityForce -= characterStatModifiersModifier.defaultGravityForce_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityExponent -= characterStatModifiersModifier.defaultGravityExponent_delta;
+            characterStatModifiers.GetAdditionalData().murder -= characterStatModifiersModifier.murder_delta;
 
             // special stuff
             foreach (GameObject objectAddedToPlayer in characterStatModifiersModifier.objectsAddedToPlayer)
@@ -446,7 +782,8 @@ namespace PCE.Extensions
             }
 
             // reset deltas
-            characterStatModifiersModifier.objectsAddedToPlayer = new List<GameObject>();            characterStatModifiersModifier.sizeMultiplier_delta = 0f;
+            characterStatModifiersModifier.objectsAddedToPlayer = new List<GameObject>();
+            characterStatModifiersModifier.sizeMultiplier_delta = 0f;
             characterStatModifiersModifier.health_delta = 0f;
             characterStatModifiersModifier.movementSpeed_delta = 0f;
             characterStatModifiersModifier.jump_delta = 0f;
@@ -464,7 +801,11 @@ namespace PCE.Extensions
             characterStatModifiersModifier.attackSpeedMultiplier_delta = 0f;
 
             // extra stuff from extensions
-            characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta = 0f;            characterStatModifiersModifier.gravityDurationOnDoDamage_delta = 0f;            characterStatModifiersModifier.defaultGravityForce_delta = 0f;            characterStatModifiersModifier.defaultGravityExponent_delta = 0f;            characterStatModifiersModifier.murder_delta = 0;
+            characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta = 0f;
+            characterStatModifiersModifier.gravityDurationOnDoDamage_delta = 0f;
+            characterStatModifiersModifier.defaultGravityForce_delta = 0f;
+            characterStatModifiersModifier.defaultGravityExponent_delta = 0f;
+            characterStatModifiersModifier.murder_delta = 0;
 
             // update the characterStatModifiers
             characterStatModifiers.WasUpdated();
@@ -489,7 +830,11 @@ namespace PCE.Extensions
             characterStatModifiers.attackSpeedMultiplier -= this.attackSpeedMultiplier_delta;
 
             // extra stuff from extensions
-            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage -= this.gravityMultiplierOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage -= this.gravityDurationOnDoDamage_delta;            characterStatModifiers.GetAdditionalData().defaultGravityForce -= this.defaultGravityForce_delta;            characterStatModifiers.GetAdditionalData().defaultGravityExponent -= this.defaultGravityExponent_delta;            characterStatModifiers.GetAdditionalData().murder -= this.murder_delta;
+            characterStatModifiers.GetAdditionalData().gravityMultiplierOnDoDamage -= this.gravityMultiplierOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().gravityDurationOnDoDamage -= this.gravityDurationOnDoDamage_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityForce -= this.defaultGravityForce_delta;
+            characterStatModifiers.GetAdditionalData().defaultGravityExponent -= this.defaultGravityExponent_delta;
+            characterStatModifiers.GetAdditionalData().murder -= this.murder_delta;
 
             // special stuff
             foreach (GameObject objectAddedToPlayer in this.objectsAddedToPlayer)
@@ -500,7 +845,8 @@ namespace PCE.Extensions
             }
 
             // reset deltas
-            this.objectsAddedToPlayer = new List<GameObject>();            this.sizeMultiplier_delta = 0f;
+            this.objectsAddedToPlayer = new List<GameObject>();
+            this.sizeMultiplier_delta = 0f;
             this.health_delta = 0f;
             this.movementSpeed_delta = 0f;
             this.jump_delta = 0f;
@@ -518,7 +864,11 @@ namespace PCE.Extensions
             this.attackSpeedMultiplier_delta = 0f;
 
             // extra stuff from extensions
-            this.gravityMultiplierOnDoDamage_delta = 0f;            this.gravityDurationOnDoDamage_delta = 0f;            this.defaultGravityForce_delta = 0f;            this.defaultGravityExponent_delta = 0f;            this.murder_delta = 0;
+            this.gravityMultiplierOnDoDamage_delta = 0f;
+            this.gravityDurationOnDoDamage_delta = 0f;
+            this.defaultGravityForce_delta = 0f;
+            this.defaultGravityExponent_delta = 0f;
+            this.murder_delta = 0;
 
             // update the characterStatModifiers
             characterStatModifiers.WasUpdated();

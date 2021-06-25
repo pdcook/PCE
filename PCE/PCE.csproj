@@ -81,8 +81,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Patches\" />
-  </ItemGroup>
-
 </Project>

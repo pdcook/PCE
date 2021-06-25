@@ -126,6 +126,17 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
         - Low Ground's formatting looks terrible
         - Discombobulate still doesn't have a visual effect like Overpower. If you know how to make/add one, please let me know.
 
+- v0.1.8.1: Silent update
+    - New card: Thank You Sir, May I Have Another?
+
+- v0.1.8.2: Lots of bugfixes, one new card
+    - Fixed issue with gravity effects not stacking properly
+    - Fixed issue with gravity effects not resetting properly between rounds
+    - Fixed issue with multiple jumps persisting between games (See PlayerJumpPatch)
+    - Fixed issue where having multiple Low Ground cards at the end of a match could cause the player's stats to be messed up in the next match
+    - Slowed down the effects of DemonicPossession
+    - New card: Glare
+
 
 ### Suggestions, Bug Reports, and Troubleshooting
 -------------------------------------------------
@@ -253,3 +264,17 @@ Halve in size, double in strength.
 ***Rare***
 
 Become a being of pure chaos.
+
+---
+
+### Thank You Sir, May I Have Another?
+**Uncommon**
+
+Pick up the bullets that hit you
+
+---
+
+### Glare
+**Uncommon**
+
+Enemies freeze in fear when you see them.

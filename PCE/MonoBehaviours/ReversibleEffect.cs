@@ -19,9 +19,11 @@ namespace PCE.MonoBehaviours
         private GunAmmo gunAmmo;
         private Gravity gravity;
 
+        private int livesToEffect = 1;
+        private int livesEffected = 0;
+
         public GunStatModifier gunStatModifier = new GunStatModifier();
         public GunAmmoStatModifier gunAmmoStatModifier = new GunAmmoStatModifier();
-        //public PlayerColorModifier playerColorModifier = new PlayerColorModifier();
         public CharacterStatModifiersModifier characterStatModifiersModifier = new CharacterStatModifiersModifier();
         public GravityModifier gravityModifier = new GravityModifier();
 
@@ -70,27 +72,60 @@ namespace PCE.MonoBehaviours
         }
         void Update()
         {
+            
+            if (this.livesEffected >= this.livesToEffect)
+            {
+                Destroy(this);
+            }
+
             this.OnUpdate();
         }
         public virtual void OnUpdate()
         {
 
         }
+        public void OnDisable()
+        {
+            
+            this.livesEffected++;
+
+            if (this.livesEffected >= this.livesToEffect)
+            {
+                Destroy(this);
+            }
+            Destroy(this);
+
+        }
+        public virtual void OnOnDisable()
+        {
+
+        }
         public void OnDestroy()
+        {
+            this.ClearModifiers();
+            this.OnOnDestroy();
+		}
+
+        public virtual void OnOnDestroy()
+        {
+            // derived effects should put any necessary cleanup here
+        }
+        internal void ClearModifiers()
         {
             this.gunStatModifier.RemoveGunStatModifier(this.gun);
             this.gunAmmoStatModifier.RemoveGunAmmoStatModifier(this.gunAmmo);
             this.characterStatModifiersModifier.RemoveCharacterStatModifiersModifier(this.characterStatModifiers);
             this.gravityModifier.RemoveGravityModifier(this.gravity);
-            this.OnOnDestroy();
-		}
-        public virtual void OnOnDestroy()
-        {
-            // derived effects should put any necessary cleanup here
         }
         public void Destroy()
         {
+            this.ClearModifiers();
             UnityEngine.Object.Destroy(this);
+        }
+
+        public void SetLivesToEffect(int lives = 1)
+        {
+            this.livesToEffect = lives;
         }
 
     }

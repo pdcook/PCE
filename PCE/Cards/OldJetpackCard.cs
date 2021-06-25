@@ -10,11 +10,10 @@ namespace PCE.Cards
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-
+            statModifiers.numberOfJumps = 10;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            data.jumps += 10;
             characterStats.jump = 0.5f;
             characterStats.movementSpeed *= 0.75f;
             data.maxHealth *= 0.75f;

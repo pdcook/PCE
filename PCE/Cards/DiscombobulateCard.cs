@@ -43,8 +43,8 @@ namespace PCE.Cards
                         // don't apply the effect to the player who activated it...
                         if (players[i].playerID == player.playerID) { continue; }
 
-                        // apply to players within range
-                        if (Vector2.Distance(pos, players[i].transform.position) < block.GetAdditionalData().discombobulateRange)
+                        // apply to players within range, that are within line-of-sight
+                        if (Vector2.Distance(pos, players[i].transform.position) < block.GetAdditionalData().discombobulateRange && PlayerManager.instance.CanSeePlayer(player.transform.position, players[i]).canSee)
                         {
                             NetworkingManager.RPC(typeof(DiscombobulateCard), "OnDiscombobulateActivate", new object[] { players[i].playerID, block.GetAdditionalData().discombobulateDuration });
                         }

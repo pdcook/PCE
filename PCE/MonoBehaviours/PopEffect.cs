@@ -7,6 +7,7 @@ using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
 using Photon.Pun;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -37,22 +38,23 @@ namespace PCE.MonoBehaviours
 
         void Update()
         {
-            
-            if (Time.time >= this.startTime + this.currentDuration)
+            // if the player is alive and enough time has passed
+            if (PlayerStatus.PlayerAliveAndSimulated(this.player) && Time.time >= this.startTime + this.currentDuration)
             {
                 int i = 0;
-                int otherPlayerID = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)].playerID;
+                Player otherPlayer = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)];
 
-                while (otherPlayerID == this.player.playerID && i < this.maxAttemps)
+                // while the other player isn't alive or is the current player
+                while ((PlayerStatus.PlayerAliveAndSimulated(otherPlayer) || otherPlayer.playerID == this.player.playerID) && i < this.maxAttemps)
                 {
-                    otherPlayerID = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)].playerID;
+                    otherPlayer = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)];
                     i++;
                 }
 
                 float rangle = (float)(rng.NextDouble() * 2 * Math.PI);
                 float rradius = spacing * (float)rng.NextGaussianDouble();
 
-                Player otherPlayer = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { otherPlayerID });
+                //Player otherPlayer = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithID", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { otherPlayerID });
 
                 Vector3 newPos = otherPlayer.transform.position + new Vector3(rradius * (float)Math.Cos(rangle), rradius * (float)Math.Sin(rangle), 0f);
 
