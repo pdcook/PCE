@@ -60,8 +60,20 @@ namespace PCE
             CustomCard.BuildCard<ThankYouSirMayIHaveAnotherCard>();
             CustomCard.BuildCard<GlareCard>();
 
+            CustomCard.BuildCard<SurvivalistICard>();
+            CustomCard.BuildCard<SurvivalistIICard>();
+            CustomCard.BuildCard<SurvivalistIIICard>();
+            CustomCard.BuildCard<SurvivalistIVCard>();
+
+            CustomCard.BuildCard<PacifistICard>();
+            CustomCard.BuildCard<PacifistIICard>();
+            CustomCard.BuildCard<PacifistIIICard>();
+            CustomCard.BuildCard<PacifistIVCard>();
+
+
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetTimers()); // I sure hope this doesn't have unintended side effects...
         }
 
         private IEnumerator CommitMurders()
@@ -92,6 +104,17 @@ namespace PCE
             for (int j = 0; j < players.Length; j++)
             {
                 CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
+            }
+            yield break;
+        }
+
+        private IEnumerator ResetTimers()
+        {
+            Player[] players = PlayerManager.instance.players.ToArray();
+            for (int j = 0; j < players.Length; j++)
+            {
+                Traverse.Create(players[j].data.health).Field("lastDamaged").SetValue(Time.time);
+                Traverse.Create(players[j].data.stats).Field("sinceDealtDamage").SetValue(Time.time);
             }
             yield break;
         }

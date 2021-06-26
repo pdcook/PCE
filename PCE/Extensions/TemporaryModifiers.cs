@@ -8,9 +8,135 @@ using System.Reflection;
 using HarmonyLib;
 using UnboundLib;
 using PCE.MonoBehaviours;
+using System.Linq;
 
 namespace PCE.Extensions
 {
+    public class BlockModifier
+    {
+        public List<GameObject> objectsToSpawn_add = new List<GameObject>();
+        public float counter_add = 0f;
+        public float counter_mult = 1f;
+        public float cdMultiplier_add = 0f;
+        public float cdMultiplier_mult = 1f;
+        public float cdAdd_add = 0f;
+        public float cdAdd_mult = 1f;
+        public float forceToAdd_add = 0f;
+        public float forceToAdd_mult = 1f;
+        public float forceToAddUp_add = 0f;
+        public float forceToAddUp_mult = 1f;
+        public int additionalBlocks_add = 0;
+        public int additionalBlocks_mult = 1;
+        public float healing_add = 0f;
+        public float healing_mult = 1f;
+
+        private float counter_delta = 0f;
+        private float cdMultiplier_delta = 0f;
+        private float cdAdd_delta = 0f;
+        private float forceToAdd_delta = 0f;
+        private float forceToAddUp_delta = 0f;
+        private int additionalBlocks_delta = 0;
+        private float healing_delta = 0f;
+
+        public static void ApplyBlockModifier(BlockModifier blockModifier, Block block)
+        {
+            blockModifier.counter_delta = block.counter * blockModifier.counter_mult + blockModifier.counter_add - block.counter;
+            blockModifier.cdMultiplier_delta = block.cdMultiplier * blockModifier.cdMultiplier_mult + blockModifier.cdMultiplier_add - block.cdMultiplier;
+            blockModifier.cdAdd_delta = block.cdAdd * blockModifier.cdAdd_mult + blockModifier.cdAdd_add - block.cdAdd;
+            blockModifier.forceToAdd_delta = block.forceToAdd * blockModifier.forceToAdd_mult + blockModifier.forceToAdd_add - block.forceToAdd;
+            blockModifier.forceToAddUp_delta = block.forceToAddUp * blockModifier.forceToAddUp_mult + blockModifier.forceToAddUp_add - block.forceToAddUp;
+            blockModifier.additionalBlocks_delta = block.additionalBlocks * blockModifier.additionalBlocks_mult + blockModifier.additionalBlocks_add - block.additionalBlocks;
+            blockModifier.healing_delta = block.healing * blockModifier.healing_mult + blockModifier.healing_add - block.healing;
+
+            foreach (GameObject objectToSpawn in blockModifier.objectsToSpawn_add)
+            {
+                block.objectsToSpawn.Add(objectToSpawn);
+            }
+
+            block.counter += blockModifier.counter_delta;
+            block.cdMultiplier += blockModifier.cdMultiplier_delta;
+            block.cdAdd += blockModifier.cdAdd_delta;
+            block.forceToAdd += blockModifier.forceToAdd_delta;
+            block.forceToAddUp += blockModifier.forceToAddUp_delta;
+            block.additionalBlocks += blockModifier.additionalBlocks_delta;
+            block.healing += blockModifier.healing_delta;
+        }
+        public void ApplyBlockModifier(Block block)
+        {
+            this.counter_delta = block.counter * this.counter_mult + this.counter_add - block.counter;
+            this.cdMultiplier_delta = block.cdMultiplier * this.cdMultiplier_mult + this.cdMultiplier_add - block.cdMultiplier;
+            this.cdAdd_delta = block.cdAdd * this.cdAdd_mult + this.cdAdd_add - block.cdAdd;
+            this.forceToAdd_delta = block.forceToAdd * this.forceToAdd_mult + this.forceToAdd_add - block.forceToAdd;
+            this.forceToAddUp_delta = block.forceToAddUp * this.forceToAddUp_mult + this.forceToAddUp_add - block.forceToAddUp;
+            this.additionalBlocks_delta = block.additionalBlocks * this.additionalBlocks_mult + this.additionalBlocks_add - block.additionalBlocks;
+            this.healing_delta = block.healing * this.healing_mult + this.healing_add - block.healing;
+
+            foreach (GameObject objectToSpawn in this.objectsToSpawn_add)
+            {
+                block.objectsToSpawn.Add(objectToSpawn);
+            }
+
+            block.counter += this.counter_delta;
+            block.cdMultiplier += this.cdMultiplier_delta;
+            block.cdAdd += this.cdAdd_delta;
+            block.forceToAdd += this.forceToAdd_delta;
+            block.forceToAddUp += this.forceToAddUp_delta;
+            block.additionalBlocks += this.additionalBlocks_delta;
+            block.healing += this.healing_delta;
+        }
+        public static void RemoveBlockModifier(BlockModifier blockModifier, Block block)
+        {
+            foreach (GameObject objectToSpawn in blockModifier.objectsToSpawn_add)
+            {
+                block.objectsToSpawn.Remove(objectToSpawn);
+            }
+
+            block.counter -= blockModifier.counter_delta;
+            block.cdMultiplier -= blockModifier.cdMultiplier_delta;
+            block.cdAdd -= blockModifier.cdAdd_delta;
+            block.forceToAdd -= blockModifier.forceToAdd_delta;
+            block.forceToAddUp -= blockModifier.forceToAddUp_delta;
+            block.additionalBlocks -= blockModifier.additionalBlocks_delta;
+            block.healing -= blockModifier.healing_delta;
+
+            // reset deltas
+            blockModifier.objectsToSpawn_add = new List<GameObject>();
+            blockModifier.counter_delta = 0f;
+            blockModifier.cdMultiplier_delta = 0f;
+            blockModifier.cdAdd_delta = 0f;
+            blockModifier.forceToAdd_delta = 0f;
+            blockModifier.forceToAddUp_delta = 0f;
+            blockModifier.additionalBlocks_delta = 0;
+            blockModifier.healing_delta = 0f;
+
+        }
+        public void RemoveBlockModifier(Block block)
+        {
+            foreach (GameObject objectToSpawn in this.objectsToSpawn_add)
+            {
+                block.objectsToSpawn.Remove(objectToSpawn);
+            }
+
+            block.counter -= this.counter_delta;
+            block.cdMultiplier -= this.cdMultiplier_delta;
+            block.cdAdd -= this.cdAdd_delta;
+            block.forceToAdd -= this.forceToAdd_delta;
+            block.forceToAddUp -= this.forceToAddUp_delta;
+            block.additionalBlocks -= this.additionalBlocks_delta;
+            block.healing -= this.healing_delta;
+
+            // reset deltas
+            this.objectsToSpawn_add = new List<GameObject>();
+            this.counter_delta = 0f;
+            this.cdMultiplier_delta = 0f;
+            this.cdAdd_delta = 0f;
+            this.forceToAdd_delta = 0f;
+            this.forceToAddUp_delta = 0f;
+            this.additionalBlocks_delta = 0;
+            this.healing_delta = 0f;
+        }
+
+    }
     public class GunAmmoStatModifier
     {
         public int maxAmmo_mult = 1;

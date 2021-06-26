@@ -13,27 +13,34 @@ namespace PCE.MonoBehaviours
     public class ReversibleEffect : MonoBehaviour
     {
 
-		private Player player;
-        private CharacterStatModifiers characterStatModifiers;
-        private Gun gun;
-        private GunAmmo gunAmmo;
-        private Gravity gravity;
+		internal Player player;
+        internal CharacterStatModifiers characterStatModifiers;
+        internal Gun gun;
+        internal GunAmmo gunAmmo;
+        internal Gravity gravity;
+        internal HealthHandler health;
+        internal CharacterData data;
+        internal Block block;
 
-        private int livesToEffect = 1;
+        internal int livesToEffect = 1;
         private int livesEffected = 0;
 
         public GunStatModifier gunStatModifier = new GunStatModifier();
         public GunAmmoStatModifier gunAmmoStatModifier = new GunAmmoStatModifier();
         public CharacterStatModifiersModifier characterStatModifiersModifier = new CharacterStatModifiersModifier();
         public GravityModifier gravityModifier = new GravityModifier();
+        public BlockModifier blockModifier = new BlockModifier();
 
         public void Awake()
         {
-            this.player = this.gameObject.GetComponent<Player>();
-            this.characterStatModifiers = this.player.data.stats;
+            this.player = gameObject.GetComponent<Player>();
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-            this.gunAmmo = this.gun.GetComponentInChildren<GunAmmo>();
+            this.data = this.player.GetComponent<CharacterData>();
+            this.health = this.player.GetComponent<HealthHandler>();
             this.gravity = this.player.GetComponent<Gravity>();
+            this.block = this.player.GetComponent<Block>();
+            this.gunAmmo = this.gun.GetComponentInChildren<GunAmmo>();
+            this.characterStatModifiers = this.player.GetComponent<CharacterStatModifiers>();
             this.OnAwake();
         }
         public virtual void OnAwake()
@@ -50,6 +57,7 @@ namespace PCE.MonoBehaviours
             this.gunAmmoStatModifier.ApplyGunAmmoStatModifier(this.gunAmmo);
             this.characterStatModifiersModifier.ApplyCharacterStatModifiersModifier(this.characterStatModifiers);
             this.gravityModifier.ApplyGravityModifier(this.gravity);
+            this.blockModifier.ApplyBlockModifier(this.block);
 
         }
         public virtual void OnStart()
@@ -93,7 +101,6 @@ namespace PCE.MonoBehaviours
             {
                 Destroy(this);
             }
-            Destroy(this);
 
         }
         public virtual void OnOnDisable()
@@ -116,6 +123,8 @@ namespace PCE.MonoBehaviours
             this.gunAmmoStatModifier.RemoveGunAmmoStatModifier(this.gunAmmo);
             this.characterStatModifiersModifier.RemoveCharacterStatModifiersModifier(this.characterStatModifiers);
             this.gravityModifier.RemoveGravityModifier(this.gravity);
+            this.blockModifier.RemoveBlockModifier(this.block);
+
         }
         public void Destroy()
         {
