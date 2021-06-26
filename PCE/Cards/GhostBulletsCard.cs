@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace PCE.Cards
 {
-    public class GhostGunCard : CustomCard
+    public class GhostBulletsCard : CustomCard
     {
         /*
          * bullets are invisible and go through walls
          */
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-
+            cardInfo.allowMultiple = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {

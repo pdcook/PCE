@@ -41,7 +41,7 @@ namespace PCE
             // build all cards
 
             CustomCard.BuildCard<LaserCard>();
-            CustomCard.BuildCard<GhostGunCard>();
+            CustomCard.BuildCard<GhostBulletsCard>();
             CustomCard.BuildCard<TractorBeamCard>();
             CustomCard.BuildCard<MoonShoesCard>();
             CustomCard.BuildCard<OldJetpackCard>(); // requires pykess.rounds.plugins.playerjumppatch
