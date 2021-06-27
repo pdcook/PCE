@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using HarmonyLib;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
     public class GravityEffect : ReversibleEffect
     {
-        private Player playerToModify;
         private float
           startTime,
           duration = float.MaxValue,
           gravityForceMultiplier = 1f;
-        public override void OnAwake()
-        {
-            this.playerToModify = gameObject.GetComponent<Player>();
-        }
         public override void OnStart()
         {
             base.gravityModifier.gravityForce_mult = this.gravityForceMultiplier;
@@ -25,13 +22,18 @@ namespace PCE.MonoBehaviours
             // destroy this effect when time is up, the base class (ReversibleEffect) will handle reseting stats
             if (Time.time - this.startTime >= this.duration)
             {
-                UnityEngine.Object.Destroy(this);
+                this.Destroy();
+            }
+            // destroy this if the effected player hits the damagebox
+            if ((bool)Traverse.Create(base.player.data.GetAdditionalData().outOfBoundsHandler).Field("outOfBounds").GetValue())
+            {
+                this.Destroy();
             }
         }
         public override void OnOnDestroy()
         {
-            this.playerToModify.data.sinceGrounded = 0f;
-            this.playerToModify.data.sinceWallGrab = 0f;
+            base.player.data.sinceGrounded = 0f;
+            base.player.data.sinceWallGrab = 0f;
         }
         public void ResetTimer()
         {

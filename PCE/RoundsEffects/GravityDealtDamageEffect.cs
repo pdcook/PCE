@@ -13,18 +13,18 @@ namespace PCE.RoundsEffects
     {
         public override void DealtDamage(Vector2 damage, bool selfDamage, Player damagedPlayer = null)
         {
+            if (damagedPlayer == null) { return; }
+
             GravityEffect thisGravityEffect = damagedPlayer.gameObject.GetOrAddComponent<GravityEffect>();
             thisGravityEffect.SetDuration(this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityDurationOnDoDamage);
             thisGravityEffect.SetGravityForceMultiplier(this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityMultiplierOnDoDamage);
             thisGravityEffect.ResetTimer();
 
             // if this inflicts negative gravity, kick the player off the ground
-            if (damagedPlayer.data.playerVel != null && this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityMultiplierOnDoDamage < 0f)
+            if (this.GetComponent<CharacterStatModifiers>().GetAdditionalData().gravityMultiplierOnDoDamage < 0f && damagedPlayer.data.isGrounded)
             {
-                typeof(PlayerVelocity).InvokeMember("AddForce",
-                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                    BindingFlags.NonPublic, null, damagedPlayer.data.playerVel, new object[] { new Vector2(0f, 100f) });
-                
+                damagedPlayer.data.jump.Jump(true, 1f/damagedPlayer.data.stats.jump);
+                damagedPlayer.data.currentJumps++;
             }
         }
         public void Destroy()
