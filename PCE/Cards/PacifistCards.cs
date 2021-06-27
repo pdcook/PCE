@@ -101,7 +101,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("sinceDealtDamage").SetValue(0f);
+            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
             player.gameObject.GetOrAddComponent<PacifistEffect>();
 
         }
@@ -157,7 +157,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("sinceDealtDamage").SetValue(0f);
+            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
             player.gameObject.GetOrAddComponent<PacifistEffect>();
 
         }
@@ -213,7 +213,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("sinceDealtDamage").SetValue(0f);
+            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
             player.gameObject.GetOrAddComponent<PacifistEffect>();
 
         }

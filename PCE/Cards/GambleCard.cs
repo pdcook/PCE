@@ -12,7 +12,7 @@ using PCE.Extensions;
 
 namespace PCE.Cards
 {
-    public class GambleCard : CustomCard
+    public class GambleCard : PCECustomCard
     {
         /*
         *  A Rare card which gives the player two random Uncommon cards
@@ -26,8 +26,8 @@ namespace PCE.Cards
             CardInfo randomCard1 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
             CardInfo randomCard2 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            Extensions.Cards.instance.AddCardToPlayer(player, randomCard1);
-            Extensions.Cards.instance.AddCardToPlayer(player, randomCard2);
+            base.AddCardToPlayer(player, randomCard1);
+            base.AddCardToPlayer(player, randomCard2);
 
         }
         public override void OnRemoveCard()

@@ -94,6 +94,10 @@ namespace PCE.MonoBehaviours
         public override void OnApply()
         {
         }
+        public override void Reset()
+        {
+            Traverse.Create(base.health).Field("lastDamaged").SetValue(Time.time);
+        }
 
         private void CheckCards()
         {

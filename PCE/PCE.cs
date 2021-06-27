@@ -103,7 +103,7 @@ namespace PCE
             Player[] players = PlayerManager.instance.players.ToArray();
             for (int j = 0; j < players.Length; j++)
             {
-                CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
+                //CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
             }
             yield break;
         }

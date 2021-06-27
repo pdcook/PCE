@@ -8,10 +8,11 @@ using Photon.Pun;
 using System.Reflection;
 using HarmonyLib;
 using System.Linq;
+using PCE.Extensions;
 
 namespace PCE.Cards
 {
-    public class JackpotCard : CustomCard
+    public class JackpotCard : PCECustomCard
     {
         /*
         *  An Uncommon card which gives the player a random Rare card
@@ -23,7 +24,7 @@ namespace PCE.Cards
         {
             CardInfo randomCard = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            Extensions.Cards.instance.AddCardToPlayer(player, randomCard);
+            base.AddCardToPlayer(player, randomCard);
         }
         public override void OnRemoveCard()
         {

@@ -48,6 +48,16 @@ namespace PCE.MonoBehaviours
 
         }
 
+        public void OnEnable()
+        {
+            this.OnOnEnable();
+        }
+
+        public virtual void OnOnEnable()
+        {
+
+        }
+
         public void Start()
         {
 
@@ -91,6 +101,13 @@ namespace PCE.MonoBehaviours
         public virtual void OnUpdate()
         {
 
+        }
+        public void LateUpdate()
+        {
+            this.OnLateUpdate();
+        }
+        public virtual void OnLateUpdate()
+        {
         }
         public void OnDisable()
         {

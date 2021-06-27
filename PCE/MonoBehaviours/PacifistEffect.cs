@@ -93,6 +93,10 @@ namespace PCE.MonoBehaviours
         public override void OnApply()
         {
         }
+        public override void Reset()
+        {
+            Traverse.Create(base.characterStatModifiers).Field("sinceDealtDamage").SetValue(0f);
+        }
 
         private void CheckCards()
         {

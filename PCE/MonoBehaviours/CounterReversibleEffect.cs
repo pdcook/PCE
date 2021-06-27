@@ -13,6 +13,7 @@ namespace PCE.MonoBehaviours
     public abstract class CounterReversibleEffect : ReversibleEffect
     {
         public CounterStatus status;
+        bool playerWasInactiveLastFrame = false;
 
         public CounterReversibleEffect()
         {
@@ -40,7 +41,9 @@ namespace PCE.MonoBehaviours
         // it will only be called immediately after CounterStatus.Apply is set and should ideally use the value of counterValue to change the modifiers
         // IMPORTANT NOTE: the effects will always be cleared before they are applied, and thus this method cannot use any values previously set to them
         public abstract void OnApply();
-        // this will be called immediately after the effects have been applied, it should be used to reset the counter
+        // this will be called immediately after the effects have been applied, can/should be used to call Reset();
+        public abstract void Reset();
+        // Reset will be called during OnEnable, OnDisable, and also at the beginning of each life of the player
         public virtual void OnRemove()
         {
             // this method should perform any ancillary cleanup when the effects are removed, which should not be required
@@ -51,6 +54,11 @@ namespace PCE.MonoBehaviours
         public override void OnAwake()
         {
             // nothing else should happen during Awake and this method should not be hidden
+        }
+
+        public override void OnOnEnable()
+        {
+            this.Reset();
         }
 
         public override void OnStart()
@@ -94,8 +102,23 @@ namespace PCE.MonoBehaviours
 
 
         }
+        public override void OnLateUpdate()
+        {
+            if (base.player.data && !base.player.data.isPlaying)
+            {
+                this.playerWasInactiveLastFrame = true;
+                this.Reset();
+            }
+            else if (this.playerWasInactiveLastFrame)
+            {
+                this.playerWasInactiveLastFrame = false;
+                this.Reset();
+            }
+            
+        }
         public override void OnOnDisable()
         {
+            this.Reset();
         }
 
         private void ApplyEffects()
