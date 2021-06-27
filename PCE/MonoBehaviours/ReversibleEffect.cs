@@ -50,6 +50,10 @@ namespace PCE.MonoBehaviours
 
         public void OnEnable()
         {
+            if (this.livesEffected >= this.livesToEffect)
+            {
+                Destroy(this);
+            }
             this.OnOnEnable();
         }
 

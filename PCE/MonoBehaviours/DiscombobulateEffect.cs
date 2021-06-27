@@ -7,7 +7,6 @@ namespace PCE.MonoBehaviours
 {
     public class DiscombobulateEffect : ReversibleEffect
     {
-        private Player player;
         private float
           startTime,
           duration,
@@ -21,8 +20,7 @@ namespace PCE.MonoBehaviours
 
         public override void OnStart()
         {
-            this.player = this.gameObject.GetComponent<Player>();
-            this.colorEffect = this.player.gameObject.AddComponent<ColorFlash>();
+            this.colorEffect = base.player.gameObject.AddComponent<ColorFlash>();
             this.colorEffect.SetColor(this.color);
             this.colorEffect.SetNumberOfFlashes(int.MaxValue);
             this.colorEffect.SetDuration(0.25f);

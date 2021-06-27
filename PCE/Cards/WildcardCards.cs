@@ -15,42 +15,38 @@ using System.Linq;
 
 namespace PCE.Cards
 {
-    public class SurvivalistCategories
+    public class WildcardCategories
     {
         // singleton design, so that the categories are only created once
-        public static readonly SurvivalistCategories instance = new SurvivalistCategories();
+        public static readonly WildcardCategories instance = new WildcardCategories();
 
         public CardCategory[] categories;
         public CardCategory[] blacklistedCategories
         {
-            get { return (PacifistCategories.instance.categories.Concat(WildcardCategories.instance.categories)).ToArray(); }
+            get { return (SurvivalistCategories.instance.categories.Concat(PacifistCategories.instance.categories)).ToArray(); }
             set { }
         }
-
-        private SurvivalistCategories()
+        private WildcardCategories()
         {
-            SurvivalistCategories instance = this;
+            WildcardCategories instance = this;
 
             CardCategory category = ScriptableObject.CreateInstance<CardCategory>();
-            category.name = "Survivalist";
+            category.name = "Wildcard";
             this.categories = new CardCategory[] { category };
         }
     }
-    public class SurvivalistICard : CustomCard
+    public class WildcardICard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-
-            cardInfo.categories = SurvivalistCategories.instance.categories;
-            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
-
+            cardInfo.categories = WildcardCategories.instance.categories;
+            cardInfo.blacklistedCategories = WildcardCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
-            player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            player.gameObject.GetOrAddComponent<WildcardEffect>();
 
         }
         public override void OnRemoveCard()
@@ -59,11 +55,11 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Survivalist I";
+            return "Wildcard I";
         }
         protected override string GetDescription()
         {
-            return "Increased reload speed the longer you go without taking damage.";
+            return "Randomly increased reload speed at random intervals.";
         }
 
         protected override GameObject GetCardArt()
@@ -91,22 +87,21 @@ namespace PCE.Cards
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DefensiveBlue;
+            return CardThemeColor.CardThemeColorType.MagicPink;
         }
     }
-    public class SurvivalistIICard : CustomCard
+    public class WildcardIICard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = SurvivalistCategories.instance.categories;
-            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
+            cardInfo.categories = WildcardCategories.instance.categories;
+            cardInfo.blacklistedCategories = WildcardCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
-            player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            player.gameObject.GetOrAddComponent<WildcardEffect>();
 
         }
         public override void OnRemoveCard()
@@ -115,11 +110,11 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Survivalist II";
+            return "Wildcard II";
         }
         protected override string GetDescription()
         {
-            return "Decreased block cooldown the longer you go without taking damage.";
+            return "Randomly decreased block cooldown at random intervals.";
         }
 
         protected override GameObject GetCardArt()
@@ -147,22 +142,21 @@ namespace PCE.Cards
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DefensiveBlue;
+            return CardThemeColor.CardThemeColorType.MagicPink;
         }
     }
-    public class SurvivalistIIICard : CustomCard
+    public class WildcardIIICard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = SurvivalistCategories.instance.categories;
-            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
+            cardInfo.categories = WildcardCategories.instance.categories;
+            cardInfo.blacklistedCategories = WildcardCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
-            player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            player.gameObject.GetOrAddComponent<WildcardEffect>();
 
         }
         public override void OnRemoveCard()
@@ -171,11 +165,11 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Survivalist III";
+            return "Wildcard III";
         }
         protected override string GetDescription()
         {
-            return "Increased movement speed the longer you go without taking damage.";
+            return "Randomly increased movement speed at random intervals.";
         }
 
         protected override GameObject GetCardArt()
@@ -203,22 +197,21 @@ namespace PCE.Cards
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DefensiveBlue;
+            return CardThemeColor.CardThemeColorType.MagicPink;
         }
     }
-    public class SurvivalistIVCard : CustomCard
+    public class WildcardIVCard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = SurvivalistCategories.instance.categories;
-            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
+            cardInfo.categories = WildcardCategories.instance.categories;
+            cardInfo.blacklistedCategories = WildcardCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
-            player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            player.gameObject.GetOrAddComponent<WildcardEffect>();
 
         }
         public override void OnRemoveCard()
@@ -227,11 +220,11 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Survivalist IV";
+            return "Wildcard IV";
         }
         protected override string GetDescription()
         {
-            return "Increased damage the longer you go without taking damage.";
+            return "Randomly increased damage at random intervals.";
         }
 
         protected override GameObject GetCardArt()
@@ -259,7 +252,7 @@ namespace PCE.Cards
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DefensiveBlue;
+            return CardThemeColor.CardThemeColorType.MagicPink;
         }
     }
 }

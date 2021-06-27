@@ -12,17 +12,27 @@ namespace PCE.Extensions
 {
     public static class CustomEffects
     {
-        public static void ClearAllEffects(GameObject gameObject)
+        public static void ResetAllTimers(GameObject gameObject)
         {
-            CustomEffects.ClearAllAppliedEffects(gameObject);
-            CustomEffects.ClearAllDamageEfects(gameObject);
+            CounterReversibleEffect[] counterReversibleEffects = gameObject.GetComponents<CounterReversibleEffect>();
+            foreach (CounterReversibleEffect counterReversibleEffect in counterReversibleEffects) { if (counterReversibleEffect != null) { counterReversibleEffect.Reset(); } }
         }
         public static void ClearAllReversibleEffects(GameObject gameObject)
         {
             ReversibleEffect[] reversibleEffects = gameObject.GetComponents<ReversibleEffect>();
+            foreach (ReversibleEffect reversibleEffect in reversibleEffects) { if (reversibleEffect != null) { reversibleEffect.ClearModifiers(); } }
+        }
+        public static void DestroyAllEffects(GameObject gameObject)
+        {
+            CustomEffects.DestroyAllAppliedEffects(gameObject);
+            CustomEffects.DestroyAllDamageEfects(gameObject);
+        }
+        public static void DestroyAllReversibleEffects(GameObject gameObject)
+        {
+            ReversibleEffect[] reversibleEffects = gameObject.GetComponents<ReversibleEffect>();
             foreach (ReversibleEffect reversibleEffect in reversibleEffects) { if (reversibleEffect != null) { reversibleEffect.Destroy(); } }
         }
-        public static void ClearAllAppliedEffects(GameObject gameObject)
+        public static void DestroyAllAppliedEffects(GameObject gameObject)
         {
             GravityEffect[] gravityEffects = gameObject.GetComponents<GravityEffect>();
             foreach (GravityEffect gravityEffect in gravityEffects) { if (gravityEffect != null) { gravityEffect.Destroy(); } }
@@ -58,7 +68,7 @@ namespace PCE.Extensions
             foreach (T effect in effects) { if (effect != null) { UnityEngine.GameObject.Destroy((MonoBehaviour)(object)effect); } }
         }
 
-        public static void ClearAllDamageEfects(GameObject gameObject)
+        public static void DestroyAllDamageEfects(GameObject gameObject)
         {
             GravityDealtDamageEffect[] gravityDealtDamageEffects = gameObject.GetComponents<GravityDealtDamageEffect>();
             foreach (GravityDealtDamageEffect gravityDealtDamageEffect in gravityDealtDamageEffects) { if (gravityDealtDamageEffect != null) { gravityDealtDamageEffect.Destroy(); } }

@@ -70,6 +70,11 @@ namespace PCE
             CustomCard.BuildCard<PacifistIIICard>();
             CustomCard.BuildCard<PacifistIVCard>();
 
+            CustomCard.BuildCard<WildcardICard>();
+            CustomCard.BuildCard<WildcardIICard>();
+            CustomCard.BuildCard<WildcardIIICard>();
+            CustomCard.BuildCard<WildcardIVCard>();
+
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
@@ -103,7 +108,7 @@ namespace PCE
             Player[] players = PlayerManager.instance.players.ToArray();
             for (int j = 0; j < players.Length; j++)
             {
-                //CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
+                CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
             }
             yield break;
         }
@@ -113,8 +118,7 @@ namespace PCE
             Player[] players = PlayerManager.instance.players.ToArray();
             for (int j = 0; j < players.Length; j++)
             {
-                Traverse.Create(players[j].data.health).Field("lastDamaged").SetValue(Time.time);
-                Traverse.Create(players[j].data.stats).Field("sinceDealtDamage").SetValue(0f);
+                CustomEffects.ResetAllTimers(players[j].gameObject);
             }
             yield break;
         }

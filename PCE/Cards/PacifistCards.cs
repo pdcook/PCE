@@ -10,6 +10,7 @@ using PCE.RoundsEffects;
 using PCE.MonoBehaviours;
 using System.Reflection;
 using HarmonyLib;
+using System.Linq;
 
 
 namespace PCE.Cards
@@ -22,7 +23,7 @@ namespace PCE.Cards
         public CardCategory[] categories;
         public CardCategory[] blacklistedCategories
         {
-            get { return SurvivalistCategories.instance.categories; }
+            get { return (SurvivalistCategories.instance.categories.Concat(WildcardCategories.instance.categories)).ToArray(); }
             set { }
         }
         private PacifistCategories()

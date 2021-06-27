@@ -59,6 +59,8 @@ namespace PCE.MonoBehaviours
         public override void OnOnEnable()
         {
             this.Reset();
+            base.ClearModifiers();
+            this.OnRemove();
         }
 
         public override void OnStart()
@@ -92,8 +94,10 @@ namespace PCE.MonoBehaviours
                     break;
                 case CounterStatus.Remove:
                     base.ClearModifiers();
+                    this.OnRemove();
                     break;
                 case CounterStatus.Destroy:
+                    this.OnRemove();
                     this.Destroy();
                     break;
                 default:
@@ -108,17 +112,23 @@ namespace PCE.MonoBehaviours
             {
                 this.playerWasInactiveLastFrame = true;
                 this.Reset();
+                base.ClearModifiers();
+                this.OnRemove();
             }
             else if (this.playerWasInactiveLastFrame)
             {
                 this.playerWasInactiveLastFrame = false;
                 this.Reset();
+                base.ClearModifiers();
+                this.OnRemove();
             }
             
         }
         public override void OnOnDisable()
         {
             this.Reset();
+            base.ClearModifiers();
+            this.OnRemove();
         }
 
         private void ApplyEffects()
@@ -136,11 +146,6 @@ namespace PCE.MonoBehaviours
             Wait,
             Remove,
             Destroy
-        }
-        public enum WaitType
-        {
-            Frames,
-            Seconds
         }
     }
 }

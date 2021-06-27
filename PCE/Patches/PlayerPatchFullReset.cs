@@ -17,7 +17,7 @@ namespace PCE.Patches
     {
         private static void Prefix(Player __instance)
         {
-            CustomEffects.ClearAllEffects(__instance.gameObject);
+            CustomEffects.DestroyAllEffects(__instance.gameObject);
         }
     }
 }

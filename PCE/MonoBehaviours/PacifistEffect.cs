@@ -75,7 +75,7 @@ namespace PCE.MonoBehaviours
                 this.colorFlash.SetDuration(float.MaxValue);
                 this.colorFlash.SetDelayBetweenFlashes(0);
             }
-            else if (this.multiplier >= this.max_mult*this.colorFlashThreshMaxFrac)
+            else if (this.multiplier - 1f >= (this.max_mult - 1f)*this.colorFlashThreshMaxFrac)
             {
                 this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
                 this.colorFlash.SetColorMax(Color.Lerp(GetPlayerColor.GetColorMax(base.player),this.maxChargeColor, this.multiplier/this.max_mult));
