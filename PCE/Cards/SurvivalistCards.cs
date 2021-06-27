@@ -14,12 +14,37 @@ using HarmonyLib;
 
 namespace PCE.Cards
 {
+    public class SurvivalistCategories
+    {
+        // singleton design, so that the categories are only created once
+        public static readonly SurvivalistCategories instance = new SurvivalistCategories();
+
+        public CardCategory[] categories;
+        public CardCategory[] blacklistedCategories
+        {
+            get { return PacifistCategories.instance.categories; }
+            set { }
+        }
+
+        private SurvivalistCategories()
+        {
+            SurvivalistCategories instance = this;
+
+            CardCategory category = ScriptableObject.CreateInstance<CardCategory>();
+            category.name = "Survivalist";
+            this.categories = new CardCategory[] { category };
+        }
+    }
     public class SurvivalistICard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
+
+            cardInfo.categories = SurvivalistCategories.instance.categories;
+            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
+
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -37,7 +62,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "";
+            return "Increased reload speed the longer you go without taking damage.";
         }
 
         protected override GameObject GetCardArt()
@@ -52,7 +77,16 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Reload Speed",
+                amount = "Up to 3×",
+                simepleAmount = CardInfoStat.SimpleAmount.aLotOf
+                }
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
@@ -65,6 +99,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
+            cardInfo.categories = SurvivalistCategories.instance.categories;
+            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -82,7 +118,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "";
+            return "Decreased block cooldown the longer you go without taking damage.";
         }
 
         protected override GameObject GetCardArt()
@@ -97,7 +133,16 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Damage",
+                amount = "Up to 1/3×",
+                simepleAmount = CardInfoStat.SimpleAmount.aLotLower
+                }
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
@@ -110,6 +155,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
+            cardInfo.categories = SurvivalistCategories.instance.categories;
+            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -127,7 +174,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "";
+            return "Increased movement speed the longer you go without taking damage.";
         }
 
         protected override GameObject GetCardArt()
@@ -142,7 +189,16 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Movement Speed",
+                amount = "Up to 3×",
+                simepleAmount = CardInfoStat.SimpleAmount.aLotOf
+                }
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
@@ -155,6 +211,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
+            cardInfo.categories = SurvivalistCategories.instance.categories;
+            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -172,7 +230,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "";
+            return "Increased damage the longer you go without taking damage.";
         }
 
         protected override GameObject GetCardArt()
@@ -187,7 +245,16 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Damage",
+                amount = "Up to 3×",
+                simepleAmount = CardInfoStat.SimpleAmount.aLotOf
+                }
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {

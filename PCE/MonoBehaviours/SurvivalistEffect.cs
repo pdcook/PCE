@@ -12,10 +12,8 @@ namespace PCE.MonoBehaviours
 {
     public class SurvivalistEffect : CounterReversibleEffect
     {
-        private Dictionary<SurvivalistType, bool> pacifists = new Dictionary<SurvivalistType, bool>();
+        private Dictionary<SurvivalistType, bool> survivalists = new Dictionary<SurvivalistType, bool>();
 
-        //private readonly float interval = 0.5f;
-        //private readonly float numIntervalsScaling = 20f;
         private readonly float max_mult = 3f;
         private readonly float timeToMax = 20f;
 
@@ -25,27 +23,13 @@ namespace PCE.MonoBehaviours
         private readonly float colorFlashMax = 3f;
         private readonly float colorFlashThreshMaxFrac = 0.25f;
 
-        // the equation for multipliers >1 is
-        /*
-                  ⎛            ⎛                1           ⎞            ⎞
-            Clamp ⎜1 + maxmult ⎜1 - ────────────────────────⎟, 1, maxmult⎟
-                  ⎜            ⎜       ⎛       time        ⎞ ⎟            ⎟
-                  ⎜            ⎜       ⎜     ────────      ⎟ ⎟            ⎟
-                  ⎜            ⎜   1 + ⎜     interval      ⎟ ⎟            ⎟
-                  ⎜            ⎜       ⎜───────────────────⎟ ⎟            ⎟
-                  ⎝            ⎝       ⎝numIntervalsScaling⎠ ⎠            ⎠
-
-        */
-        // the equation for multipliers < 1 is just the inverse of the above (^-1)
-
         private float multiplier;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
         {
 
-            //this.multiplier = UnityEngine.Mathf.Clamp(1f + this.max_mult * (1f - 1f / ((Time.time - (float)Traverse.Create(this.health).Field("lastDamaged").GetValue()) / (this.interval * this.numIntervalsScaling) + 1f)), 1f, this.max_mult);
-            float timeSince = Time.time - (float)Traverse.Create(this.health).Field("lastDamage").GetValue();
+            float timeSince = Time.time - (float)Traverse.Create(base.health).Field("lastDamaged").GetValue();
 
             this.multiplier = UnityEngine.Mathf.Clamp(((this.max_mult - 1f) / (this.timeToMax)) * timeSince + 1f, 1f, this.max_mult);
 
@@ -55,14 +39,14 @@ namespace PCE.MonoBehaviours
 
         public override void UpdateEffects()
         {
-            // update which pacifist cards the player has
+            // update which survivalist cards the player has
             this.CheckCards();
 
-            foreach (SurvivalistType pacifistType in Enum.GetValues(typeof(SurvivalistType)))
+            foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
             {
-                if (this.pacifists[pacifistType])
+                if (this.survivalists[survivalistType])
                 {
-                    switch (pacifistType)
+                    switch (survivalistType)
                     {
                         case SurvivalistType.I:
                             this.gunAmmoStatModifier.reloadTimeMultiplier_mult = 1f / this.multiplier;
@@ -84,10 +68,18 @@ namespace PCE.MonoBehaviours
                     }
                 }
             }
-            if (this.multiplier >= this.max_mult * this.colorFlashThreshMaxFrac)
+            if (this.multiplier == this.max_mult)
             {
                 this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
                 this.colorFlash.SetColor(this.maxChargeColor);
+                this.colorFlash.SetNumberOfFlashes(int.MaxValue);
+                this.colorFlash.SetDuration(float.MaxValue);
+                this.colorFlash.SetDelayBetweenFlashes(0);
+            }
+            else if (this.multiplier >= this.max_mult * this.colorFlashThreshMaxFrac)
+            {
+                this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
+                this.colorFlash.SetColorMax(Color.Lerp(GetPlayerColor.GetColorMax(base.player), this.maxChargeColor, this.multiplier / this.max_mult));
                 this.colorFlash.SetNumberOfFlashes(int.MaxValue);
                 float flashTime = ((this.colorFlashMin - this.colorFlashMax) / (this.max_mult - this.colorFlashThreshMaxFrac * this.max_mult)) * (this.multiplier - this.colorFlashThreshMaxFrac * this.max_mult) + this.colorFlashMax;
                 this.colorFlash.SetDuration(flashTime);
@@ -105,9 +97,9 @@ namespace PCE.MonoBehaviours
 
         private void CheckCards()
         {
-            foreach (SurvivalistType pacifistType in Enum.GetValues(typeof(SurvivalistType)))
+            foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
             {
-                this.pacifists[pacifistType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[pacifistType]) > 0);
+                this.survivalists[survivalistType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
             }
         }
 

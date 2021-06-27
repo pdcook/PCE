@@ -106,6 +106,14 @@ namespace PCE.MonoBehaviours
 		{
 			this.duration = duration;
 		}
+		public Color GetOriginalColorMax()
+		{
+			return this.colorEffect.colorEffectBase.originalColorMax;
+		}
+		public Color GetOriginalColorMin()
+		{
+			return this.colorEffect.colorEffectBase.originalColorMin;
+		}
 
 	}
 }

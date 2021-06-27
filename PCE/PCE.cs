@@ -114,7 +114,7 @@ namespace PCE
             for (int j = 0; j < players.Length; j++)
             {
                 Traverse.Create(players[j].data.health).Field("lastDamaged").SetValue(Time.time);
-                Traverse.Create(players[j].data.stats).Field("sinceDealtDamage").SetValue(Time.time);
+                Traverse.Create(players[j].data.stats).Field("sinceDealtDamage").SetValue(0f);
             }
             yield break;
         }

@@ -52,7 +52,7 @@ namespace PCE.Extensions
             ReversibleEffect[] reversibleEffects = gameObject.GetComponents<ReversibleEffect>();
             foreach (ReversibleEffect reversibleEffect in reversibleEffects) { if (reversibleEffect != null) { reversibleEffect.Destroy(); } }
         }
-        public static void ClearEffects<T>(GameObject gameObject)
+        public static void ClearEffects<T>(GameObject gameObject) where T : MonoBehaviour
         {
             T[] effects = gameObject.GetComponents<T>();
             foreach (T effect in effects) { if (effect != null) { UnityEngine.GameObject.Destroy((MonoBehaviour)(object)effect); } }

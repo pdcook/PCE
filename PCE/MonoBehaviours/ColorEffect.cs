@@ -12,7 +12,7 @@ namespace PCE.MonoBehaviours
 {
 	public class ColorEffect : MonoBehaviour
     {
-		private ColorEffectBase colorEffectBase;
+		internal ColorEffectBase colorEffectBase;
 		private SetTeamColor[] teamColors;
 		private Player player;
 		private Color colorMinToSet;
@@ -83,13 +83,21 @@ namespace PCE.MonoBehaviours
         {
 			UnityEngine.GameObject.Destroy(this);
         }
+		public Color GetOriginalColorMax()
+        {
+			return this.colorEffectBase.originalColorMax;
+        }
+		public Color GetOriginalColorMin()
+		{
+			return this.colorEffectBase.originalColorMin;
+		}
 	}
 	internal sealed class ColorEffectBase : MonoBehaviour
     {
 
 		internal List<ColorEffect> colorEffectDrones = new List<ColorEffect>();
-		private Color originalColorMax;
-		private Color originalColorMin;
+		internal Color originalColorMax;
+		internal Color originalColorMin;
 		private Player player;
 		private SetTeamColor[] teamColors;
 

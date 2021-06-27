@@ -61,7 +61,19 @@ namespace PCE.Cards
             // do not allow duplicates of cards with allowMultiple == false
             // card rarity must be as desired
             // card cannot be another Gamble / Jackpot card
-            return (card.allowMultiple || !player.data.currentCards.Where(cardinfo => cardinfo.name == card.name).Any()) && (card.rarity == CardInfo.Rarity.Rare) && !card.cardName.Contains("Jackpot") && !card.cardName.Contains("Gamble");
+            // card cannot be from a blacklisted catagory of any other card
+
+            bool blacklisted = false;
+
+            foreach (CardInfo currentCard in player.data.currentCards)
+            {
+                if (card.categories.Intersect(currentCard.blacklistedCategories).Any())
+                {
+                    blacklisted = true;
+                }
+            }
+
+            return !blacklisted && (card.allowMultiple || !player.data.currentCards.Where(cardinfo => cardinfo.name == card.name).Any()) && (card.rarity == CardInfo.Rarity.Rare) && !card.cardName.Contains("Jackpot") && !card.cardName.Contains("Gamble");
 
         }
     }
