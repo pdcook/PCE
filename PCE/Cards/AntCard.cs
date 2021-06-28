@@ -21,6 +21,7 @@ namespace PCE.Cards
             gun.bulletDamageMultiplier *= 2f;
             characterStats.movementSpeed *= 1.25f;
             characterStats.jump *= 0.75f;
+            gunAmmo.maxAmmo -= 2;
 
             AntSquishEffect thisAntSquishEffect = player.gameObject.GetOrAddComponent<AntSquishEffect>();
 
@@ -56,25 +57,32 @@ namespace PCE.Cards
             {
                 new CardInfoStat
                 {
-                positive = true,
-                stat = "Damage",
-                amount = "Double",
-                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                    positive = true,
+                    stat = "Damage",
+                    amount = "Double",
+                    simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat
                 {
-                positive = true,
-                stat = "Size",
-                amount = "Half",
-                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                    positive = true,
+                    stat = "Size",
+                    amount = "Half",
+                    simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat
                 {
-                positive = false,
-                stat = "HP",
-                amount = "Half",
-                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                    positive = false,
+                    stat = "HP",
+                    amount = "Half",
+                    simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
+                new CardInfoStat
+                {
+                    positive = false,
+                    stat = "Ammo",
+                    amount = "-2",
+                    simepleAmount = CardInfoStat.SimpleAmount.lower
+                }
 
             };
         }
