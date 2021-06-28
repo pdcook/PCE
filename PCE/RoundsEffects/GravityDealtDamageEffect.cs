@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace PCE.RoundsEffects
 {
-    public class GravityDealtDamageEffect : DealtDamageEffect
+    public class GravityDealtDamageEffect : HitEffect // Do not trigger on DamageOverTime
     {
         public override void DealtDamage(Vector2 damage, bool selfDamage, Player damagedPlayer = null)
         {
@@ -27,10 +27,5 @@ namespace PCE.RoundsEffects
                 damagedPlayer.data.currentJumps++;
             }
         }
-        public void Destroy()
-        {
-            UnityEngine.Object.Destroy(this);
-        }
-
     }
 }

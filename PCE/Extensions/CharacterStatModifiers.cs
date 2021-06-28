@@ -21,6 +21,8 @@ namespace PCE.Extensions
         public int murder;
         public int thankyousirmayihaveanother;
         public float glare;
+        public HitEffect[] HitEffects;
+        public WasHitEffect[] WasHitEffects;
 
         public CharacterStatModifiersAdditionalData()
         {
@@ -29,6 +31,8 @@ namespace PCE.Extensions
             murder = 0;
             thankyousirmayihaveanother = 0;
             glare = 0f;
+            HitEffects = null;
+            WasHitEffects = null;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -76,10 +80,24 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().murder = 0;
             __instance.GetAdditionalData().thankyousirmayihaveanother = 0;
             __instance.GetAdditionalData().glare = 0f;
+            __instance.GetAdditionalData().HitEffects = null;
+            __instance.GetAdditionalData().WasHitEffects = null;
 
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
             gravity.exponent = __instance.GetAdditionalData().defaultGravityExponent;
+
+        }
+    }
+
+    // update additional stats properly
+    [HarmonyPatch(typeof(CharacterStatModifiers), "WasUpdated")]
+    class CharacterStatModifiersPatchWasUpdated
+    {
+        private static void Postfix(CharacterStatModifiers __instance)
+        {
+            __instance.GetAdditionalData().HitEffects = __instance.GetComponentsInChildren<HitEffect>();
+            __instance.GetAdditionalData().WasHitEffects = __instance.GetComponentsInChildren<WasHitEffect>();
 
         }
     }

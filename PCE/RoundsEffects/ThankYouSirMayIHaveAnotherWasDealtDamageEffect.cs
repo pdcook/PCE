@@ -8,7 +8,7 @@ using UnboundLib;
 
 namespace PCE.RoundsEffects
 {
-    public class ThankYouSirMayIHaveAnotherWasDealtDamageEffect : WasDealtDamageEffect
+    public class ThankYouSirMayIHaveAnotherWasDealtDamageEffect : WasHitEffect // do not trigger on DamageOverTime
     {
         public override void WasDealtDamage(Vector2 damage, bool selfDamage)
         {
@@ -18,10 +18,5 @@ namespace PCE.RoundsEffects
                 reversibleEffect.gunAmmoStatModifier.maxAmmo_add = this.gameObject.GetComponent<Player>().data.stats.GetAdditionalData().thankyousirmayihaveanother;
             }
         }
-        public void Destroy()
-        {
-            UnityEngine.Object.Destroy(this);
-        }
-
     }
 }
