@@ -13,9 +13,17 @@ namespace PCE.MonoBehaviours
           startTime,
           duration = float.MaxValue,
           gravityForceMultiplier = 1f;
+        //private PlayerFollowGround playerFollowGround;
         public override void OnStart()
         {
             base.gravityModifier.gravityForce_mult = this.gravityForceMultiplier;
+
+            // temporarily disable the effected player's PlayerFollowGround
+            //this.playerFollowGround = base.player.GetComponent<PlayerFollowGround>();
+            //if (this.playerFollowGround != null)
+            //{
+            //    this.playerFollowGround.enabled = false;
+            //}
         }
         public override void OnUpdate()
         {
@@ -32,6 +40,9 @@ namespace PCE.MonoBehaviours
         }
         public override void OnOnDestroy()
         {
+            // re-enable the player's PlayerFollowGround
+            //if (this.playerFollowGround != null) { this.playerFollowGround.enabled = true; }
+
             base.player.data.sinceGrounded = 0f;
             base.player.data.sinceWallGrab = 0f;
         }
