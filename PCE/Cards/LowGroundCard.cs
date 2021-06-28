@@ -62,7 +62,7 @@ namespace PCE.Cards
                 {
                 positive = true,
                 stat = "Damage",
-                amount = "+100%",
+                amount = "+50%",
                 simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
                 },
                 new CardInfoStat
@@ -76,7 +76,7 @@ namespace PCE.Cards
                 {
                 positive = true,
                 stat = "Attack Speed",
-                amount = "+100%",
+                amount = "+50%",
                 simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
                 },
                 new CardInfoStat
@@ -97,7 +97,7 @@ namespace PCE.Cards
                 {
                 positive = true,
                 stat = "Movement Speed",
-                amount = "+100%",
+                amount = "+50%",
                 simepleAmount = CardInfoStat.SimpleAmount.aHugeAmountOf
                 },
 
@@ -112,16 +112,16 @@ namespace PCE.Cards
             List<MonoBehaviour> effects = new List<MonoBehaviour>();
 
             ReversibleEffect effect = player.gameObject.AddComponent<ReversibleEffect>();
-            effect.gunStatModifier.projectielSimulatonSpeed_mult = 2f;
+            effect.gunStatModifier.projectielSimulatonSpeed_mult = 1.5f;
             effect.gunStatModifier.projectileSpeed_mult = 2f;
-            effect.gunStatModifier.damage_mult = 2f;
+            effect.gunStatModifier.damage_mult = 1.5f;
             effect.gunStatModifier.projectileColor = Color.red;
-            effect.gunStatModifier.attackSpeed_mult = 0.5f;
+            effect.gunStatModifier.attackSpeed_mult = 0.75f;
 
             effect.gunAmmoStatModifier.maxAmmo_add = 3;
             effect.gunAmmoStatModifier.reloadTimeMultiplier_mult = 0.75f;
 
-            effect.characterStatModifiersModifier.movementSpeed_mult = 2f;
+            effect.characterStatModifiersModifier.movementSpeed_mult = 1.5f;
 
             effects.Add(effect);
 
