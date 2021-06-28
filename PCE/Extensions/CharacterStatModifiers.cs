@@ -31,8 +31,8 @@ namespace PCE.Extensions
             murder = 0;
             thankyousirmayihaveanother = 0;
             glare = 0f;
-            HitEffects = null;
-            WasHitEffects = null;
+            HitEffects = new HitEffect[] { };
+            WasHitEffects = new WasHitEffect[] { };
         }
     }
     public static class CharacterStatModifiersExtension
@@ -80,8 +80,8 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().murder = 0;
             __instance.GetAdditionalData().thankyousirmayihaveanother = 0;
             __instance.GetAdditionalData().glare = 0f;
-            __instance.GetAdditionalData().HitEffects = null;
-            __instance.GetAdditionalData().WasHitEffects = null;
+            __instance.GetAdditionalData().HitEffects = new HitEffect[] { };
+            __instance.GetAdditionalData().WasHitEffects = new WasHitEffect[] { };
 
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
