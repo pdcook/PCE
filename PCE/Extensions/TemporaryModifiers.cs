@@ -157,6 +157,13 @@ namespace PCE.Extensions
             gunAmmo.maxAmmo += gunAmmoStatModifier.maxAmmo_delta;
             gunAmmo.reloadTimeMultiplier += gunAmmoStatModifier.reloadTimeMultiplier_delta;
             gunAmmo.reloadTimeAdd += gunAmmoStatModifier.reloadTimeAdd_delta;
+
+            // if the gun is currently reloading, then set lastMaxAmmo to be the same as MaxAmmo to prevent the bullets from being drawn over the reload ring
+            if (((Gun)Traverse.Create(gunAmmo).Field("gun").GetValue()).isReloading)
+            {
+                Traverse.Create(gunAmmo).Field("lastMaxAmmo").SetValue(gunAmmo.maxAmmo);
+            }
+
         }
         public void ApplyGunAmmoStatModifier(GunAmmo gunAmmo)
         {
@@ -167,6 +174,12 @@ namespace PCE.Extensions
             gunAmmo.maxAmmo += this.maxAmmo_delta;
             gunAmmo.reloadTimeMultiplier += this.reloadTimeMultiplier_delta;
             gunAmmo.reloadTimeAdd += this.reloadTimeAdd_delta;
+
+            // if the gun is currently reloading, then set lastMaxAmmo to be the same as MaxAmmo to prevent the bullets from being drawn over the reload ring
+            if (((Gun)Traverse.Create(gunAmmo).Field("gun").GetValue()).isReloading)
+            {
+                Traverse.Create(gunAmmo).Field("lastMaxAmmo").SetValue(gunAmmo.maxAmmo);
+            }
         }
         public static void RemoveGunAmmoStatModifier(GunAmmoStatModifier gunAmmoStatModifier, GunAmmo gunAmmo)
         {
@@ -178,6 +191,12 @@ namespace PCE.Extensions
             gunAmmoStatModifier.maxAmmo_delta = 0;
             gunAmmoStatModifier.reloadTimeMultiplier_delta = 0f;
             gunAmmoStatModifier.reloadTimeAdd_delta = 0f;
+
+            // if the gun is currently reloading, then set lastMaxAmmo to be the same as MaxAmmo to prevent the bullets from being drawn over the reload ring
+            if (((Gun)Traverse.Create(gunAmmo).Field("gun").GetValue()).isReloading)
+            {
+                Traverse.Create(gunAmmo).Field("lastMaxAmmo").SetValue(gunAmmo.maxAmmo);
+            }
         }
         public void RemoveGunAmmoStatModifier(GunAmmo gunAmmo)
         {
@@ -189,8 +208,13 @@ namespace PCE.Extensions
             this.maxAmmo_delta = 0;
             this.reloadTimeMultiplier_delta = 0f;
             this.reloadTimeAdd_delta = 0f;
-        }
 
+            // if the gun is currently reloading, then set lastMaxAmmo to be the same as MaxAmmo to prevent the bullets from being drawn over the reload ring
+            if (((Gun)Traverse.Create(gunAmmo).Field("gun").GetValue()).isReloading)
+            {
+                Traverse.Create(gunAmmo).Field("lastMaxAmmo").SetValue(gunAmmo.maxAmmo);
+            }
+        }
     }
 
     public class GunStatModifier
@@ -393,8 +417,11 @@ namespace PCE.Extensions
             }
             gun.objectsToSpawn = gunObjectsToSpawn.ToArray();
 
-            gunStatModifier.gunColorEffect = gun.player.gameObject.AddComponent<GunColorEffect>();
-            gunStatModifier.gunColorEffect.SetColor(gunStatModifier.projectileColor);
+            if (gunStatModifier.projectileColor != Color.black)
+            {
+                gunStatModifier.gunColorEffect = gun.player.gameObject.AddComponent<GunColorEffect>();
+                gunStatModifier.gunColorEffect.SetColor(gunStatModifier.projectileColor);
+            }
 
             gun.GetAdditionalData().minDistanceMultiplier += gunStatModifier.minDistanceMultiplier_delta;
 
@@ -481,8 +508,11 @@ namespace PCE.Extensions
             }
             gun.objectsToSpawn = gunObjectsToSpawn.ToArray();
 
-            this.gunColorEffect = gun.player.gameObject.AddComponent<GunColorEffect>();
-            this.gunColorEffect.SetColor(this.projectileColor);
+            if (this.projectileColor != Color.black)
+            {
+                this.gunColorEffect = gun.player.gameObject.AddComponent<GunColorEffect>();
+                this.gunColorEffect.SetColor(this.projectileColor);
+            }
 
             gun.GetAdditionalData().minDistanceMultiplier += this.minDistanceMultiplier_delta;
 
