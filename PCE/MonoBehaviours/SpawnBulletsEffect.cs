@@ -191,10 +191,10 @@ namespace PCE.MonoBehaviours
 			copyToGun.size = copyFromGun.size;
 			copyToGun.slow = copyFromGun.slow;
 			copyToGun.smartBounce = copyFromGun.smartBounce;
-			copyToGun.soundDisableRayHitBulletSound = copyFromGun.soundDisableRayHitBulletSound;
-			copyToGun.soundGun = copyFromGun.soundGun;
-			copyToGun.soundImpactModifier = copyFromGun.soundImpactModifier;
-			copyToGun.soundShotModifier = copyFromGun.soundShotModifier;
+			//copyToGun.soundDisableRayHitBulletSound = copyFromGun.soundDisableRayHitBulletSound;
+			//copyToGun.soundGun = copyFromGun.soundGun;
+			//copyToGun.soundImpactModifier = copyFromGun.soundImpactModifier;
+			//copyToGun.soundShotModifier = copyFromGun.soundShotModifier;
 			copyToGun.spawnSkelletonSquare = copyFromGun.spawnSkelletonSquare;
 			copyToGun.speedMOnBounce = copyFromGun.speedMOnBounce;
 			copyToGun.spread = copyFromGun.spread;
