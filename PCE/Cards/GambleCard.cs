@@ -24,9 +24,11 @@ namespace PCE.Cards
         {
 
             CardInfo randomCard1 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
-            CardInfo randomCard2 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
             base.AddCardToPlayer(player, randomCard1);
+
+            CardInfo randomCard2 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
+
             base.AddCardToPlayer(player, randomCard2);
 
         }

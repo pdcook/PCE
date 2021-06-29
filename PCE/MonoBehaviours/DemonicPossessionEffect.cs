@@ -66,13 +66,15 @@ namespace PCE.MonoBehaviours
             this.effectFuncs.Add(this.Effect_ShakeEffect);
             this.effectFuncs.Add(this.Effect_PopEffect);
             this.effectFuncs.Add(this.Effect_NukeEffect);
+            
             this.effectFuncs.Add(this.Effect_BulletSpeedEffect);
             this.effectFuncs.Add(this.Effect_BulletDamageEffect);
             this.effectFuncs.Add(this.Effect_BulletBounceEffect);
             this.effectFuncs.Add(this.Effect_MovementSpeed);
+
             this.effectFuncs.Add(this.Effect_RainEffect);
             this.effectFuncs.Add(this.Effect_WallEffect);
-
+            
 
         }
 
@@ -252,25 +254,36 @@ namespace PCE.MonoBehaviours
         }
         public List<MonoBehaviour> Effect_BulletSpeedEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            // increase bullet speed, decrease player speed
 
             ReversibleEffect effect = this.gameObject.AddComponent<ReversibleEffect>();
             effect.gunStatModifier.projectileSpeed_mult = 2f;
             effect.gunStatModifier.projectielSimulatonSpeed_mult = 2f;
             effect.gunStatModifier.projectileColor = Color.cyan;
 
+            effect.characterStatModifiersModifier.movementSpeed_mult = 0.5f;
+
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_BulletDamageEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            // increase bullet damage, take 50% of current health as damage
+
             ReversibleEffect effect = this.gameObject.AddComponent<ReversibleEffect>();
+            
             effect.gunStatModifier.damage_mult = 2f;
             effect.gunStatModifier.projectileSize_mult = 2f;
             effect.gunStatModifier.projectileColor = Color.red;
+
+            health.TakeDamage(new Vector2(0f, -0.5f * data.health), player.transform.position, Color.red, null, null, false, true);
+            
             return new List<MonoBehaviour> { effect };
         }
         public List<MonoBehaviour> Effect_BulletBounceEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             
+            // bullets can bounce a bunch
+
             ReversibleEffect effect = this.gameObject.AddComponent<ReversibleEffect>();
             effect.gunStatModifier.reflects_add = 1000;
             effect.gunStatModifier.speedMOnBounce_mult = 0f;
@@ -294,9 +307,13 @@ namespace PCE.MonoBehaviours
         public List<MonoBehaviour> Effect_MovementSpeed(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             
+            // way too much movement speed, much lower attack speed and much lower projectile speed
+
             ReversibleEffect effect = player.gameObject.AddComponent<ReversibleEffect>();
-            effect.characterStatModifiersModifier.movementSpeed_mult = 5f;
+            effect.characterStatModifiersModifier.movementSpeed_mult = 6f;
             effect.characterStatModifiersModifier.jump_mult = 2f;
+            effect.gunStatModifier.attackSpeedMultiplier_mult = 2f;
+            effect.gunStatModifier.projectileSpeed_mult = 0.5f;
 
             return new List<MonoBehaviour> { effect };
         }

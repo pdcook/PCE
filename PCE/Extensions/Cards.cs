@@ -19,6 +19,51 @@ namespace PCE.Extensions
         {
             Cards instance = this;
         }
+        public bool CardIsUniqueFromCards(CardInfo card, CardInfo[] cards)
+        {
+            bool unique = true;
+
+            foreach (CardInfo otherCard in cards)
+            {
+                if (card.cardName == otherCard.cardName)
+                {
+                    unique = false;
+                }
+            }
+
+            return unique;
+        }
+
+        public bool CardDoesNotConflictWithCards(CardInfo card, CardInfo[] cards)
+        {
+            bool conflicts = false;
+
+            foreach (CardInfo otherCard in cards)
+            {
+                if (card.categories.Intersect(otherCard.blacklistedCategories).Any())
+                {
+                    conflicts = true;
+                }
+            }
+
+            return conflicts;
+        }
+
+        public bool PlayerIsAllowedCard(Player player, CardInfo card)
+        {
+            bool blacklisted = false;
+
+            foreach (CardInfo currentCard in player.data.currentCards)
+            {
+                if (card.categories.Intersect(currentCard.blacklistedCategories).Any())
+                {
+                    blacklisted = true;
+                }
+            }
+
+            return !blacklisted && (card.allowMultiple || !player.data.currentCards.Where(cardinfo => cardinfo.name == card.name).Any());
+
+        }
 
         public int CountPlayerCardsWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition)
         {

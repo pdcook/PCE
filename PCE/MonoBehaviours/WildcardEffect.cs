@@ -18,7 +18,7 @@ namespace PCE.MonoBehaviours
         private readonly System.Random rng = new System.Random();
 
         private readonly float max_mult = 3f;
-        private readonly float[] waitMinMax = new float[] {5f, 30f};
+        private readonly float[] waitMinMax = new float[] {3f, 10f};
         private readonly float[] durationMinMax = new float[] {3f, 10f}; 
 
         private readonly Color maxChargeColor = Color.magenta;

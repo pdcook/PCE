@@ -51,6 +51,7 @@ namespace PCE.MonoBehaviours
                     i++;
                 }
 
+                
                 float rangle = (float)(rng.NextDouble() * 2 * Math.PI);
                 float rradius = spacing * (float)rng.NextGaussianDouble();
 
@@ -60,8 +61,9 @@ namespace PCE.MonoBehaviours
 
                 if (PhotonNetwork.OfflineMode)
                 {
-                    // teleport player locally
+                    this.PlayParts();
                     this.player.transform.position = newPos;
+                    this.PlayParts();
 
                 }
                 else
@@ -82,7 +84,7 @@ namespace PCE.MonoBehaviours
 
                     }
                 }
-
+                
                 this.ResetTimer();
                 this.GetNewDuration();
             }
@@ -116,10 +118,27 @@ namespace PCE.MonoBehaviours
             this.period = period;
         }
 
+
+        public void PlayParts()
+        {
+            PlayerJump playerJump = this.player.GetComponent<PlayerJump>();
+            if (playerJump != null)
+            {
+                for (int i = 0; i < playerJump.jumpPart.Length; i++)
+                {
+                    playerJump.jumpPart[i].transform.position = this.player.transform.position;
+                    playerJump.jumpPart[i].transform.rotation = Quaternion.LookRotation(new Vector3(0f, 1f, 0f));
+                    playerJump.jumpPart[i].Play();
+                }
+            }
+        }
+
         [PunRPC]
         public void RPCA_Teleport(Vector3 pos)
         {
+            this.PlayParts();
             this.player.transform.position = pos;
+            this.PlayParts();
         }
 
     }

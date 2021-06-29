@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3302982546
+CRC: 2356850818
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6235fb71f6fd55f4930f459c4f121876
+    Hash: eb8a503b36a77dcbc28022f23e05af9d
   TypeTreeHash:
     serializedVersion: 2
     Hash: c7b05412e14aaa6a1d36686ce75cc12a
@@ -89,6 +89,7 @@ Assets:
 - Assets/Prefabs/Images/bulletpack3.controller
 - Assets/Prefabs/Images/bullet40percblur.png
 - Assets/Prefabs/Images/slots.controller
+- Assets/Prefabs/Images/icon_big.png
 - Assets/Prefabs/C_QuickReload.prefab
 - Assets/Prefabs/Images/invertedlaserin.controller
 - Assets/Prefabs/Images/Triangle.png
@@ -102,6 +103,7 @@ Assets:
 - Assets/Prefabs/Images/Triangle2.png
 - Assets/Prefabs/Images/bullet.anim
 - Assets/Prefabs/C_SmallJackpot.prefab
+- Assets/Prefabs/crosshair.prefab
 - Assets/Prefabs/Images/7.png
 - Assets/Prefabs/Images/bullet30blur.controller
 - Assets/Prefabs/AnimatorController/BG_Dots.controller
@@ -110,6 +112,7 @@ Assets:
 - Assets/Prefabs/C_GhostGun.prefab
 - Assets/Prefabs/Images/strawberry.png
 - Assets/Prefabs/Images/reel3.controller
+- Assets/Prefabs/C_PCEPlaceholder.prefab
 - Assets/Prefabs/AnimationClip/Anim_Circle1.anim
 - Assets/Prefabs/Images/invertedlaserpoint.controller
 - Assets/Prefabs/AnimatorController/Art_Body.controller
