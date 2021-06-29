@@ -8,7 +8,7 @@ using UnboundLib;
 
 namespace PCE.RoundsEffects
 {
-    // this is distinct from WasDealtDamageEffect since it will not trigger on DamageOverTime
+    // this is distinct from DealtDamageEffect since it will not trigger on DamageOverTime
     public abstract class HitEffect : MonoBehaviour
     {
         public abstract void DealtDamage(Vector2 damage, bool selfDamage, Player damagedPlayer = null);

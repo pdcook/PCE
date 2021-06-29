@@ -60,6 +60,8 @@ namespace PCE
             CustomCard.BuildCard<LowGroundCard>();
             CustomCard.BuildCard<ThankYouSirMayIHaveAnotherCard>();
             CustomCard.BuildCard<GlareCard>();
+            CustomCard.BuildCard<JetpackCard>(); // requires pykess.rounds.plugins.playerjumppatch
+
 
             CustomCard.BuildCard<SurvivalistICard>();
             CustomCard.BuildCard<SurvivalistIICard>();

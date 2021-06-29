@@ -8,7 +8,7 @@ using PCE.MonoBehaviours;
 
 namespace PCE.Cards
 {
-    public class OldJetpackCard : CustomCard
+    public class JetpackCard : CustomCard
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
@@ -16,19 +16,13 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             characterStats.movementSpeed *= 0.75f;
-
             InAirJumpEffect jumpEffect = player.gameObject.GetOrAddComponent<InAirJumpEffect>();
-            if (jumpEffect.GetJumpMult() > 0.5f)
-            {
-                jumpEffect.SetJumpMult(0.5f);
-            }
-            jumpEffect.AddJumps(100f);
-            if (jumpEffect.GetCostPerJump() == 0)
-            {
-                jumpEffect.SetCostPerJump(10f);
-            }
+            jumpEffect.SetJumpMult(0.1f);
+            jumpEffect.AddJumps(100);
+            jumpEffect.SetCostPerJump(5);
+            jumpEffect.SetContinuousTrigger(true);
             jumpEffect.SetResetOnWallGrab(false);
-            jumpEffect.SetInterval(0f);
+            jumpEffect.SetInterval(0.03f);
         }
         public override void OnRemoveCard()
         {
@@ -36,11 +30,11 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Old Jetpack";
+            return "Jetpack";
         }
         protected override string GetDescription()
         {
-            return "Sputter around for a bit by continually firing this old jetpack";
+            return "A shiny new jetpack that actually works";
         }
 
         protected override GameObject GetCardArt()
@@ -50,7 +44,7 @@ namespace PCE.Cards
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Common;
+            return CardInfo.Rarity.Uncommon;
         }
 
         protected override CardInfoStat[] GetStats()
@@ -60,8 +54,8 @@ namespace PCE.Cards
                 new CardInfoStat
                 {
                 positive = true,
-                stat = "Old Jetpack",
-                amount = "An",
+                stat = "New Jetpack",
+                amount = "A",
                 simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat
