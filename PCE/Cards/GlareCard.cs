@@ -53,7 +53,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Enemies freeze in fear when you can see them\nWhen active:";
+            return "Enemies tremble in fear when you can see them\nWhen active:";
         }
 
         protected override GameObject GetCardArt()
