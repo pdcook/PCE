@@ -84,7 +84,7 @@ namespace PCE.Extensions
             block.additionalBlocks += this.additionalBlocks_delta;
             block.healing += this.healing_delta;
         }
-        public static void RemoveBlockModifier(BlockModifier blockModifier, Block block)
+        public static void RemoveBlockModifier(BlockModifier blockModifier, Block block, bool clear = true)
         {
             foreach (GameObject objectToSpawn in blockModifier.objectsToSpawn_add)
             {
@@ -100,17 +100,20 @@ namespace PCE.Extensions
             block.healing -= blockModifier.healing_delta;
 
             // reset deltas
-            blockModifier.objectsToSpawn_add = new List<GameObject>();
-            blockModifier.counter_delta = 0f;
-            blockModifier.cdMultiplier_delta = 0f;
-            blockModifier.cdAdd_delta = 0f;
-            blockModifier.forceToAdd_delta = 0f;
-            blockModifier.forceToAddUp_delta = 0f;
-            blockModifier.additionalBlocks_delta = 0;
-            blockModifier.healing_delta = 0f;
+
+            if (clear)            {
+                blockModifier.objectsToSpawn_add = new List<GameObject>();
+                blockModifier.counter_delta = 0f;
+                blockModifier.cdMultiplier_delta = 0f;
+                blockModifier.cdAdd_delta = 0f;
+                blockModifier.forceToAdd_delta = 0f;
+                blockModifier.forceToAddUp_delta = 0f;
+                blockModifier.additionalBlocks_delta = 0;
+                blockModifier.healing_delta = 0f;
+            }
 
         }
-        public void RemoveBlockModifier(Block block)
+        public void RemoveBlockModifier(Block block, bool clear = true)
         {
             foreach (GameObject objectToSpawn in this.objectsToSpawn_add)
             {
@@ -126,14 +129,17 @@ namespace PCE.Extensions
             block.healing -= this.healing_delta;
 
             // reset deltas
-            this.objectsToSpawn_add = new List<GameObject>();
-            this.counter_delta = 0f;
-            this.cdMultiplier_delta = 0f;
-            this.cdAdd_delta = 0f;
-            this.forceToAdd_delta = 0f;
-            this.forceToAddUp_delta = 0f;
-            this.additionalBlocks_delta = 0;
-            this.healing_delta = 0f;
+
+            if (clear)            {
+                this.objectsToSpawn_add = new List<GameObject>();
+                this.counter_delta = 0f;
+                this.cdMultiplier_delta = 0f;
+                this.cdAdd_delta = 0f;
+                this.forceToAdd_delta = 0f;
+                this.forceToAddUp_delta = 0f;
+                this.additionalBlocks_delta = 0;
+                this.healing_delta = 0f;
+            }
         }
 
     }
@@ -181,16 +187,19 @@ namespace PCE.Extensions
                 Traverse.Create(gunAmmo).Field("lastMaxAmmo").SetValue(gunAmmo.maxAmmo);
             }
         }
-        public static void RemoveGunAmmoStatModifier(GunAmmoStatModifier gunAmmoStatModifier, GunAmmo gunAmmo)
+        public static void RemoveGunAmmoStatModifier(GunAmmoStatModifier gunAmmoStatModifier, GunAmmo gunAmmo, bool clear = true)
         {
             gunAmmo.maxAmmo -= gunAmmoStatModifier.maxAmmo_delta;
             gunAmmo.reloadTimeMultiplier -= gunAmmoStatModifier.reloadTimeMultiplier_delta;
             gunAmmo.reloadTimeAdd -= gunAmmoStatModifier.reloadTimeAdd_delta;
 
             // reset deltas
-            gunAmmoStatModifier.maxAmmo_delta = 0;
-            gunAmmoStatModifier.reloadTimeMultiplier_delta = 0f;
-            gunAmmoStatModifier.reloadTimeAdd_delta = 0f;
+
+            if (clear)            {
+                gunAmmoStatModifier.maxAmmo_delta = 0;
+                gunAmmoStatModifier.reloadTimeMultiplier_delta = 0f;
+                gunAmmoStatModifier.reloadTimeAdd_delta = 0f;
+            }
 
             // if the gun is currently reloading, then set lastMaxAmmo to be the same as MaxAmmo to prevent the bullets from being drawn over the reload ring
             if (((Gun)Traverse.Create(gunAmmo).Field("gun").GetValue()).isReloading)
@@ -198,16 +207,20 @@ namespace PCE.Extensions
                 Traverse.Create(gunAmmo).Field("lastMaxAmmo").SetValue(gunAmmo.maxAmmo);
             }
         }
-        public void RemoveGunAmmoStatModifier(GunAmmo gunAmmo)
+        public void RemoveGunAmmoStatModifier(GunAmmo gunAmmo, bool clear = true)
         {
             gunAmmo.maxAmmo -= this.maxAmmo_delta;
             gunAmmo.reloadTimeMultiplier -= this.reloadTimeMultiplier_delta;
             gunAmmo.reloadTimeAdd -= this.reloadTimeAdd_delta;
 
             // reset deltas
-            this.maxAmmo_delta = 0;
-            this.reloadTimeMultiplier_delta = 0f;
-            this.reloadTimeAdd_delta = 0f;
+
+            if (clear)
+            {
+                this.maxAmmo_delta = 0;
+                this.reloadTimeMultiplier_delta = 0f;
+                this.reloadTimeAdd_delta = 0f;
+            }
 
             // if the gun is currently reloading, then set lastMaxAmmo to be the same as MaxAmmo to prevent the bullets from being drawn over the reload ring
             if (((Gun)Traverse.Create(gunAmmo).Field("gun").GetValue()).isReloading)
@@ -519,7 +532,7 @@ namespace PCE.Extensions
 
         }
 
-        public static void RemoveGunStatModifier(GunStatModifier gunStatModifier, Gun gun)
+        public static void RemoveGunStatModifier(GunStatModifier gunStatModifier, Gun gun, bool clear = true)
         {
             gun.damage -= gunStatModifier.damage_delta;
             gun.recoilMuiltiplier -= gunStatModifier.recoilMuiltiplier_delta;
@@ -568,47 +581,50 @@ namespace PCE.Extensions
             gun.GetAdditionalData().minDistanceMultiplier -= gunStatModifier.minDistanceMultiplier_delta;
 
             // reset deltas
-            gunStatModifier.damage_delta = 0f;
-            gunStatModifier.recoilMuiltiplier_delta = 0f;
-            gunStatModifier.knockback_delta = 0f;
-            gunStatModifier.attackSpeed_delta = 0f;
-            gunStatModifier.projectileSpeed_delta = 0f;
-            gunStatModifier.projectielSimulatonSpeed_delta = 0f;
-            gunStatModifier.gravity_delta = 0f;
-            gunStatModifier.damageAfterDistanceMultiplier_delta = 0f;
-            gunStatModifier.bulletDamageMultiplier_delta = 0f;
-            gunStatModifier.multiplySpread_delta = 0f;
-            gunStatModifier.size_delta = 0f;
-            gunStatModifier.timeToReachFullMovementMultiplier_delta = 0f;
-            gunStatModifier.numberOfProjectiles_delta = 0;
-            gunStatModifier.bursts_delta = 0;
-            gunStatModifier.reflects_delta = 0;
-            gunStatModifier.smartBounce_delta = 0;
-            gunStatModifier.randomBounces_delta = 0;
-            gunStatModifier.timeBetweenBullets_delta = 0f;
-            gunStatModifier.projectileSize_delta = 0f;
-            gunStatModifier.speedMOnBounce_delta = 0f;
-            gunStatModifier.dmgMOnBounce_delta = 0f;
-            gunStatModifier.drag_delta = 0f;
-            gunStatModifier.dragMinSpeed_delta = 0f;
-            gunStatModifier.spread_delta = 0f;
-            gunStatModifier.evenSpread_delta = 0f;
-            gunStatModifier.percentageDamage_delta = 0f;
-            gunStatModifier.slow_delta = 0f;
-            gunStatModifier.destroyBulletAfter_delta = 0f;
-            gunStatModifier.forceSpecificAttackSpeed_delta = 0f;
-            gunStatModifier.explodeNearEnemyRange_delta = 0f;
-            gunStatModifier.explodeNearEnemyDamage_delta = 0f;
-            gunStatModifier.hitMovementMultiplier_delta = 0f;
-            gunStatModifier.attackSpeedMultiplier_delta = 0f;
 
-            gunStatModifier.gunColorEffect = null;
+            if (clear)            {
+                gunStatModifier.damage_delta = 0f;
+                gunStatModifier.recoilMuiltiplier_delta = 0f;
+                gunStatModifier.knockback_delta = 0f;
+                gunStatModifier.attackSpeed_delta = 0f;
+                gunStatModifier.projectileSpeed_delta = 0f;
+                gunStatModifier.projectielSimulatonSpeed_delta = 0f;
+                gunStatModifier.gravity_delta = 0f;
+                gunStatModifier.damageAfterDistanceMultiplier_delta = 0f;
+                gunStatModifier.bulletDamageMultiplier_delta = 0f;
+                gunStatModifier.multiplySpread_delta = 0f;
+                gunStatModifier.size_delta = 0f;
+                gunStatModifier.timeToReachFullMovementMultiplier_delta = 0f;
+                gunStatModifier.numberOfProjectiles_delta = 0;
+                gunStatModifier.bursts_delta = 0;
+                gunStatModifier.reflects_delta = 0;
+                gunStatModifier.smartBounce_delta = 0;
+                gunStatModifier.randomBounces_delta = 0;
+                gunStatModifier.timeBetweenBullets_delta = 0f;
+                gunStatModifier.projectileSize_delta = 0f;
+                gunStatModifier.speedMOnBounce_delta = 0f;
+                gunStatModifier.dmgMOnBounce_delta = 0f;
+                gunStatModifier.drag_delta = 0f;
+                gunStatModifier.dragMinSpeed_delta = 0f;
+                gunStatModifier.spread_delta = 0f;
+                gunStatModifier.evenSpread_delta = 0f;
+                gunStatModifier.percentageDamage_delta = 0f;
+                gunStatModifier.slow_delta = 0f;
+                gunStatModifier.destroyBulletAfter_delta = 0f;
+                gunStatModifier.forceSpecificAttackSpeed_delta = 0f;
+                gunStatModifier.explodeNearEnemyRange_delta = 0f;
+                gunStatModifier.explodeNearEnemyDamage_delta = 0f;
+                gunStatModifier.hitMovementMultiplier_delta = 0f;
+                gunStatModifier.attackSpeedMultiplier_delta = 0f;
 
-            // extra
-            gunStatModifier.minDistanceMultiplier_delta = 0f;
+                gunStatModifier.gunColorEffect = null;
+
+                // extra
+                gunStatModifier.minDistanceMultiplier_delta = 0f;
+            }
 
         }
-        public void RemoveGunStatModifier(Gun gun)
+        public void RemoveGunStatModifier(Gun gun, bool clear = true)
         {
             gun.damage -= this.damage_delta;
             gun.recoilMuiltiplier -= this.recoilMuiltiplier_delta;
@@ -657,44 +673,47 @@ namespace PCE.Extensions
             gun.GetAdditionalData().minDistanceMultiplier -= this.minDistanceMultiplier_delta;
 
             // reset deltas
-            this.damage_delta = 0f;
-            this.recoilMuiltiplier_delta = 0f;
-            this.knockback_delta = 0f;
-            this.attackSpeed_delta = 0f;
-            this.projectileSpeed_delta = 0f;
-            this.projectielSimulatonSpeed_delta = 0f;
-            this.gravity_delta = 0f;
-            this.damageAfterDistanceMultiplier_delta = 0f;
-            this.bulletDamageMultiplier_delta = 0f;
-            this.multiplySpread_delta = 0f;
-            this.size_delta = 0f;
-            this.timeToReachFullMovementMultiplier_delta = 0f;
-            this.numberOfProjectiles_delta = 0;
-            this.bursts_delta = 0;
-            this.reflects_delta = 0;
-            this.smartBounce_delta = 0;
-            this.randomBounces_delta = 0;
-            this.timeBetweenBullets_delta = 0f;
-            this.projectileSize_delta = 0f;
-            this.speedMOnBounce_delta = 0f;
-            this.dmgMOnBounce_delta = 0f;
-            this.drag_delta = 0f;
-            this.dragMinSpeed_delta = 0f;
-            this.spread_delta = 0f;
-            this.evenSpread_delta = 0f;
-            this.percentageDamage_delta = 0f;
-            this.slow_delta = 0f;
-            this.destroyBulletAfter_delta = 0f;
-            this.forceSpecificAttackSpeed_delta = 0f;
-            this.explodeNearEnemyRange_delta = 0f;
-            this.explodeNearEnemyDamage_delta = 0f;
-            this.hitMovementMultiplier_delta = 0f;
-            this.attackSpeedMultiplier_delta = 0f;
 
-            this.gunColorEffect = null;
+            if (clear)            {
+                this.damage_delta = 0f;
+                this.recoilMuiltiplier_delta = 0f;
+                this.knockback_delta = 0f;
+                this.attackSpeed_delta = 0f;
+                this.projectileSpeed_delta = 0f;
+                this.projectielSimulatonSpeed_delta = 0f;
+                this.gravity_delta = 0f;
+                this.damageAfterDistanceMultiplier_delta = 0f;
+                this.bulletDamageMultiplier_delta = 0f;
+                this.multiplySpread_delta = 0f;
+                this.size_delta = 0f;
+                this.timeToReachFullMovementMultiplier_delta = 0f;
+                this.numberOfProjectiles_delta = 0;
+                this.bursts_delta = 0;
+                this.reflects_delta = 0;
+                this.smartBounce_delta = 0;
+                this.randomBounces_delta = 0;
+                this.timeBetweenBullets_delta = 0f;
+                this.projectileSize_delta = 0f;
+                this.speedMOnBounce_delta = 0f;
+                this.dmgMOnBounce_delta = 0f;
+                this.drag_delta = 0f;
+                this.dragMinSpeed_delta = 0f;
+                this.spread_delta = 0f;
+                this.evenSpread_delta = 0f;
+                this.percentageDamage_delta = 0f;
+                this.slow_delta = 0f;
+                this.destroyBulletAfter_delta = 0f;
+                this.forceSpecificAttackSpeed_delta = 0f;
+                this.explodeNearEnemyRange_delta = 0f;
+                this.explodeNearEnemyDamage_delta = 0f;
+                this.hitMovementMultiplier_delta = 0f;
+                this.attackSpeedMultiplier_delta = 0f;
 
-            // extra
-            this.minDistanceMultiplier_delta = 0f;
+                this.gunColorEffect = null;
+
+                // extra
+                this.minDistanceMultiplier_delta = 0f;
+            }
 
         }
 
@@ -903,7 +922,7 @@ namespace PCE.Extensions
             // update the characterStatModifiers
             characterStatModifiers.WasUpdated();
         }
-        public static void RemoveCharacterStatModifiersModifier(CharacterStatModifiersModifier characterStatModifiersModifier, CharacterStatModifiers characterStatModifiers)
+        public static void RemoveCharacterStatModifiersModifier(CharacterStatModifiersModifier characterStatModifiersModifier, CharacterStatModifiers characterStatModifiers, bool clear = true)
         {
             characterStatModifiers.sizeMultiplier -= characterStatModifiersModifier.sizeMultiplier_delta;
             characterStatModifiers.health -= characterStatModifiersModifier.health_delta;
@@ -938,35 +957,38 @@ namespace PCE.Extensions
             }
 
             // reset deltas
-            characterStatModifiersModifier.objectsAddedToPlayer = new List<GameObject>();
-            characterStatModifiersModifier.sizeMultiplier_delta = 0f;
-            characterStatModifiersModifier.health_delta = 0f;
-            characterStatModifiersModifier.movementSpeed_delta = 0f;
-            characterStatModifiersModifier.jump_delta = 0f;
-            characterStatModifiersModifier.gravity_delta = 0f;
-            characterStatModifiersModifier.slow_delta = 0f;
-            characterStatModifiersModifier.slowSlow_delta = 0f;
-            characterStatModifiersModifier.fastSlow_delta = 0f;
-            characterStatModifiersModifier.secondsToTakeDamageOver_delta = 0f;
-            characterStatModifiersModifier.numberOfJumps_delta = 0;
-            characterStatModifiersModifier.regen_delta = 0f;
-            characterStatModifiersModifier.lifeSteal_delta = 0f;
-            characterStatModifiersModifier.respawns_delta = 0;
-            characterStatModifiersModifier.tasteOfBloodSpeed_delta = 0f;
-            characterStatModifiersModifier.rageSpeed_delta = 0f;
-            characterStatModifiersModifier.attackSpeedMultiplier_delta = 0f;
 
-            // extra stuff from extensions
-            characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta = 0f;
-            characterStatModifiersModifier.gravityDurationOnDoDamage_delta = 0f;
-            characterStatModifiersModifier.defaultGravityForce_delta = 0f;
-            characterStatModifiersModifier.defaultGravityExponent_delta = 0f;
-            characterStatModifiersModifier.murder_delta = 0;
+            if (clear)            {
+                characterStatModifiersModifier.objectsAddedToPlayer = new List<GameObject>();
+                characterStatModifiersModifier.sizeMultiplier_delta = 0f;
+                characterStatModifiersModifier.health_delta = 0f;
+                characterStatModifiersModifier.movementSpeed_delta = 0f;
+                characterStatModifiersModifier.jump_delta = 0f;
+                characterStatModifiersModifier.gravity_delta = 0f;
+                characterStatModifiersModifier.slow_delta = 0f;
+                characterStatModifiersModifier.slowSlow_delta = 0f;
+                characterStatModifiersModifier.fastSlow_delta = 0f;
+                characterStatModifiersModifier.secondsToTakeDamageOver_delta = 0f;
+                characterStatModifiersModifier.numberOfJumps_delta = 0;
+                characterStatModifiersModifier.regen_delta = 0f;
+                characterStatModifiersModifier.lifeSteal_delta = 0f;
+                characterStatModifiersModifier.respawns_delta = 0;
+                characterStatModifiersModifier.tasteOfBloodSpeed_delta = 0f;
+                characterStatModifiersModifier.rageSpeed_delta = 0f;
+                characterStatModifiersModifier.attackSpeedMultiplier_delta = 0f;
+
+                // extra stuff from extensions
+                characterStatModifiersModifier.gravityMultiplierOnDoDamage_delta = 0f;
+                characterStatModifiersModifier.gravityDurationOnDoDamage_delta = 0f;
+                characterStatModifiersModifier.defaultGravityForce_delta = 0f;
+                characterStatModifiersModifier.defaultGravityExponent_delta = 0f;
+                characterStatModifiersModifier.murder_delta = 0;
+            }
 
             // update the characterStatModifiers
             characterStatModifiers.WasUpdated();
         }
-        public void RemoveCharacterStatModifiersModifier(CharacterStatModifiers characterStatModifiers)
+        public void RemoveCharacterStatModifiersModifier(CharacterStatModifiers characterStatModifiers, bool clear = true)
         {
             characterStatModifiers.sizeMultiplier -= this.sizeMultiplier_delta;
             characterStatModifiers.health -= this.health_delta;
@@ -1001,30 +1023,33 @@ namespace PCE.Extensions
             }
 
             // reset deltas
-            this.objectsAddedToPlayer = new List<GameObject>();
-            this.sizeMultiplier_delta = 0f;
-            this.health_delta = 0f;
-            this.movementSpeed_delta = 0f;
-            this.jump_delta = 0f;
-            this.gravity_delta = 0f;
-            this.slow_delta = 0f;
-            this.slowSlow_delta = 0f;
-            this.fastSlow_delta = 0f;
-            this.secondsToTakeDamageOver_delta = 0f;
-            this.numberOfJumps_delta = 0;
-            this.regen_delta = 0f;
-            this.lifeSteal_delta = 0f;
-            this.respawns_delta = 0;
-            this.tasteOfBloodSpeed_delta = 0f;
-            this.rageSpeed_delta = 0f;
-            this.attackSpeedMultiplier_delta = 0f;
 
-            // extra stuff from extensions
-            this.gravityMultiplierOnDoDamage_delta = 0f;
-            this.gravityDurationOnDoDamage_delta = 0f;
-            this.defaultGravityForce_delta = 0f;
-            this.defaultGravityExponent_delta = 0f;
-            this.murder_delta = 0;
+            if (clear)            {
+                this.objectsAddedToPlayer = new List<GameObject>();
+                this.sizeMultiplier_delta = 0f;
+                this.health_delta = 0f;
+                this.movementSpeed_delta = 0f;
+                this.jump_delta = 0f;
+                this.gravity_delta = 0f;
+                this.slow_delta = 0f;
+                this.slowSlow_delta = 0f;
+                this.fastSlow_delta = 0f;
+                this.secondsToTakeDamageOver_delta = 0f;
+                this.numberOfJumps_delta = 0;
+                this.regen_delta = 0f;
+                this.lifeSteal_delta = 0f;
+                this.respawns_delta = 0;
+                this.tasteOfBloodSpeed_delta = 0f;
+                this.rageSpeed_delta = 0f;
+                this.attackSpeedMultiplier_delta = 0f;
+
+                // extra stuff from extensions
+                this.gravityMultiplierOnDoDamage_delta = 0f;
+                this.gravityDurationOnDoDamage_delta = 0f;
+                this.defaultGravityForce_delta = 0f;
+                this.defaultGravityExponent_delta = 0f;
+                this.murder_delta = 0;
+            }
 
             // update the characterStatModifiers
             characterStatModifiers.WasUpdated();
@@ -1060,24 +1085,32 @@ namespace PCE.Extensions
             gravity.exponent += this.exponent_delta;
 
         }
-        public static void RemoveGravityModifier(GravityModifier gravityModifier, Gravity gravity)
+        public static void RemoveGravityModifier(GravityModifier gravityModifier, Gravity gravity, bool clear = true)
         {
 
             gravity.gravityForce -= gravityModifier.gravityForce_delta;
             gravity.exponent -= gravityModifier.exponent_delta;
 
-            gravityModifier.gravityForce_delta = 0f;
-            gravityModifier.exponent_delta = 0f;
+            // reset deltas
+
+            if (clear)            {
+                gravityModifier.gravityForce_delta = 0f;
+                gravityModifier.exponent_delta = 0f;
+            }
 
         }
-        public void RemoveGravityModifier(Gravity gravity)
+        public void RemoveGravityModifier(Gravity gravity, bool clear = true)
         {
 
             gravity.gravityForce -= this.gravityForce_delta;
             gravity.exponent -= this.exponent_delta;
 
-            this.gravityForce_delta = 0f;
-            this.exponent_delta = 0f;
+            // reset deltas
+
+            if (clear)            {
+                this.gravityForce_delta = 0f;
+                this.exponent_delta = 0f;
+            }
 
         }
 

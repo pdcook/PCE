@@ -31,6 +31,8 @@ namespace PCE.MonoBehaviours
         public GravityModifier gravityModifier = new GravityModifier();
         public BlockModifier blockModifier = new BlockModifier();
 
+        public bool applyImmediately = true;
+
         public void Awake()
         {
             this.player = gameObject.GetComponent<Player>();
@@ -67,11 +69,11 @@ namespace PCE.MonoBehaviours
 
             this.OnStart();
 
-            this.gunStatModifier.ApplyGunStatModifier(this.gun);
-            this.gunAmmoStatModifier.ApplyGunAmmoStatModifier(this.gunAmmo);
-            this.characterStatModifiersModifier.ApplyCharacterStatModifiersModifier(this.characterStatModifiers);
-            this.gravityModifier.ApplyGravityModifier(this.gravity);
-            this.blockModifier.ApplyBlockModifier(this.block);
+            if (this.applyImmediately)
+            {
+                this.ApplyModifiers();
+            }
+
 
         }
         public virtual void OnStart()
@@ -81,6 +83,9 @@ namespace PCE.MonoBehaviours
              * base.gunAmmoStatModifier
              * base.playerColorModifier
              * base.characterStatModifiersModifier
+             * base.blockModifier
+             * 
+             * and optionally, if the effect should not be applied until later, base.applyImmediately
              */
         }
 
@@ -138,13 +143,21 @@ namespace PCE.MonoBehaviours
         {
             // derived effects should put any necessary cleanup here
         }
-        internal void ClearModifiers()
+        internal void ApplyModifiers()
         {
-            this.gunStatModifier.RemoveGunStatModifier(this.gun);
-            this.gunAmmoStatModifier.RemoveGunAmmoStatModifier(this.gunAmmo);
-            this.characterStatModifiersModifier.RemoveCharacterStatModifiersModifier(this.characterStatModifiers);
-            this.gravityModifier.RemoveGravityModifier(this.gravity);
-            this.blockModifier.RemoveBlockModifier(this.block);
+            this.gunStatModifier.ApplyGunStatModifier(this.gun);
+            this.gunAmmoStatModifier.ApplyGunAmmoStatModifier(this.gunAmmo);
+            this.characterStatModifiersModifier.ApplyCharacterStatModifiersModifier(this.characterStatModifiers);
+            this.gravityModifier.ApplyGravityModifier(this.gravity);
+            this.blockModifier.ApplyBlockModifier(this.block);
+        }
+        internal void ClearModifiers(bool clear = true)
+        {
+            this.gunStatModifier.RemoveGunStatModifier(this.gun, clear);
+            this.gunAmmoStatModifier.RemoveGunAmmoStatModifier(this.gunAmmo, clear);
+            this.characterStatModifiersModifier.RemoveCharacterStatModifiersModifier(this.characterStatModifiers, clear);
+            this.gravityModifier.RemoveGravityModifier(this.gravity, clear);
+            this.blockModifier.RemoveBlockModifier(this.block, clear);
 
         }
         public void Destroy()
