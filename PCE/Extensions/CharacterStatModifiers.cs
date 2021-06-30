@@ -23,6 +23,7 @@ namespace PCE.Extensions
         public float glare;
         public HitEffect[] HitEffects;
         public WasHitEffect[] WasHitEffects;
+        public bool mulligan;
 
         public CharacterStatModifiersAdditionalData()
         {
@@ -33,6 +34,7 @@ namespace PCE.Extensions
             glare = 0f;
             HitEffects = new HitEffect[] { };
             WasHitEffects = new WasHitEffect[] { };
+            mulligan = false;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -82,6 +84,7 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().glare = 0f;
             __instance.GetAdditionalData().HitEffects = new HitEffect[] { };
             __instance.GetAdditionalData().WasHitEffects = new WasHitEffect[] { };
+            __instance.GetAdditionalData().mulligan = false;
 
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;
