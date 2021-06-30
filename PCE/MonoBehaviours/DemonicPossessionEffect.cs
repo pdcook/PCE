@@ -241,6 +241,8 @@ namespace PCE.MonoBehaviours
             newGun.projectileColor = Color.red;
             newGun.spread = 0f;
             newGun.multiplySpread = 0f;
+            newGun.damageAfterDistanceMultiplier = 1f;
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { };
 
             effect.SetGun(newGun);
 
@@ -341,6 +343,9 @@ namespace PCE.MonoBehaviours
             newGun.destroyBulletAfter = 100f;
             newGun.numberOfProjectiles = 1;
             newGun.ignoreWalls = false;
+            newGun.damageAfterDistanceMultiplier = 1f;
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { };
+
 
             effect.SetGun(newGun);
 
@@ -376,6 +381,9 @@ namespace PCE.MonoBehaviours
             newGun.destroyBulletAfter = 20f;
             newGun.numberOfProjectiles = 1;
             newGun.ignoreWalls = true;
+            newGun.damageAfterDistanceMultiplier = 1f;
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { };
+
             Traverse.Create(newGun).Field("spreadOfLastBullet").SetValue(0f);
 
             effect.SetGun(newGun);
