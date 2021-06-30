@@ -64,6 +64,7 @@ namespace PCE
             CustomCard.BuildCard<JetpackCard>(); // requires pykess.rounds.plugins.playerjumppatch
             CustomCard.BuildCard<LastStandCard>();
             CustomCard.BuildCard<MulliganCard>();
+            CustomCard.BuildCard<SuperJumpCard>();
 
 
             CustomCard.BuildCard<SurvivalistICard>();
