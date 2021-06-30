@@ -13,12 +13,12 @@ using System.Reflection;
 
 namespace PCE.Patches
 {
-    // postfix to run HitEffect s and WasHitEffect s
     [Serializable]
     [HarmonyPatch(typeof(ProjectileHit), "RPCA_DoHit")]
     class ProjectileHitPatchRPCA_DotHit
     {
-        private static void Postfix(ProjectileHit __instance, Vector2 hitPoint, Vector2 hitNormal, Vector2 vel, int viewID = -1, int colliderID = -1, bool wasBlocked = false)
+		// postfix to run HitEffect s and WasHitEffect s
+		private static void Postfix(ProjectileHit __instance, Vector2 hitPoint, Vector2 hitNormal, Vector2 vel, int viewID, int colliderID, bool wasBlocked)
         {
 			HitInfo hitInfo = new HitInfo();
 			hitInfo.collider = null;

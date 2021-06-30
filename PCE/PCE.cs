@@ -22,6 +22,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.playerjumppatch", BepInDependency.DependencyFlags.HardDependency)] // fixes multiple jumps
     [BepInDependency("pykess.rounds.plugins.legraycasterspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes physics for small players
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)] // fixes allowMultiple and blacklistedCategories
+    [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInPlugin(ModId, ModName, "0.1.8.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
@@ -61,6 +62,8 @@ namespace PCE
             CustomCard.BuildCard<ThankYouSirMayIHaveAnotherCard>();
             CustomCard.BuildCard<GlareCard>();
             CustomCard.BuildCard<JetpackCard>(); // requires pykess.rounds.plugins.playerjumppatch
+            CustomCard.BuildCard<LastStandCard>();
+            CustomCard.BuildCard<MulliganCard>();
 
 
             CustomCard.BuildCard<SurvivalistICard>();
