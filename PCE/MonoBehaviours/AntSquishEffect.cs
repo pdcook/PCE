@@ -31,7 +31,7 @@ namespace PCE.MonoBehaviours
             // if the Ant player hasn't been squished in the minimum amount of time, and is currently alive, check for squish
             if (PlayerStatus.PlayerAliveAndSimulated(this.playerToModify) && Time.time >= this.timeOfLastSquish + this.minTimeBetweenSquishes)
             {
-                List<Player> enemyPlayers = PlayerManager.instance.players.Where(player => player.teamID != this.playerToModify.teamID).ToList();
+                List<Player> enemyPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.teamID != this.playerToModify.teamID)).ToList();
 
                 Vector2 displacement;
 
