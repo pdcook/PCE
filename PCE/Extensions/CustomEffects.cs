@@ -67,6 +67,8 @@ namespace PCE.Extensions
             foreach (ReversibleEffect reversibleEffect in reversibleEffects) { if (reversibleEffect != null) { reversibleEffect.Destroy(); } }
             SpawnBulletsEffect[] spawnBulletsEffects = gameObject.GetComponents<SpawnBulletsEffect>();
             foreach (SpawnBulletsEffect spawnBulletsEffect in spawnBulletsEffects) { if (spawnBulletsEffect != null) { spawnBulletsEffect.Destroy(); } }
+            KingMidasEffect[] kingMidasEffects = gameObject.GetComponents<KingMidasEffect>();
+            foreach (KingMidasEffect kingMidasEffect in kingMidasEffects) { if (kingMidasEffect != null) { kingMidasEffect.Destroy(); } }
         }
         public static void ClearReversibleEffects(GameObject gameObject)
         {
@@ -81,10 +83,15 @@ namespace PCE.Extensions
 
         public static void DestroyAllDamageEfects(GameObject gameObject)
         {
-            GravityDealtDamageEffect[] gravityDealtDamageEffects = gameObject.GetComponents<GravityDealtDamageEffect>();
-            foreach (GravityDealtDamageEffect gravityDealtDamageEffect in gravityDealtDamageEffects) { if (gravityDealtDamageEffect != null) { gravityDealtDamageEffect.Destroy(); } }
-            ThankYouSirMayIHaveAnotherWasDealtDamageEffect[] thankYouSirMayIHaveAnotherWasDealtDamageEffects = gameObject.GetComponents<ThankYouSirMayIHaveAnotherWasDealtDamageEffect>();
-            foreach (ThankYouSirMayIHaveAnotherWasDealtDamageEffect thankYouSirMayIHaveAnotherWasDealtDamageEffect in thankYouSirMayIHaveAnotherWasDealtDamageEffects) { if (thankYouSirMayIHaveAnotherWasDealtDamageEffect != null) { thankYouSirMayIHaveAnotherWasDealtDamageEffect.Destroy(); } }
+            DealtDamageEffect[] DealtDamageEffects = gameObject.GetComponents<DealtDamageEffect>();
+            foreach (DealtDamageEffect DealtDamageEffect in DealtDamageEffects) { if (DealtDamageEffect != null) { UnityEngine.GameObject.Destroy(DealtDamageEffect); } }
+            WasDealtDamageEffect[] WasDealtDamageEffects = gameObject.GetComponents<WasDealtDamageEffect>();
+            foreach (WasDealtDamageEffect WasDealtDamageEffect in WasDealtDamageEffects) { if (WasDealtDamageEffect != null) { UnityEngine.GameObject.Destroy(WasDealtDamageEffect); } }
+
+            HitEffect[] hitEffects = gameObject.GetComponents<HitEffect>();
+            foreach (HitEffect hitEffect in hitEffects) { if (hitEffect != null) { hitEffect.Destroy(); } }
+            WasHitEffect[] wasHitEffects = gameObject.GetComponents<WasHitEffect>();
+            foreach (WasHitEffect wasHitEffect in wasHitEffects) { if (wasHitEffect != null) { wasHitEffect.Destroy(); } }
         }
     }
 }
