@@ -26,6 +26,15 @@ namespace PCE.Extensions
         {
             CustomEffects.DestroyAllAppliedEffects(gameObject);
             CustomEffects.DestroyAllDamageEfects(gameObject);
+            CustomEffects.DestroyAllColorEffects(gameObject);
+        }
+        public static void DestroyAllColorEffects(GameObject gameObject)
+        {
+            CustomEffects.DestroyEffects<ColorEffect>(gameObject);
+            CustomEffects.DestroyEffects<ColorFlash>(gameObject);
+            CustomEffects.DestroyEffects<GunColorEffect>(gameObject);
+            CustomEffects.DestroyEffects<ColorEffectBase>(gameObject);
+            CustomEffects.DestroyEffects<GunColorEffectBase>(gameObject);
         }
         public static void DestroyAllReversibleEffects(GameObject gameObject)
         {
@@ -44,14 +53,16 @@ namespace PCE.Extensions
             foreach (DemonicPossessionEffect demonicPossessionEffect in demonicPossessionEffects) { if (demonicPossessionEffect != null) { demonicPossessionEffect.Destroy(); } }
             InConeEffect[] inConeEffects = gameObject.GetComponents<InConeEffect>();
             foreach (InConeEffect inConeEffect in inConeEffects) { if (inConeEffect != null) { inConeEffect.Destroy(); } }
-            ColorEffectBase[] colorEffectBases = gameObject.GetComponents<ColorEffectBase>();
-            foreach (ColorEffectBase colorEffectBase in colorEffectBases) { if (colorEffectBase != null) { colorEffectBase.Destroy(); } }
+            ColorFlash[] colorFlashs = gameObject.GetComponents<ColorFlash>();
+            foreach (ColorFlash colorFlash in colorFlashs) { if (colorFlash != null) { colorFlash.Destroy(); } }
             ColorEffect[] colorEffects = gameObject.GetComponents<ColorEffect>();
             foreach (ColorEffect colorEffect in colorEffects) { if (colorEffect != null) { colorEffect.Destroy(); } }
-            GunColorEffectBase[] gunColorEffectBases = gameObject.GetComponents<GunColorEffectBase>();
-            foreach (GunColorEffectBase gunColorEffectBase in gunColorEffectBases) { if (gunColorEffectBase != null) { gunColorEffectBase.Destroy(); } }
+            ColorEffectBase[] colorEffectBases = gameObject.GetComponents<ColorEffectBase>();
+            foreach (ColorEffectBase colorEffectBase in colorEffectBases) { if (colorEffectBase != null) { colorEffectBase.Destroy(); } }
             GunColorEffect[] gunColorEffects = gameObject.GetComponents<GunColorEffect>();
             foreach (GunColorEffect gunColorEffect in gunColorEffects) { if (gunColorEffect != null) { gunColorEffect.Destroy(); } }
+            GunColorEffectBase[] gunColorEffectBases = gameObject.GetComponents<GunColorEffectBase>();
+            foreach (GunColorEffectBase gunColorEffectBase in gunColorEffectBases) { if (gunColorEffectBase != null) { gunColorEffectBase.Destroy(); } }
             ReversibleEffect[] reversibleEffects = gameObject.GetComponents<ReversibleEffect>();
             foreach (ReversibleEffect reversibleEffect in reversibleEffects) { if (reversibleEffect != null) { reversibleEffect.Destroy(); } }
             SpawnBulletsEffect[] spawnBulletsEffects = gameObject.GetComponents<SpawnBulletsEffect>();
@@ -62,7 +73,7 @@ namespace PCE.Extensions
             ReversibleEffect[] reversibleEffects = gameObject.GetComponents<ReversibleEffect>();
             foreach (ReversibleEffect reversibleEffect in reversibleEffects) { if (reversibleEffect != null) { reversibleEffect.Destroy(); } }
         }
-        public static void ClearEffects<T>(GameObject gameObject) where T : MonoBehaviour
+        public static void DestroyEffects<T>(GameObject gameObject) where T : MonoBehaviour
         {
             T[] effects = gameObject.GetComponents<T>();
             foreach (T effect in effects) { if (effect != null) { UnityEngine.GameObject.Destroy((MonoBehaviour)(object)effect); } }

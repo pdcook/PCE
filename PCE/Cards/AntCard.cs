@@ -17,15 +17,20 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             data.maxHealth /= 2f;
-            characterStats.sizeMultiplier /= 2f;
+            characterStats.sizeMultiplier /= 1.5f;
             gun.bulletDamageMultiplier *= 2f;
-            characterStats.movementSpeed *= 1.25f;
-            characterStats.jump *= 0.75f;
             gunAmmo.maxAmmo -= 2;
+
+            if (Extensions.Cards.instance.CountPlayerCardsWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, (card, p, g, ga, d, h, gr, b, c) => card.name == this.GetTitle()) == 0)
+            {
+                // only apply movementspeed buff and jump debuff if the player doesn't have any ant cards yet
+                characterStats.movementSpeed *= 1.25f;
+                characterStats.jump *= 0.75f;
+            }
 
             AntSquishEffect thisAntSquishEffect = player.gameObject.GetOrAddComponent<AntSquishEffect>();
 
-            thisAntSquishEffect.IncreaseDamagePerc(0.25f);
+            //thisAntSquishEffect.IncreaseDamagePerc(0.25f);
 
         }
         public override void OnRemoveCard()

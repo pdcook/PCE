@@ -33,10 +33,6 @@ namespace PCE.MonoBehaviours
         }
         public override void OnUpdate()
         {
-            if (!base.data.isGrounded)
-            {
-                return;
-            }
 
             if (!this.active && base.data.isGrounded && base.data.playerActions.Down.IsPressed)
             {
@@ -59,6 +55,12 @@ namespace PCE.MonoBehaviours
                 this.ResetTimer();
             }
             else if (this.active && base.data.isGrounded && !base.data.playerActions.Down.IsPressed && this.HeldTime() < this.minChargeTime)
+            {
+                this.active = false;
+                this.multiplier = 1f;
+                this.ResetTimer();
+            }
+            else if (this.active && !base.data.isGrounded)
             {
                 this.active = false;
                 this.multiplier = 1f;

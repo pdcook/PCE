@@ -15,7 +15,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            characterStats.movementSpeed *= 0.75f;
+            characterStats.movementSpeed *= 0.85f;
             InAirJumpEffect jumpEffect = player.gameObject.GetOrAddComponent<InAirJumpEffect>();
             jumpEffect.SetJumpMult(0.1f);
             jumpEffect.AddJumps(100);
@@ -69,7 +69,7 @@ namespace PCE.Cards
                 {
                 positive = false,
                 stat = "Movement Speed",
-                amount = "-25%",
+                amount = "-15%",
                 simepleAmount = CardInfoStat.SimpleAmount.lower
                 },
             };

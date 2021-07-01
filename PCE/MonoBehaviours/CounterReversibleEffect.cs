@@ -13,7 +13,6 @@ namespace PCE.MonoBehaviours
     public abstract class CounterReversibleEffect : ReversibleEffect
     {
         public CounterStatus status;
-        bool playerWasInactiveLastFrame = false;
 
         public CounterReversibleEffect()
         {
@@ -85,9 +84,9 @@ namespace PCE.MonoBehaviours
             switch (this.status)
             {
                 case CounterStatus.Apply:
-                    this.ClearModifiers(); // modifiers are ALWAYS cleared before they are updated and applied
+                    base.ClearModifiers(); // modifiers are ALWAYS cleared before they are updated and applied
                     this.UpdateEffects();
-                    this.ApplyEffects();
+                    base.ApplyModifiers();
                     this.OnApply();
                     break;
                 case CounterStatus.Wait:
@@ -107,37 +106,13 @@ namespace PCE.MonoBehaviours
 
         }
         public override void OnLateUpdate()
-        {
-            if (base.player.data && !base.player.data.isPlaying)
-            {
-                this.playerWasInactiveLastFrame = true;
-                this.Reset();
-                base.ClearModifiers();
-                this.OnRemove();
-            }
-            else if (this.playerWasInactiveLastFrame)
-            {
-                this.playerWasInactiveLastFrame = false;
-                this.Reset();
-                base.ClearModifiers();
-                this.OnRemove();
-            }
-            
+        {   
         }
         public override void OnOnDisable()
         {
             this.Reset();
             base.ClearModifiers();
             this.OnRemove();
-        }
-
-        private void ApplyEffects()
-        {
-            base.gunStatModifier.ApplyGunStatModifier(base.gun);
-            base.gunAmmoStatModifier.ApplyGunAmmoStatModifier(base.gunAmmo);
-            base.characterStatModifiersModifier.ApplyCharacterStatModifiersModifier(base.characterStatModifiers);
-            base.gravityModifier.ApplyGravityModifier(base.gravity);
-            this.blockModifier.ApplyBlockModifier(this.block);
         }
 
         public enum CounterStatus

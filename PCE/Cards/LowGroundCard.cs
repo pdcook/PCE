@@ -112,7 +112,7 @@ namespace PCE.Cards
             List<MonoBehaviour> effects = new List<MonoBehaviour>();
 
             ReversibleEffect effect = player.gameObject.AddComponent<ReversibleEffect>();
-            effect.gunStatModifier.projectielSimulatonSpeed_mult = 1.5f;
+            effect.gunStatModifier.projectielSimulatonSpeed_mult = 2f;
             effect.gunStatModifier.projectileSpeed_mult = 2f;
             effect.gunStatModifier.damage_mult = 1.5f;
             effect.gunStatModifier.projectileColor = Color.red;

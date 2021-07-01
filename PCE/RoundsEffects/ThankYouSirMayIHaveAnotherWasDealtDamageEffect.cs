@@ -12,7 +12,7 @@ namespace PCE.RoundsEffects
     {
         public override void WasDealtDamage(Vector2 damage, bool selfDamage)
         {
-            if (!selfDamage && this.gameObject.GetComponent<Player>().data.lastSourceOfDamage != null)
+            if (!selfDamage && this.gameObject.GetComponent<Player>().data.lastSourceOfDamage != null && this.gameObject.GetComponent<Player>().GetComponent<Holding>().holdable.GetComponent<Gun>().GetComponentInChildren<GunAmmo>().maxAmmo < 99)
             {
                 ReversibleEffect reversibleEffect = this.gameObject.GetComponent<Player>().gameObject.AddComponent<ReversibleEffect>();
                 reversibleEffect.gunAmmoStatModifier.maxAmmo_add = this.gameObject.GetComponent<Player>().data.stats.GetAdditionalData().thankyousirmayihaveanother;

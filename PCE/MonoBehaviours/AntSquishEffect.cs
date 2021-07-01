@@ -47,9 +47,10 @@ namespace PCE.MonoBehaviours
                         if (displacement.magnitude <= this.range && Vector2.Angle(Vector2.up, displacement) <= Math.Abs(this.angleThreshold / 2))
                         {
                             // if the enemy player is both within range and within the specified angle above the player, then squish the Ant player
-                            float damage = this.damagePerc * (enemy_mass / mass) * this.playerToModify.data.maxHealth;
-                            
-                            this.playerToModify.data.healthHandler.TakeDamage(new Vector2(0, -1*damage), this.playerToModify.transform.position, Color.black, null, enemyPlayer, true, true);
+                            //float damage = this.damagePerc * (enemy_mass / mass) * this.playerToModify.data.maxHealth;
+                            float damage = this.playerToModify.data.maxHealth * 2f; // instakill player
+
+                            this.playerToModify.data.healthHandler.TakeDamage(new Vector2(0, -1*damage), this.playerToModify.transform.position, Color.red, null, enemyPlayer, true, true);
                             // reset the time since last squish and return
                             this.ResetTimer();
                             return;

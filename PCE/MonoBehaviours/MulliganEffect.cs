@@ -22,9 +22,10 @@ namespace PCE.MonoBehaviours
         }
         public override void OnUpdate()
         {
-            // if the player has 1f health left, remove the mulligan
+            // if the player has 1f health left, remove the mulligan and stop DoT effects
             if (base.characterStatModifiers.GetAdditionalData().mulligan && base.data.health == 1f)
             {
+                ((DamageOverTime)Traverse.Create(base.health).Field("dot").GetValue()).StopAllCoroutines();
                 base.characterStatModifiers.GetAdditionalData().mulligan = false;
                 this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
                 this.colorFlash.SetNumberOfFlashes(1);

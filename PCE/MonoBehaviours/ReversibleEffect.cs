@@ -32,6 +32,7 @@ namespace PCE.MonoBehaviours
         public BlockModifier blockModifier = new BlockModifier();
 
         public bool applyImmediately = true;
+        private bool modifiersActive = false;
 
         public void Awake()
         {
@@ -145,19 +146,23 @@ namespace PCE.MonoBehaviours
         }
         internal void ApplyModifiers()
         {
+            if (this.modifiersActive) { return; }
             this.gunStatModifier.ApplyGunStatModifier(this.gun);
             this.gunAmmoStatModifier.ApplyGunAmmoStatModifier(this.gunAmmo);
             this.characterStatModifiersModifier.ApplyCharacterStatModifiersModifier(this.characterStatModifiers);
             this.gravityModifier.ApplyGravityModifier(this.gravity);
             this.blockModifier.ApplyBlockModifier(this.block);
+            this.modifiersActive = true;
         }
         internal void ClearModifiers(bool clear = true)
         {
+            if (!this.modifiersActive) { return; }
             this.gunStatModifier.RemoveGunStatModifier(this.gun, clear);
             this.gunAmmoStatModifier.RemoveGunAmmoStatModifier(this.gunAmmo, clear);
             this.characterStatModifiersModifier.RemoveCharacterStatModifiersModifier(this.characterStatModifiers, clear);
             this.gravityModifier.RemoveGravityModifier(this.gravity, clear);
             this.blockModifier.RemoveBlockModifier(this.block, clear);
+            this.modifiersActive = false;
 
         }
         public void Destroy()
