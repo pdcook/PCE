@@ -10,6 +10,32 @@ using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
+	public class ReversibleColorEffect : ColorEffect
+	{
+		private int livesToEffect = 1;
+		private int livesEffected = 0;
+
+		public void OnEnable()
+		{
+			if (this.livesEffected >= this.livesToEffect)
+			{
+				Destroy(this);
+			}
+		}
+		public void OnDisable()
+        {
+			this.livesEffected++;
+
+			if (this.livesEffected >= this.livesToEffect)
+			{
+				Destroy(this);
+			}
+		}
+		public void SetLivesToEffect(int lives = 1)
+		{
+			this.livesToEffect = lives;
+		}
+	}
 	public class ColorEffect : MonoBehaviour
     {
 		internal ColorEffectBase colorEffectBase;
@@ -28,12 +54,12 @@ namespace PCE.MonoBehaviours
 
 			this.teamColors = this.player.transform.root.GetComponentsInChildren<SetTeamColor>();
 		}
-		void Start()
+		public void Start()
 		{
 			this.ApplyColor();
 		}
 
-		void Update()
+		public void Update()
 		{
 		}
 		public void OnDestroy()

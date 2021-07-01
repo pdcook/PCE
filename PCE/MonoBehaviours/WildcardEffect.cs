@@ -161,7 +161,7 @@ namespace PCE.MonoBehaviours
             if (this.colorEffect == null)
             {
                 this.colorEffect = base.player.gameObject.AddComponent<ColorEffect>();
-                this.colorEffect.SetColorMax(Color.Lerp(GetPlayerColor.GetColorMax(base.player), this.maxChargeColor, this.multiplier / this.max_mult));
+                this.colorEffect.SetColor(Color.Lerp(GetPlayerColor.GetColorMax(base.player), this.maxChargeColor, this.multiplier / this.max_mult));
             }
         }
         public override void OnRemove()

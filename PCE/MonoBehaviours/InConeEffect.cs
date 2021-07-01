@@ -31,7 +31,8 @@ namespace PCE.MonoBehaviours
         private Vector2 centerRay = Vector2.zero; // center ray of the cone
         private float range = float.MaxValue; // maximum range from the player for the effect to work
         private float angle = 361f; // arc angle (in degrees) of the cone
-        private float period = 0f; // how often to reapply the effect while conditions are met, 0f for once only. will be unapplied when conditions are no longer met and reapplied when they are
+        private float period = 0f; // how often to reapply the effect while conditions are met, 0f for once only. 
+        private bool removeAfter = true; // remove effect when conditions are no longer met
 
         // the function that adds. applies, sets, and returns a list of monobehaivors to apply to the player
         private Func<Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, List<MonoBehaviour>> effectFunc = null;
@@ -110,7 +111,7 @@ namespace PCE.MonoBehaviours
                 }
             }
             // if the conditions are not met, then remove all effects that may be present
-            else
+            else if (this.removeAfter)
             {
                 this.RemoveAllEffects();
                 this.effectApplied = false;
@@ -244,6 +245,7 @@ namespace PCE.MonoBehaviours
                 }
             }
             this.effects = new List<MonoBehaviour>();
+            this.effectApplied = false;
         }
         public void RemoveColorEffects()
         {
@@ -260,6 +262,7 @@ namespace PCE.MonoBehaviours
         {
             this.RemoveEffects();
             this.RemoveColorEffects();
+            this.effectApplied = false;
         }
         public void ResetTimer()
         {
@@ -335,6 +338,11 @@ namespace PCE.MonoBehaviours
         public void SetApplyToSelf(bool applyToSelf)
         {
             this.applyToSelf = applyToSelf;
+        }
+
+        public void SetRemoveAfter(bool remove)
+        {
+            this.removeAfter = remove;
         }
     }
 }
