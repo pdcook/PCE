@@ -16,7 +16,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            FriendlyBulletsHitEffect effect = player.gameObject.GetOrAddComponent<FriendlyBulletsHitEffect>();
+            FriendlyBulletsDealtDamageEffect effect = player.gameObject.GetOrAddComponent<FriendlyBulletsDealtDamageEffect>();
 
             effect.multiplier /= 2f;
 
