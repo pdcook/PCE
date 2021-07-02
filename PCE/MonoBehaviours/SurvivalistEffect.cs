@@ -7,6 +7,7 @@ using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
 using PCE.Extensions;
+using PCE.Cards;
 
 namespace PCE.MonoBehaviours
 {
@@ -42,6 +43,10 @@ namespace PCE.MonoBehaviours
             // update which survivalist cards the player has
             this.CheckCards();
 
+            if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V])
+            {
+            }
+
             foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
             {
                 if (this.survivalists[survivalistType])
@@ -61,7 +66,6 @@ namespace PCE.MonoBehaviours
                             base.gunStatModifier.bulletDamageMultiplier_mult = this.multiplier;
                             break;
                         case SurvivalistType.V:
-                            throw new NotImplementedException();
                             break;
                         default:
                             break;
@@ -105,6 +109,10 @@ namespace PCE.MonoBehaviours
             {
                 this.survivalists[survivalistType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
             }
+        }
+        private bool HasCompleteSet()
+        {
+            return (this.survivalists[SurvivalistType.I] && this.survivalists[SurvivalistType.II] && this.survivalists[SurvivalistType.III] && this.survivalists[SurvivalistType.IV]);
         }
 
         public enum SurvivalistType

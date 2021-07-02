@@ -262,4 +262,51 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
         }
     }
+    public class SurvivalistVCard : CustomCard
+    {
+
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+            cardInfo.allowMultiple = false;
+            cardInfo.categories = SurvivalistCategories.instance.categories;
+            cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
+            player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+
+        }
+        public override void OnRemoveCard()
+        {
+        }
+
+        protected override string GetTitle()
+        {
+            return "Survivalist V";
+        }
+        protected override string GetDescription()
+        {
+            return "Double the charge speed of all Survivalist effects.";
+        }
+
+        protected override GameObject GetCardArt()
+        {
+            return null;
+        }
+
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Rare;
+        }
+
+        protected override CardInfoStat[] GetStats()
+        {
+            return null;
+        }
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.DefensiveBlue;
+        }
+    }
 }
