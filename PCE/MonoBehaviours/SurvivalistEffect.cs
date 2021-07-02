@@ -48,16 +48,8 @@ namespace PCE.MonoBehaviours
 
             if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V] && !this.Vexists)
             {
-                // build and hide survivalist V card
-                CustomCard.BuildCard<SurvivalistVCard>();
-                Unbound.Instance.ExecuteAfterFrames(10, delegate
-                {
-                    List<CardInfo> activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-
-                    CardInfo Vcard = activeCards[activeCards.Count - 1];
-                    activeCards.RemoveAt(activeCards.Count - 1);
-                    Vcard.GetComponent<SurvivalistVCard>().AddCardToPlayer(base.player, Vcard);
-                });
+                // build and add survivalist V card
+                CustomCard.BuildCard<SurvivalistVCard>(cardInfo => cardInfo.GetComponent<PCECustomCard>().AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 

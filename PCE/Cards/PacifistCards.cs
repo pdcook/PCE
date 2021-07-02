@@ -264,7 +264,7 @@ namespace PCE.Cards
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            cardInfo.GetAdditionalData().hide = true;
+            cardInfo.GetAdditionalData().CardEnabled = false;
             cardInfo.allowMultiple = false;
             cardInfo.categories = PacifistCategories.instance.categories;
             cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;

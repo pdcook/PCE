@@ -47,16 +47,8 @@ namespace PCE.MonoBehaviours
 
             if (this.HasCompleteSet() && !this.pacifists[PacifistType.V] && !this.Vexists)
             {
-                // build and hide pacifist V card
-                CustomCard.BuildCard<PacifistVCard>();
-                Unbound.Instance.ExecuteAfterFrames(10, delegate
-                {
-                    List<CardInfo> activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-
-                    CardInfo Vcard = activeCards[activeCards.Count - 1];
-                    activeCards.RemoveAt(activeCards.Count - 1);
-                    Vcard.GetComponent<PacifistVCard>().AddCardToPlayer(base.player, Vcard);
-                });
+                // build and add pacifist V card
+                CustomCard.BuildCard<PacifistVCard>(cardInfo => cardInfo.GetComponent<PCECustomCard>().AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
