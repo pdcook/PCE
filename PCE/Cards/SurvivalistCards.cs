@@ -262,11 +262,12 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
         }
     }
-    public class SurvivalistVCard : CustomCard
+    public class SurvivalistVCard : PCECustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
+            cardInfo.GetAdditionalData().hide = true;
             cardInfo.allowMultiple = false;
             cardInfo.categories = SurvivalistCategories.instance.categories;
             cardInfo.blacklistedCategories = SurvivalistCategories.instance.blacklistedCategories;

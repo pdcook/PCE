@@ -8,6 +8,8 @@ using System.Reflection;
 using PCE.MonoBehaviours;
 using PCE.Extensions;
 using Photon.Pun;
+using UnboundLib.Cards;
+using PCE.Cards;
 
 namespace PCE.MonoBehaviours
 {
@@ -29,11 +31,30 @@ namespace PCE.MonoBehaviours
         private float timeToWait = 0f;
         private bool wait = true;
         private bool active = false;
+        private bool Vexists = false;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
         {
-            if(this.wait == this.active)
+
+            this.CheckCards();
+
+            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
+            {
+                // build and hide wildcard V card
+                CustomCard.BuildCard<WildcardVCard>();
+                Unbound.Instance.ExecuteAfterFrames(10, delegate
+                {
+                    List<CardInfo> activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+
+                    CardInfo Vcard = activeCards[activeCards.Count - 1];
+                    activeCards.RemoveAt(activeCards.Count - 1);
+                    Vcard.GetComponent<WildcardVCard>().AddCardToPlayer(base.player, Vcard);
+                });
+                this.Vexists = true;
+            }
+
+            if (this.wait == this.active)
             {
                 // invalid state, reset and wait
                 this.Reset();
@@ -98,6 +119,12 @@ namespace PCE.MonoBehaviours
         private void GetWaitTime()
         {
             float newWaitDuration = (this.waitMinMax[1] - this.waitMinMax[0]) * (float)this.rng.NextDouble() + this.waitMinMax[0];
+            
+            this.CheckCards();
+            if (this.wildcards[WildcardType.V])
+            {
+                newWaitDuration /= 2f;
+            }
 
             if (PhotonNetwork.OfflineMode)
             {
@@ -129,6 +156,21 @@ namespace PCE.MonoBehaviours
             // update which wildcard cards the player has
             this.CheckCards();
 
+            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
+            {
+                // build and hide wildcard V card
+                CustomCard.BuildCard<WildcardVCard>();
+                Unbound.Instance.ExecuteAfterFrames(10, delegate
+                {
+                    List<CardInfo> activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+
+                    CardInfo Vcard = activeCards[activeCards.Count - 1];
+                    activeCards.RemoveAt(activeCards.Count - 1);
+                    Vcard.GetComponent<WildcardVCard>().AddCardToPlayer(base.player, Vcard);
+                });
+                this.Vexists = true;
+            }
+
             foreach (WildcardType wildcardType in Enum.GetValues(typeof(WildcardType)))
             {
                 if (this.wildcards[wildcardType])
@@ -148,7 +190,7 @@ namespace PCE.MonoBehaviours
                             base.gunStatModifier.bulletDamageMultiplier_mult = this.multiplier;
                             break;
                         case WildcardType.V:
-                            throw new NotImplementedException();
+                            base.gunStatModifier.projectileColor = this.maxChargeColor;
                             break;
                         default:
                             break;
@@ -186,6 +228,11 @@ namespace PCE.MonoBehaviours
             {
                 this.wildcards[wildcardType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[wildcardType]) > 0);
             }
+        }
+
+        private bool HasCompleteSet()
+        {
+            return (this.wildcards[WildcardType.I] && this.wildcards[WildcardType.II] && this.wildcards[WildcardType.III] && this.wildcards[WildcardType.IV]);
         }
 
         public enum WildcardType

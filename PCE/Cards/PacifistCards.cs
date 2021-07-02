@@ -259,4 +259,51 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.NatureBrown;
         }
     }
+    public class PacifistVCard : PCECustomCard
+    {
+
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+            cardInfo.GetAdditionalData().hide = true;
+            cardInfo.allowMultiple = false;
+            cardInfo.categories = PacifistCategories.instance.categories;
+            cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
+            player.gameObject.GetOrAddComponent<PacifistEffect>();
+        }
+        public override void OnRemoveCard()
+        {
+        }
+
+        protected override string GetTitle()
+        {
+            return "Pacifist V";
+        }
+        protected override string GetDescription()
+        {
+            return "Double the charge speed of all Pacifist effects.";
+        }
+
+        protected override GameObject GetCardArt()
+        {
+            return null;
+        }
+
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Rare;
+        }
+
+        protected override CardInfoStat[] GetStats()
+        {
+            return null;
+        }
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.NatureBrown;
+        }
+    }
 }

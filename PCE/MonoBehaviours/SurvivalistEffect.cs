@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnboundLib;
+using UnboundLib.Cards;
 using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
@@ -16,7 +17,8 @@ namespace PCE.MonoBehaviours
         private Dictionary<SurvivalistType, bool> survivalists = new Dictionary<SurvivalistType, bool>();
 
         private readonly float max_mult = 3f;
-        private readonly float timeToMax = 20f;
+        private readonly float defaultTimeToMax = 20f;
+        private float timeToMax;
 
         private readonly Color maxChargeColor = Color.blue;
         private ColorFlash colorFlash = null;
@@ -25,6 +27,7 @@ namespace PCE.MonoBehaviours
         private readonly float colorFlashThreshMaxFrac = 0.25f;
 
         private float multiplier;
+        private bool Vexists = false;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
@@ -43,8 +46,28 @@ namespace PCE.MonoBehaviours
             // update which survivalist cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V])
+            if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V] && !this.Vexists)
             {
+                // build and hide survivalist V card
+                CustomCard.BuildCard<SurvivalistVCard>();
+                Unbound.Instance.ExecuteAfterFrames(10, delegate
+                {
+                    List<CardInfo> activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+
+                    CardInfo Vcard = activeCards[activeCards.Count - 1];
+                    activeCards.RemoveAt(activeCards.Count - 1);
+                    Vcard.GetComponent<SurvivalistVCard>().AddCardToPlayer(base.player, Vcard);
+                });
+                this.Vexists = true;
+            }
+
+            if (!this.survivalists[SurvivalistType.V])
+            {
+                this.timeToMax = this.defaultTimeToMax;
+            }
+            else
+            {
+                this.timeToMax = this.defaultTimeToMax / 2f;
             }
 
             foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
@@ -66,6 +89,7 @@ namespace PCE.MonoBehaviours
                             base.gunStatModifier.bulletDamageMultiplier_mult = this.multiplier;
                             break;
                         case SurvivalistType.V:
+                            base.gunStatModifier.projectileColor = this.maxChargeColor;
                             break;
                         default:
                             break;

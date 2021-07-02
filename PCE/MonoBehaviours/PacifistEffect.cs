@@ -7,6 +7,8 @@ using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
 using PCE.Extensions;
+using PCE.Cards;
+using UnboundLib.Cards;
 
 namespace PCE.MonoBehaviours
 {
@@ -15,7 +17,9 @@ namespace PCE.MonoBehaviours
         private Dictionary<PacifistType, bool> pacifists = new Dictionary<PacifistType, bool>();
 
         private readonly float max_mult = 3f;
-        private readonly float timeToMax = 20f;
+        private readonly float defaultTimeToMax = 20f;
+        private float timeToMax;
+        private bool Vexists = false;
 
         private readonly Color maxChargeColor = Color.green;
         private ColorFlash colorFlash = null;
@@ -41,6 +45,30 @@ namespace PCE.MonoBehaviours
             // update which pacifist cards the player has
             this.CheckCards();
 
+            if (this.HasCompleteSet() && !this.pacifists[PacifistType.V] && !this.Vexists)
+            {
+                // build and hide pacifist V card
+                CustomCard.BuildCard<PacifistVCard>();
+                Unbound.Instance.ExecuteAfterFrames(10, delegate
+                {
+                    List<CardInfo> activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+
+                    CardInfo Vcard = activeCards[activeCards.Count - 1];
+                    activeCards.RemoveAt(activeCards.Count - 1);
+                    Vcard.GetComponent<PacifistVCard>().AddCardToPlayer(base.player, Vcard);
+                });
+                this.Vexists = true;
+            }
+
+            if (!this.pacifists[PacifistType.V])
+            {
+                this.timeToMax = this.defaultTimeToMax;
+            }
+            else
+            {
+                this.timeToMax = this.defaultTimeToMax / 2f;
+            }
+
             foreach (PacifistType pacifistType in Enum.GetValues(typeof(PacifistType)))
             {
                 if (this.pacifists[pacifistType])
@@ -60,7 +88,7 @@ namespace PCE.MonoBehaviours
                             base.gunStatModifier.bulletDamageMultiplier_mult = this.multiplier;
                             break;
                         case PacifistType.V:
-                            throw new NotImplementedException();
+                            base.gunStatModifier.projectileColor = this.maxChargeColor;
                             break;
                         default:
                             break;
@@ -104,6 +132,10 @@ namespace PCE.MonoBehaviours
             {
                 this.pacifists[pacifistType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[pacifistType]) > 0);
             }
+        }
+        private bool HasCompleteSet()
+        {
+            return (this.pacifists[PacifistType.I] && this.pacifists[PacifistType.II] && this.pacifists[PacifistType.III] && this.pacifists[PacifistType.IV]);
         }
 
         public enum PacifistType
