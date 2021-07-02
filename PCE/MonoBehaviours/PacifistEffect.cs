@@ -54,7 +54,7 @@ namespace PCE.MonoBehaviours
                             this.blockModifier.cdMultiplier_mult = 1f / this.multiplier;
                             break;
                         case PacifistType.III:
-                            base.characterStatModifiersModifier.movementSpeed_mult = this.multiplier;
+                            base.characterStatModifiersModifier.movementSpeed_mult = (this.multiplier - 1f) / 2f + 1f; // max movement speed mult is actually 2x
                             break;
                         case PacifistType.IV:
                             base.gunStatModifier.bulletDamageMultiplier_mult = this.multiplier;

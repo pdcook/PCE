@@ -193,7 +193,7 @@ namespace PCE.Cards
                 {
                 positive = true,
                 stat = "Movement Speed",
-                amount = "Up to 3×",
+                amount = "Up to 2×",
                 simepleAmount = CardInfoStat.SimpleAmount.aLotOf
                 }
             };
