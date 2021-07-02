@@ -79,6 +79,15 @@ namespace PCE.MonoBehaviours
 
         public override void OnUpdate()
         {
+            // reset if the player is not alive / active
+            if (!PlayerStatus.PlayerAliveAndSimulated(base.player))
+            {
+                this.Reset();
+                base.ClearModifiers();
+                this.OnRemove();
+                return;
+            }
+
             this.status = this.UpdateCounter();
 
             switch (this.status)
