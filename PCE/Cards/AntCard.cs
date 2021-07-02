@@ -25,7 +25,7 @@ namespace PCE.Cards
             {
                 // only apply movementspeed buff and jump debuff if the player doesn't have any ant cards yet
                 characterStats.movementSpeed *= 1.25f;
-                characterStats.jump *= 0.75f;
+                characterStats.jump *= 0.85f;
             }
 
             AntSquishEffect thisAntSquishEffect = player.gameObject.GetOrAddComponent<AntSquishEffect>();
