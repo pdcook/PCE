@@ -11,6 +11,7 @@ using PCE.Extensions;
 
 namespace PCE.Patches
 {
+    // patch to reset cards and effects
     [Serializable]
     [HarmonyPatch(typeof(Player), "FullReset")]
     class PlayerPatchFullReset
@@ -18,6 +19,7 @@ namespace PCE.Patches
         private static void Prefix(Player __instance)
         {
             CustomEffects.DestroyAllEffects(__instance.gameObject);
+            __instance.data.currentCards = new List<CardInfo> { };
         }
     }
 }
