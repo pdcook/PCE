@@ -21,6 +21,48 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 
 ### Version Notes
 -----------------
+
+#### v2.0
+---------
+
+- **v2.0.0: 20+ new cards**
+    - New cards! (more details below)
+        - Survivalist I, II, III, and IV
+        - Pacifist I, II, III, and IV
+        - Wildcard I, II, III, and IV
+        - Jetpack
+        - Last Stand
+        - Super Jump
+        - Mulligan
+        - Friendly Bullets
+        - King Midas
+        - *and some secret cards too*
+    - Rigorous playtesting
+        - Cards should be significantly less buggy and more balanced
+        - Ant speed increase is now idempotent and adds -2 bullets
+        - Demonic Possession effects have been nerfed all around
+        - Flip and Grounded now deactivate when the player hits the killbox
+        - Flip is slightly weaker
+        - Grounded lasts slightly longer
+        - Players are now ejected from the ground when hit by Flip
+        - Ghost Bullets now penetrate shields properly
+        - Low Ground's stat bonuses have been reduced
+        - Old Jetpack (and Jetpack) now preserve the player's original jump height and jump bonuses (like double jump)
+        - Thank You Sir May I Have Another now only triggers on bullet hit, not damage over time
+    - More code nonsense
+        - New dependencies
+            - UnboundLib 2.1.5+
+            - CardChoiceSpawnUniqueCardPatch
+            - PlayerJumpPatch 0.0.0.2+
+            - GunUnblockablePatch
+        - New frameworks
+            - Added abstracts for Hit and WasHit effects
+            - Revised ReversibleEffects and added CounterReversibleEffects
+            - Player Color Effects now stack properly
+
+#### Older Versions
+-------------------
+
 - v0.1.0.0: first release, most cards do not have art yet.
     * Known issues:
         - Ghost Gun should allow bullets to penetrate shields, this does not work yet.
@@ -278,3 +320,81 @@ Pick up the bullets that hit you
 **Uncommon**
 
 Enemies freeze in fear when you see them.
+
+---
+
+### Low Ground
+**Uncommon**
+
+Gain a significant stat boost when below an enemy player
+
+---
+
+### Friendly Bullets
+**Uncommon**
+
+Friendly fire damage is significantly reduced
+
+---
+
+### Jetpack
+**Uncommon**
+
+A shiny ***new*** jetpack that actually works!
+
+---
+
+### King Midas
+**Uncommon**
+
+Touching any other player turns them to solid gold
+
+---
+
+### Last Stand
+*Common*
+
+Gain increase attack stats when below 10% of your max HP
+
+---
+
+### Mulligan
+**Uncommon**
+
+Always survive your first fatal blow
+
+---
+
+### Super Jump
+*Common*
+
+Crouch to charge a super jump
+
+---
+
+### **Survivalist I / II / III / IV**
+
+*Cannot be combined with any card from any other class (Pacifist or Wildcard)*
+
+- I (*Common*) - Increased reload speed the longer you go without taking damage
+- II (**Uncommon**) - Decreased block cooldown the longer you go without taking damage
+- III (**Uncommon**) - Increased movement speed the longer you go without taking damage
+- IV (***Rare***) - Increased damage the longer you go without taking damage
+
+### **Pacifist I / II / III / IV**
+
+*Cannot be combined with any card from any other class (Survivalist or Wildcard)*
+
+- I (*Common*) - Increased reload speed the longer you go without dealing damage
+- II (**Uncommon**) - Decreased block cooldown the longer you go without dealing damage
+- III (**Uncommon**) - Increased movement speed the longer you go without dealing damage
+- IV (***Rare***) - Increased damage the longer you go without dealing damage
+
+### **Wildcard I / II / III / IV**
+
+*Cannot be combined with any card from any other class (Survivalist or Pacifist)*
+
+- I (*Common*) - Randomly Increased reload speed at random intervals
+- II (**Uncommon**) - Randomly Decreased block cooldown at random intervals
+- III (**Uncommon**) - Randomly Increased movement speed at random intervals
+- IV (***Rare***) - Randomly Increased damage at random intervals
