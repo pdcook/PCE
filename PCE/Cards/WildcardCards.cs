@@ -260,7 +260,6 @@ namespace PCE.Cards
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            cardInfo.GetAdditionalData().CardEnabled = false;
             cardInfo.allowMultiple = false;
             cardInfo.categories = WildcardCategories.instance.categories;
             cardInfo.blacklistedCategories = WildcardCategories.instance.blacklistedCategories;
@@ -299,6 +298,10 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
+        }
+        public override bool GetEnabled()
+        {
+            return false;
         }
     }
 }
