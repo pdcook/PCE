@@ -22,6 +22,15 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.0.1
+-------------
+
+- Balance changes
+    - Friendly bullets is now common
+    - Super jump now charges twice as fast
+- New card
+    - Straight Shot
+
 #### v2.0
 ---------
 
@@ -331,9 +340,11 @@ Gain a significant stat boost when below an enemy player
 ---
 
 ### Friendly Bullets
-**Uncommon**
+*Common*
 
 Friendly fire damage is significantly reduced
+
+Idea credit: @Pepper\_Jack on the rounds modding discord.
 
 ---
 
@@ -398,3 +409,10 @@ Crouch to charge a super jump
 - II (**Uncommon**) - Randomly Decreased block cooldown at random intervals
 - III (**Uncommon**) - Randomly Increased movement speed at random intervals
 - IV (***Rare***) - Randomly Increased damage at random intervals
+
+---
+
+### Straight Shot
+**Uncommon**
+
+Bullets travel in a straight line. Idea credit: @LowFee in the modding discord.
