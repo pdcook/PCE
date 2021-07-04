@@ -67,6 +67,10 @@ namespace PCE.MonoBehaviours
         private readonly Color color = Color.yellow;
         private ReversibleColorEffect colorEffect = null;
 
+        public override void OnOnEnable()
+        {
+            if (this.colorEffect != null) { this.colorEffect.Destroy(); }
+        }
         public override void OnStart()
         {
             base.characterStatModifiersModifier.movementSpeed_mult = (1f - this.movementSpeedReduction);

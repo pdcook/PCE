@@ -14,7 +14,7 @@ namespace PCE.MonoBehaviours
         ColorFlash colorFlash = null;
         private float multiplier = 1f;
         private float timeMultiplier = 0f;
-        private readonly float chargeTime = 5f;
+        private readonly float chargeTime = 2.5f;
         private readonly float maxMultiplier = 5f;
         private readonly float minChargeTime = 0.5f;
         private float startTime = -1f;

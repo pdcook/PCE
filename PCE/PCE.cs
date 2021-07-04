@@ -67,6 +67,7 @@ namespace PCE
             CustomCard.BuildCard<SuperJumpCard>();
             CustomCard.BuildCard<FriendlyBulletsCard>();
             CustomCard.BuildCard<KingMidasCard>();
+            CustomCard.BuildCard<StraightShotCard>();
 
             CustomCard.BuildCard<SurvivalistICard>();
             CustomCard.BuildCard<SurvivalistIICard>();

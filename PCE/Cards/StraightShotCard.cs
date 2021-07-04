@@ -2,24 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using UnboundLib.Cards;
-using UnityEngine;
 using UnboundLib;
-using PCE.MonoBehaviours;
-using PCE.RoundsEffects;
+using UnityEngine;
 
 namespace PCE.Cards
 {
-    public class FriendlyBulletsCard : CustomCard
+    public class StraightShotCard : CustomCard
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
+            cardInfo.allowMultiple = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            FriendlyBulletsDealtDamageEffect effect = player.gameObject.GetOrAddComponent<FriendlyBulletsDealtDamageEffect>();
-
-            effect.multiplier /= 2f;
-
+            gun.gravity = 0f;
+            gun.projectileSpeed *= 0.85f;
         }
         public override void OnRemoveCard()
         {
@@ -27,13 +24,12 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Friendly Bullets";
+            return "Straight Shot";
         }
         protected override string GetDescription()
         {
-            return "Reduced friendly fire damage. Be careful: effects still apply.";
+            return "Bullets follow a straight line";
         }
-
         protected override GameObject GetCardArt()
         {
             return null;
@@ -41,7 +37,7 @@ namespace PCE.Cards
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Common;
+            return CardInfo.Rarity.Uncommon;
         }
 
         protected override CardInfoStat[] GetStats()
@@ -50,16 +46,16 @@ namespace PCE.Cards
             {
                 new CardInfoStat
                 {
-                positive = true,
-                stat = "Friendly Fire",
-                amount = "-50%",
-                simepleAmount = CardInfoStat.SimpleAmount.aLotLower
+                positive = false,
+                stat = "Bullet Speed",
+                amount = "-15%",
+                simepleAmount = CardInfoStat.SimpleAmount.slightlyLower
                 },
             };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
+            return CardThemeColor.CardThemeColorType.FirepowerYellow;
         }
     }
 }
