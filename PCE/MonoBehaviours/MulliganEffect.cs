@@ -25,6 +25,9 @@ namespace PCE.MonoBehaviours
             // if the player has 1f health left, remove the mulligan and stop DoT effects
             if (base.characterStatModifiers.GetAdditionalData().mulligan && base.data.health == 1f)
             {
+                // force the player to block (for free)
+                base.block.CallDoBlock(true, true, BlockTrigger.BlockTriggerType.Default);
+
                 ((DamageOverTime)Traverse.Create(base.health).Field("dot").GetValue()).StopAllCoroutines();
                 base.characterStatModifiers.GetAdditionalData().mulligan = false;
                 this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
