@@ -16,6 +16,8 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            data.maxHealth *= 1.35f;
+
             SuperJumpEffect effect = player.gameObject.GetOrAddComponent<SuperJumpEffect>();
 
             effect.AddToTimeMultiplier(1f);
@@ -46,7 +48,16 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "HP",
+                amount = "+35%",
+                simepleAmount = CardInfoStat.SimpleAmount.Some
+                },
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {

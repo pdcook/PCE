@@ -17,6 +17,7 @@ namespace PCE.Cards
         {
             gun.gravity = 0f;
             gun.projectileSpeed *= 0.85f;
+            gunAmmo.reloadTimeMultiplier = 0.7f;
         }
         public override void OnRemoveCard()
         {
@@ -50,6 +51,13 @@ namespace PCE.Cards
                 stat = "Bullet Speed",
                 amount = "-15%",
                 simepleAmount = CardInfoStat.SimpleAmount.slightlyLower
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Reload Speed",
+                amount = "+30%",
+                simepleAmount = CardInfoStat.SimpleAmount.Some
                 },
             };
         }

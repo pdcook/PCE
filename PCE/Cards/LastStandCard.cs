@@ -21,7 +21,7 @@ namespace PCE.Cards
             effect.gunStatModifier.attackSpeedMultiplier_mult = 0.75f;
             effect.gunAmmoStatModifier.reloadTimeMultiplier_mult = 0.5f;
             effect.gunStatModifier.projectileSpeed_mult = 1.5f;
-            effect.SetPercThresholdMax(0.1f);
+            effect.SetPercThresholdMax(0.2f);
             effect.SetColor(Color.red);
         }
         public override void OnRemoveCard()
@@ -34,7 +34,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Get boosted attack stats when below 10% of your max HP.\nWhen active:";
+            return "Get boosted attack stats when below 20% of your max HP.\nWhen active:";
         }
         protected override GameObject GetCardArt()
         {
