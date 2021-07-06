@@ -4,6 +4,7 @@ using System.Text;
 using UnboundLib.Cards;
 using UnboundLib;
 using UnityEngine;
+using System.Linq;
 
 namespace PCE.Cards
 {
@@ -18,6 +19,42 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            // get the screenEdge (with screenEdgeBounce component) from the TargetBounce card as well as the tail effect
+            CardInfo[] cards = global::CardChoice.instance.cards;
+            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+            Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
+            //ObjectsToSpawn screenEdgeToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<ScreenEdgeBounce>() != null).ToList()[0];
+
+            ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
+
+            // remove target effects from the trail
+            if (trailToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null) { UnityEngine.GameObject.Destroy(trailToSpawn.AddToProjectile.GetComponent<BounceTrigger>()); }
+            if (trailToSpawn.AddToProjectile.GetComponent<BounceEffectRetarget>() != null) { UnityEngine.GameObject.Destroy(trailToSpawn.AddToProjectile.GetComponent<BounceEffectRetarget>()); }
+
+
+            List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
+            //objectsToSpawn.Add(screenEdgeToSpawn);
+            objectsToSpawn.Add(trailToSpawn);
+            gun.objectsToSpawn = objectsToSpawn.ToArray();
+            gun.gravity = 0f;
+            gun.reflects += 100;
+
+
+            gun.recoilMuiltiplier = 0f;
+            gun.spread = 0f;
+            gun.multiplySpread = 0f;
+            gun.projectileSpeed += 10f;
+            gun.drag = 0f;
+            if (gun.projectileColor.a > 0f)
+            {
+                gun.projectileColor = new Color(1f, 0f, 0f, 0.1f);
+            }
+            gunAmmo.reloadTimeMultiplier *= 1.5f;
+            gunAmmo.maxAmmo = 1;
+            gun.destroyBulletAfter = 5f;
+            gun.shakeM = 0f;
+            gun.knockback *= 0.5f;
+            /*
             gun.soundDisableRayHitBulletSound = true;
             gun.forceSpecificShake = false;
             gun.recoilMuiltiplier = 0f;
@@ -41,6 +78,7 @@ namespace PCE.Cards
             gunAmmo.reloadTimeMultiplier *= 1.5f;
             gunAmmo.maxAmmo = 1;
             gun.destroyBulletAfter = 1f;
+            */
         }
         public override void OnRemoveCard()
         {
