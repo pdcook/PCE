@@ -11,15 +11,13 @@ namespace PCE.MonoBehaviours
 {
     public class KingMidasEffect : MonoBehaviour
     {
-        private Player playerToModify;
-        private CharacterStatModifiers charStatsToModify;
+        private Player player;
 
         private readonly float range = 1.75f;
 
         void Awake()
         {
-            this.playerToModify = this.gameObject.GetComponent<Player>();
-            this.charStatsToModify = this.gameObject.GetComponent<CharacterStatModifiers>();
+            this.player = this.gameObject.GetComponent<Player>();
         }
 
         void Start()
@@ -30,16 +28,16 @@ namespace PCE.MonoBehaviours
         void Update()
         {
             // if any player (friendlies included) is touched (i.e. within a very small range) turn them into gold
-            if (PlayerStatus.PlayerAliveAndSimulated(this.playerToModify))
+            if (PlayerStatus.PlayerAliveAndSimulated(this.player))
             {
                 // get all alive players that are not this player
-                List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.playerToModify.playerID)).ToList();
+                List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
                 Vector2 displacement;
 
                 foreach (Player otherPlayer in otherPlayers)
                 {
-                    displacement = otherPlayer.transform.position - this.playerToModify.transform.position;
+                    displacement = otherPlayer.transform.position - this.player.transform.position;
                     if (displacement.magnitude <= this.range)
                     {
                         // if the other player is within range, then add the gold effect to them

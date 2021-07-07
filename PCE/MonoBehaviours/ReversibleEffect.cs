@@ -33,6 +33,7 @@ namespace PCE.MonoBehaviours
 
         public bool applyImmediately = true;
         private bool modifiersActive = false;
+        private bool wasActiveLastFrame = true;
 
         public void Awake()
         {
@@ -68,6 +69,8 @@ namespace PCE.MonoBehaviours
         public void Start()
         {
 
+            this.wasActiveLastFrame = PlayerStatus.PlayerAliveAndSimulated(this.player);
+
             this.OnStart();
 
             if (this.applyImmediately)
@@ -100,7 +103,12 @@ namespace PCE.MonoBehaviours
         }
         void Update()
         {
-            
+            if (this.wasActiveLastFrame && !PlayerStatus.PlayerAliveAndSimulated(this.player))
+            {
+                this.livesEffected++;
+            }
+
+
             if (this.livesEffected >= this.livesToEffect)
             {
                 Destroy(this);
@@ -114,6 +122,8 @@ namespace PCE.MonoBehaviours
         }
         public void LateUpdate()
         {
+            this.wasActiveLastFrame = PlayerStatus.PlayerAliveAndSimulated(this.player);
+
             this.OnLateUpdate();
         }
         public virtual void OnLateUpdate()
