@@ -23,7 +23,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.legraycasterspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes physics for small players
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)] // fixes allowMultiple and blacklistedCategories
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
-    [BepInPlugin(ModId, ModName, "0.2.0.0")]
+    [BepInPlugin(ModId, ModName, "0.2.0.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {

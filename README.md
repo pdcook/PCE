@@ -22,6 +22,18 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.0.2
+-------------
+
+- Balance changes
+    - Straight shot now comes with reload speed buff
+- New cards
+    - Retreat
+    - Super Ball
+- Bugfixes
+    - King Midas effect should no longer persist between rounds
+    - _Temporarily_ removed Laser. Currently working on a complete overhaul.
+
 #### v0.2.0.1
 -------------
 
