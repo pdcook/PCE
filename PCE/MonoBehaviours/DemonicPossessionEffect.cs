@@ -297,8 +297,11 @@ namespace PCE.MonoBehaviours
             effect.gunStatModifier.projectileColor = Color.magenta;
 
             // get the screenEdge (with screenEdgeBounce component) from the TargetBounce card
-            CardInfo[] cards = global::CardChoice.instance.cards;
-            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+            List<CardInfo> activecards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> inactivecards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
+
+            CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
             ObjectsToSpawn screenEdgeToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<ScreenEdgeBounce>() != null).ToList()[0];
 

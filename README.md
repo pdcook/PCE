@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.0.3
+-------------
+
+- Hotfix: fixed issue where certain effects wouldn't work when Target Bounce card was disabled
+
 #### v0.2.0.2
 -------------
 
