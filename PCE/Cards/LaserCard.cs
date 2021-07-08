@@ -6,6 +6,7 @@ using UnboundLib;
 using UnityEngine;
 using System.Linq;
 using PCE.MonoBehaviours;
+using System.Reflection;
 
 namespace PCE.Cards
 {
@@ -38,19 +39,17 @@ namespace PCE.Cards
 
             ObjectsToSpawn laserTrail = new ObjectsToSpawn { };
             laserTrail.AddToProjectile = new GameObject("LaserTrail", typeof(LaserHurtbox));
+            LaserHurtbox laser = laserTrail.AddToProjectile.gameObject.GetComponent<LaserHurtbox>();
+            laser.color = Color.red;
+            laser.material = material;
             /*
             laserTrail.AddToProjectile = new GameObject("LaserTrail", typeof(PolygonCollider2D), typeof(Rigidbody2D), typeof(MeshFilter), typeof(MeshRenderer));
             laserTrail.AddToProjectile.GetComponent<Rigidbody2D>().isKinematic = true;
             laserTrail.AddToProjectile.AddComponent<UnparentOnHit>();
             TrailRenderer trail = laserTrail.AddToProjectile.AddComponent<TrailRenderer>();
-            trail.material = material;
-            trail.startColor = new Color(1f, 0f, 0f, 1f);
-            trail.endColor = new Color(1f, 0f, 0f, 1f);
-            trail.startWidth = 0.2f;
-            trail.endWidth = 0.2f;
-            trail.minVertexDistance = 1f;
-            trail.time = 10f;
-            trail.enabled = true;
+            */
+
+            /*
             laserTrail.AddToProjectile.AddComponent<LaserHurtbox>();
             PolygonCollider2D collider = laserTrail.AddToProjectile.GetComponent<PolygonCollider2D>();
             collider.isTrigger = true;
@@ -70,7 +69,7 @@ namespace PCE.Cards
             gun.drag = 0f;
             if (gun.projectileColor.a > 0f)
             {
-                gun.projectileColor = new Color(1f, 0f, 0f, 0.1f);
+                gun.projectileColor = new Color(1f, 0f, 0f, 1f);
             }
             gunAmmo.reloadTimeMultiplier *= 1.5f;
             gunAmmo.maxAmmo = 1;
@@ -171,148 +170,142 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.DestructiveRed;
         }
     }
-    public class LaserHurtbox : MonoBehaviour
+    public static class MyVector3Extension
     {
+        public static Vector2[] toVector2Array(this Vector3[] v3)
+        {
+            return System.Array.ConvertAll<Vector3, Vector2>(v3, getV3fromV2);
+        }
+
+        public static Vector2 getV3fromV2(Vector3 v3)
+        {
+            return new Vector2(v3.x, v3.y);
+        }
+    }
+    class LaserHurtbox : MonoBehaviour
+    {
+        private float startTime;
+        private float damageMultiplier;
+
+        private readonly float duration = 20f;
+        private readonly float[] minmaxwidth = new float[]{0.1f,0.5f};
+        private readonly float baseDamageMultiplier = 0.1f;
+
         private TrailRenderer trail;
-        private MeshFilter meshFilter;
-        private PolygonCollider2D collider;
-        private Rigidbody2D rigidbody;
+        private readonly int MAX = 100000;
+        private int numPos;
+        private Vector3[] positions3d;
+
+        private ProjectileHit projectile;
+        private Gun gun;
+        private Player player;
+
+        public Material material
+        {
+            get
+            {
+                return this.trail.material;
+            }
+            set
+            {
+                this.trail.material = value; 
+            }
+        }
+        public Color color
+        {
+            get { return this.trail.startColor; }
+            set { this.trail.startColor = value; this.trail.endColor = value; }
+        }
+        private float width
+        {
+            get { return this.trail.startWidth; }
+            set { this.trail.startWidth = value; this.trail.endWidth = value; }
+        }
+        private float intensity
+        {
+            get
+            {
+                if (Time.time - this.startTime < this.duration / 2f)
+                {
+                    return 1f;
+                }
+                else
+                {
+                    return (-2f / this.duration) * (Time.time - this.duration / 2f) + 1f;
+                }
+            }
+        }
+
         void Awake()
         {
-            trail = this.gameObject.GetOrAddComponent<TrailRenderer>();
-            meshFilter = this.gameObject.GetOrAddComponent<MeshFilter>();
-            collider = this.gameObject.GetOrAddComponent<PolygonCollider2D>();
-            rigidbody = this.gameObject.GetOrAddComponent<Rigidbody2D>();
-            rigidbody.isKinematic = true;
-
-            trail.startColor = new Color(1f, 0f, 0f, 1f);
-            trail.endColor = new Color(1f, 0f, 0f, 1f);
-            trail.startWidth = 0.2f;
-            trail.endWidth = 0.2f;
-            trail.minVertexDistance = 1f;
-            trail.time = 10f;
+            this.positions3d = new Vector3[MAX];
+            this.trail = this.gameObject.GetOrAddComponent<TrailRenderer>();
+        }
+        void Start()
+        {
+            this.ResetTimer();
+            this.damageMultiplier = this.baseDamageMultiplier;
+            trail.minVertexDistance = 0.1f;
+            trail.time = this.duration;
             trail.enabled = true;
-
-            collider.isTrigger = true;
-            collider.enabled = true;
-        }
-        void Start()
-        {
+            this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
+            if (this.projectile == null) { return; }
+            this.player = this.projectile.ownPlayer;
+            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
         }
         void Update()
         {
-            if (this.gameObject.transform.parent == null)
-            {
-                this.transform.position = new Vector2(1000f, 1000f);
-                return;
-            }
+            if (this.projectile == null) { return; }
 
-            this.UpdateCollider(this.gameObject.GetComponent<TrailRenderer>());
+            this.numPos = this.trail.GetPositions(positions3d);
+            this.UpdateDamage();
+            this.UpdateColor();
+            this.UpdateWidth();
+            this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
         }
-        public void UpdateCollider(TrailRenderer trail)
+        void UpdateDamage()
         {
-
-            if (trail != null)
+            this.damageMultiplier = this.baseDamageMultiplier * this.intensity;
+        }
+        void UpdateColor()
+        {
+            this.color = new Color(this.color.r, this.color.g, this.color.b, this.color.a * this.intensity);
+        }
+        void UpdateWidth()
+        {
+            this.width = UnityEngine.Mathf.Clamp((this.minmaxwidth[1]-this.minmaxwidth[0])*((this.gun.damage-0.1f)*this.damageMultiplier)/((3f-0.1f)*this.baseDamageMultiplier) + this.minmaxwidth[0], this.minmaxwidth[0], this.minmaxwidth[1]);
+        }
+        void HurtBox(Vector2[] vertices)
+        {
+            // take every consecutive pair of vertices, generate a capsule to use Physics.OverlapCapsule to see if it intersects with a player
+            for (int i = 0; i < vertices.Length-1; i++)
             {
-                //UnityEngine.Debug.Log("updating collider.");
+                Vector2 mid = Vector2.Lerp(vertices[i], vertices[i + 1], 0.5f);
+                Vector2 size = new Vector2(this.trail.startWidth, Vector2.Distance(vertices[i], vertices[i + 1]));
+                float angle = Vector2.SignedAngle(Vector2.up, vertices[i] - vertices[i + 1]);
 
-                Mesh mesh = new Mesh();
-                trail.BakeMesh(mesh, Camera.main, true);
-                this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
-
-                PolygonCollider2D collider = this.gameObject.GetComponent<PolygonCollider2D>();
-
-                List<Vector2> verts = new List<Vector2>();
-                foreach (Vector2 vertex in mesh.vertices)
+                Collider2D[] colliders = Physics2D.OverlapCapsuleAll(mid, size, CapsuleDirection2D.Vertical, angle);   
+                foreach (Collider2D collider in colliders)
                 {
-                    verts.Add(vertex);
+                    Damagable componentInParent = collider.GetComponentInParent<Damagable>();
+                    if (componentInParent)
+                    {
+                        if ((bool)typeof(Gun).InvokeMember("CheckIsMine",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, this.gun, new object[] { }))
+                        {
+
+                            componentInParent.CallTakeDamage(base.transform.forward * this.gun.damage * this.damageMultiplier, collider.transform.position, this.gun.gameObject, this.player, true);
+
+                        }
+                    }
                 }
-
-                collider.points = verts.ToArray();
-
             }
         }
-        private void OnTriggerEnter2D(Collider2D other)
+        private void ResetTimer()
         {
-
-            UnityEngine.Debug.Log("Laser Triggered by: " + other.name);
-
-            //HealthHandler health = other.GetComponent<HealthHandler>();
-
-            //health.DoDamage(100f * Vector2.up, Vector2.zero, Color.red);
-
+            this.startTime = Time.time;
         }
-        private void OnTriggerStay2D(Collider2D other)
-        {
-
-            UnityEngine.Debug.Log("Laser Stayed by: " + other.name);
-
-            HealthHandler health = other.GetComponent<HealthHandler>();
-
-            if (health != null)
-            {
-                health.DoDamage(0.1f * Vector2.up, Vector2.zero, Color.red);
-            }
-        }
+        
     }
-    /*
-    public class LaserHurtbox : MonoBehaviour
-    {
-        void Start()
-        {
-            if (this.transform.parent == null)
-            {
-                Destroy(this);
-            }
-        }
-        void Update()
-        {
-            this.UpdateCollider(this.gameObject.GetComponent<TrailRenderer>());
-        }
-        public void UpdateCollider(TrailRenderer trail)
-        {
-            if (trail != null)
-            {
-                UnityEngine.Debug.Log("updating collider.");
-
-                Mesh mesh = new Mesh();
-                trail.BakeMesh(mesh, Camera.main, true);
-                this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
-
-                PolygonCollider2D collider = this.gameObject.GetComponent<PolygonCollider2D>();
-                
-                List<Vector2> verts = new List<Vector2>();
-                foreach (Vector2 vertex in mesh.vertices)
-                {
-                    verts.Add(vertex);
-                }
-
-                collider.points = verts.ToArray();
-                
-            }
-        }
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-
-            UnityEngine.Debug.Log("Laser Triggered");
-
-            //HealthHandler health = other.GetComponent<HealthHandler>();
-            
-            //health.DoDamage(100f * Vector2.up, Vector2.zero, Color.red);
-            
-        }
-        private void OnTriggerStay2D(Collider2D other)
-        {
-
-            UnityEngine.Debug.Log("Laser Stayed");
-
-            HealthHandler health = other.GetComponent<HealthHandler>();
-
-            if (health != null)
-            {
-                health.DoDamage(0.1f * Vector2.up, Vector2.zero, Color.red);
-            }
-        }
-    }
-    */
 }
