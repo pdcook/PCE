@@ -41,7 +41,7 @@ namespace PCE.Cards
             laserTrail.AddToProjectile = new GameObject("LaserTrail", typeof(LaserHurtbox));
             LaserHurtbox laser = laserTrail.AddToProjectile.gameObject.GetComponent<LaserHurtbox>();
             laser.color = Color.red;
-            laser.material = material;
+            laser.material = new Material(material); // clone the material
             /*
             laserTrail.AddToProjectile = new GameObject("LaserTrail", typeof(PolygonCollider2D), typeof(Rigidbody2D), typeof(MeshFilter), typeof(MeshRenderer));
             laserTrail.AddToProjectile.GetComponent<Rigidbody2D>().isKinematic = true;
@@ -65,7 +65,8 @@ namespace PCE.Cards
             gun.recoilMuiltiplier = 0f;
             gun.spread = 0f;
             gun.multiplySpread = 0f;
-            gun.projectileSpeed += 10f;
+            gun.projectileSpeed += 4f;
+            gun.projectielSimulatonSpeed = 1f;
             gun.drag = 0f;
             if (gun.projectileColor.a > 0f)
             {
@@ -73,7 +74,7 @@ namespace PCE.Cards
             }
             gunAmmo.reloadTimeMultiplier *= 1.5f;
             gunAmmo.maxAmmo = 1;
-            gun.destroyBulletAfter = 5f;
+            gun.destroyBulletAfter = 10f;
             gun.shakeM = 0f;
             gun.knockback *= 0.5f;
             /*
@@ -187,7 +188,7 @@ namespace PCE.Cards
         private float startTime;
         private float damageMultiplier;
 
-        private readonly float duration = 20f;
+        private float duration;
         private readonly float[] minmaxwidth = new float[]{0.1f,0.5f};
         private readonly float baseDamageMultiplier = 0.1f;
 
@@ -214,7 +215,7 @@ namespace PCE.Cards
         public Color color
         {
             get { return this.trail.startColor; }
-            set { this.trail.startColor = value; this.trail.endColor = value; }
+            set { this.trail.startColor = value; this.trail.endColor = value; this.trail.material.color = value; }
         }
         private float width
         {
@@ -225,13 +226,13 @@ namespace PCE.Cards
         {
             get
             {
-                if (Time.time - this.startTime < this.duration / 2f)
+                if (Time.time - this.startTime < this.duration)
                 {
                     return 1f;
                 }
                 else
                 {
-                    return (-2f / this.duration) * (Time.time - this.duration / 2f) + 1f;
+                    return (-1f / this.duration) * (Time.time - this.startTime - this.duration) + 1f;
                 }
             }
         }
@@ -245,13 +246,16 @@ namespace PCE.Cards
         {
             this.ResetTimer();
             this.damageMultiplier = this.baseDamageMultiplier;
-            trail.minVertexDistance = 0.1f;
-            trail.time = this.duration;
-            trail.enabled = true;
+            this.trail.minVertexDistance = 0.1f;
+            this.trail.enabled = true;
+            if (this.gameObject.transform.parent == null) { return; }
             this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
             if (this.projectile == null) { return; }
             this.player = this.projectile.ownPlayer;
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
+            this.duration = this.gun.destroyBulletAfter / 2f;
+            this.trail.time = this.duration;
+            this.UpdateWidth();
         }
         void Update()
         {
@@ -260,7 +264,6 @@ namespace PCE.Cards
             this.numPos = this.trail.GetPositions(positions3d);
             this.UpdateDamage();
             this.UpdateColor();
-            this.UpdateWidth();
             this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
         }
         void UpdateDamage()
@@ -269,7 +272,7 @@ namespace PCE.Cards
         }
         void UpdateColor()
         {
-            this.color = new Color(this.color.r, this.color.g, this.color.b, this.color.a * this.intensity);
+            this.color = new Color(this.color.r, this.color.g, this.color.b, this.color.a * UnityEngine.Mathf.Clamp(this.intensity, 0.1f, 1f));
         }
         void UpdateWidth()
         {
