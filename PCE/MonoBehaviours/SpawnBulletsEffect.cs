@@ -13,7 +13,7 @@ namespace PCE.MonoBehaviours
 
     public class SpawnBulletsEffect : MonoBehaviour
     {
-		private readonly float initialDelay = 1f;
+		private float initialDelay = 1f;
 
 		private int numBullets = 1;
 		private int numShot = 0;
@@ -122,6 +122,10 @@ namespace PCE.MonoBehaviours
 		public void SetTimeBetweenShots(float delay)
         {
 			this.timeBetweenShots = delay;
+        }
+		public void SetInitialDelay(float delay)
+        {
+			this.initialDelay = delay;
         }
 		private void ResetTimer()
         {
