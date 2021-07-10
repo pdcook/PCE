@@ -15,7 +15,7 @@ namespace PCE.Patches
 {
     [Serializable]
     [HarmonyPatch(typeof(ProjectileHit), "RPCA_DoHit")]
-    class ProjectileHitPatchRPCA_DotHit
+    class ProjectileHitPatchRPCA_DoHit
     {
 		// postfix to run HitEffect s and WasHitEffect s
 		private static void Postfix(ProjectileHit __instance, Vector2 hitPoint, Vector2 hitNormal, Vector2 vel, int viewID, int colliderID, bool wasBlocked)
