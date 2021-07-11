@@ -8,22 +8,11 @@ using System.Linq;
 using PCE.MonoBehaviours;
 using System.Reflection;
 using Photon.Pun;
-using UnboundLib.Networking;
 
 namespace PCE.Cards
 {
-    public static class Assets
-    {
-        //public static GameObject laserspawner = new GameObject("LaserSpawner", typeof(LaserSpawner));
-        //public static GameObject lasergun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
-
-    }
     public class LaserCard : CustomCard
     {
-        /*
-         * fire a laser instead of a gun
-         */
-
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
@@ -33,12 +22,9 @@ namespace PCE.Cards
         {
             List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
             ObjectsToSpawn laserSpawner = new ObjectsToSpawn { };
-            laserSpawner.AddToProjectile = new GameObject("LaserSpawner", typeof(LaserSpawner));
-            //laserSpawner.AddToProjectile.GetComponent<LaserSpawner>().view = base.GetComponent<PhotonView>();
-            objectsToSpawn.Add(laserSpawner);
-            //ObjectsToSpawn laserGun = new ObjectsToSpawn { };
-            //laserGun.AddToProjectile = new GameObject("LaserGun", typeof(LaserGun));
-            //objectsToSpawn.Add(laserGun);
+            ObjectsToSpawn laserGun = new ObjectsToSpawn { };
+            laserGun.AddToProjectile = new GameObject("LaserGun", typeof(LaserGun));
+            objectsToSpawn.Add(laserGun);
             
             gun.objectsToSpawn = objectsToSpawn.ToArray();
         }
@@ -52,7 +38,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "<b>L</b>ight <b>A</b>mplification by <b>S</b>timulated <b>E</b>mission of <b>R</b>adiation";
+            return "Light Amplification by Stimulated Emission of Radiation";
         }
         protected override GameObject GetCardArt()
         {
@@ -110,63 +96,7 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.DestructiveRed;
         }
     }
-    public class LaserSpawner : MonoBehaviour
-    {
-
-        GameObject lasergun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
-
-        //private static bool Initialized = false;
-
-        void Awake()
-        {
-            PhotonNetwork.PrefabPool.RegisterPrefab(lasergun.name, lasergun);
-        }
-
-        void Start()
-        {
-            UnityEngine.Debug.Log("START SPAWN");
-
-
-            /*
-            if (!Initialized)
-            {
-                Initialized = true;
-                return;
-            }*/
-
-            //Destroy(gameObject, 1f);
-
-            //if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient) return;
-
-            //this.ExecuteAfterSeconds(0.1f, () =>
-            //{
-            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
-            {
-                GameObject laser = PhotonNetwork.Instantiate(
-                    lasergun.name,
-                    transform.position,
-                    transform.rotation,
-                    0,
-                    new object[] { this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID }
-                );
-                UnityEngine.Debug.Log(this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID);
-
-
-                //int laserID = laser.GetComponent<PhotonView>().ViewID;
-                //int parentID = this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID;
-                //UnboundLib.NetworkingManager.RPC(typeof(LaserSpawner), "ParentFromViewID", new object[] { laserID, parentID });
-            }
-            //});
-        }
-        [UnboundRPC]
-        public static void ParentFromViewID(int childID, int parentID)
-        {
-            GameObject child = PhotonView.Find(childID).gameObject;
-            GameObject parent = PhotonView.Find(parentID).gameObject;
-            child.transform.SetParent(parent.transform);
-        }
-    }
-    public class LaserGun : MonoBehaviour, IPunInstantiateMagicCallback
+    public class LaserGun : MonoBehaviour
     {
 
         private readonly float duration = 20f;
@@ -175,31 +105,16 @@ namespace PCE.Cards
         private Gun gun;
         private Gun newGun;
         private Player player;
-        
-        public void OnPhotonInstantiate(PhotonMessageInfo info)
-        {
-            UnityEngine.Debug.Log("OnPhotonInstantiate");
-            object[] instantiationData = info.photonView.InstantiationData;
-            int parentViewID = (int)instantiationData[0];
-            UnityEngine.Debug.Log(parentViewID);
-            GameObject parent = PhotonView.Find(parentViewID).gameObject;
-            this.gameObject.transform.SetParent(parent.transform);
-            this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
-            this.player = this.projectile.ownPlayer;
-            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-            UnityEngine.Debug.Log("Parenting Success");
-        }
         void Start()
         {
-            UnityEngine.Debug.Log("START GUN");
 
             // get the projectile, player, and gun this is attached to
             //if (this.gameObject.transform.parent == null) { return; }
-            //this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
+            this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
             //if (this.projectile == null) { return; }
-            //this.player = this.projectile.ownPlayer;
+            this.player = this.projectile.ownPlayer;
             //if (this.player == null) { return; }
-            //this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
+            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
 
             // create a new gun for the spawnbulletseffect
             this.newGun = this.player.gameObject.AddComponent<Gun>();
@@ -275,7 +190,7 @@ namespace PCE.Cards
             newGun.damageAfterDistanceMultiplier = 1f;
             newGun.reflects = int.MaxValue;
             newGun.bulletDamageMultiplier = 1f;
-            newGun.projectileSpeed = 10f;
+            newGun.projectileSpeed = 1f;//10f;
             newGun.projectielSimulatonSpeed = 1f;
             newGun.projectileSize = 1f;
             newGun.projectileColor = Color.red;
@@ -284,24 +199,19 @@ namespace PCE.Cards
             newGun.numberOfProjectiles = 1;
             newGun.ignoreWalls = false;
             newGun.gravity = 0f;
-            /*
+
             // get the bullet trail material from the targetbounce card
             CardInfo[] cards = global::CardChoice.instance.cards;
             CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
             ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
             Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
-            */
+            
             // make the lasertrail objectToSpawn
             ObjectsToSpawn laserTrail = new ObjectsToSpawn { };
-            laserTrail.AddToProjectile = new GameObject("LaserHurtboxSpawner", typeof(LaserHurtboxSpawner));// new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(DestroyOnUnparent));
-            LaserHurtboxSpawner laserHurtboxSpawner = laserTrail.AddToProjectile.GetComponent<LaserHurtboxSpawner>();
-            laserHurtboxSpawner.player = this.player;
-            laserHurtboxSpawner.duration = this.duration / 2f;
-            laserHurtboxSpawner.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
-
+            laserTrail.AddToProjectile = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));//new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(DestroyOnUnparent));
+            //LaserHurtbox laser = laserTrail.AddToProjectile.gameObject.GetComponent<LaserHurtbox>();
             /*
-            LaserHurtbox laser = laserTrail.AddToProjectile.gameObject.GetComponent<LaserHurtbox>();
             laser.player = this.player;
             laser.gun = newGun;
             laser.duration = this.duration/2f;
@@ -325,59 +235,36 @@ namespace PCE.Cards
             if (this.gameObject.transform.parent == null) { Destroy(this.gameObject); }
         }
     }
-    public class LaserHurtboxSpawner : MonoBehaviour
+
+    public class LaserTrailSpawner : MonoBehaviour
     {
 
-        GameObject laserhurtbox = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(DestroyOnUnparent), typeof(PhotonView));
-
-        //private static bool Initialized = false;
-
-        public Player player;
-        public float duration;
-        public float baseDamage;
+        GameObject laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView));
 
         void Awake()
         {
-            PhotonNetwork.PrefabPool.RegisterPrefab(laserhurtbox.name, laserhurtbox);
+            PhotonNetwork.PrefabPool.RegisterPrefab(laserTrail.name, laserTrail);
         }
 
         void Start()
         {
-            UnityEngine.Debug.Log("START SPAWN HURTBOX");
-
-
-            /*
-            if (!Initialized)
-            {
-                Initialized = true;
-                return;
-            }*/
-
             //Destroy(gameObject, 1f);
 
-            //if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient) return;
+            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient) return;
 
-            //this.ExecuteAfterSeconds(0.1f, () =>
-            //{
-            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            this.ExecuteAfterSeconds(0.1f, () =>
             {
-                GameObject laser = PhotonNetwork.Instantiate(
-                    laserhurtbox.name,
+                PhotonNetwork.Instantiate(
+                    laserTrail.name,
                     transform.position,
                     transform.rotation,
                     0,
-                    new object[] { this.player.GetComponent<PhotonView>().ViewID, this.duration, this.baseDamage }
+                    new object[] {this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID}
                 );
-                UnityEngine.Debug.Log(this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID);
-
-
-                //int laserID = laser.GetComponent<PhotonView>().ViewID;
-                //int parentID = this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID;
-                //UnboundLib.NetworkingManager.RPC(typeof(LaserSpawner), "ParentFromViewID", new object[] { laserID, parentID });
-            }
-            //});
+            });
         }
     }
+
     public static class Vector3Extension
     {
         public static Vector2[] toVector2Array(this Vector3[] v3)
@@ -390,7 +277,7 @@ namespace PCE.Cards
             return new Vector2(v3.x, v3.y);
         }
     }
-    class LaserHurtbox : MonoBehaviour
+    class LaserHurtbox : MonoBehaviour, IPunInstantiateMagicCallback
     {
         private float startTime;
         private float damageMultiplier;
@@ -408,23 +295,9 @@ namespace PCE.Cards
         private int numPos;
         private Vector3[] positions3d;
 
-        //public Gun gun;
+        public Gun gun;
         public Player player;
-        public void OnPhotonInstantiate(PhotonMessageInfo info)
-        {
-            UnityEngine.Debug.Log("HURTBOX OnPhotonInstantiate");
-            object[] instantiationData = info.photonView.InstantiationData;
-            int playerViewID = (int)instantiationData[0];
-            float duration = (float)instantiationData[1];
-            float baseDamage = (float)instantiationData[2];
 
-            this.player = PhotonView.Find(playerViewID).gameObject.GetComponent<Player>();
-            this.duration = duration;
-            this.baseDamage = baseDamage;
-
-            UnityEngine.Debug.Log("HURTBOX Instantiated");
-
-        }
         public Material material
         {
             get
@@ -460,6 +333,22 @@ namespace PCE.Cards
                 }
             }
         }
+        public void OnPhotonInstantiate(Photon.Pun.PhotonMessageInfo info)
+        {
+            UnityEngine.Debug.Log("ONPHOTONINSTANTIATE");
+
+            object[] instantiationData = info.photonView.InstantiationData;
+
+            GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
+
+            this.gameObject.transform.SetParent(parent.transform);
+
+            this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
+            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
+            this.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
+
+        }
+
         void Destroy()
         {
             UnityEngine.GameObject.Destroy(this.gameObject.transform.parent.gameObject);
@@ -467,20 +356,22 @@ namespace PCE.Cards
 
         void Awake()
         {
-            // get the bullet trail material from the targetbounce card
-            CardInfo[] cards = global::CardChoice.instance.cards;
-            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
-            Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
-            ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
-            Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
-
-            this.color = Color.red;
+            this.duration = 10f;
 
             this.positions3d = new Vector3[MAX];
             this.trail = this.gameObject.GetOrAddComponent<TrailRenderer>();
         }
         void Start()
         {
+            CardInfo[] cards = global::CardChoice.instance.cards;
+            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+            Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
+            ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
+            Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
+            this.material = material;
+            this.color = Color.red;
+
+
             this.ResetTimer();
             this.damageMultiplier = this.baseDamageMultiplier;
             this.trail.minVertexDistance = 0.1f;
@@ -493,7 +384,8 @@ namespace PCE.Cards
         {
             if (Time.time - this.startTime > 2f*this.duration)
             {
-                UnityEngine.GameObject.Destroy(this.gameObject.transform.parent.gameObject);
+                if (this.gameObject.transform.parent != null) { UnityEngine.GameObject.Destroy(this.gameObject.transform.parent.gameObject); }
+                Destroy(this);
             }
         }
         void Update()
@@ -541,10 +433,9 @@ namespace PCE.Cards
                     Damagable componentInParent = collider.GetComponentInParent<Damagable>();
                     if (componentInParent)
                     {
-                        //if ((bool)typeof(Gun).InvokeMember("CheckIsMine",
-                         //           BindingFlags.Instance | BindingFlags.InvokeMethod |
-                         //           BindingFlags.NonPublic, null, this.gun, new object[] { }))
-                        if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+                        if ((bool)typeof(Gun).InvokeMember("CheckIsMine",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, this.gun, new object[] { }))
                         {
 
                             UnityEngine.Debug.Log("baseDamage: " + this.baseDamage.ToString());
@@ -552,8 +443,7 @@ namespace PCE.Cards
                             UnityEngine.Debug.Log("Intensity: " + this.intensity.ToString());
 
 
-                            //componentInParent.CallTakeDamage(base.transform.forward * this.baseDamage * this.damageMultiplier, collider.transform.position, this.gun.gameObject, this.player, true);
-                            componentInParent.CallTakeDamage(base.transform.forward * this.baseDamage * this.damageMultiplier, collider.transform.position, null, this.player, true);
+                            componentInParent.CallTakeDamage(base.transform.forward * this.baseDamage * this.damageMultiplier, collider.transform.position, this.gun.gameObject, this.player, true);
 
                         }
                     }
