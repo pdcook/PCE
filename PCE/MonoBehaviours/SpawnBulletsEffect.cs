@@ -7,6 +7,7 @@ using HarmonyLib;
 using System.Reflection;
 using PCE.MonoBehaviours;
 using Photon.Pun;
+using UnboundLib.Networking;
 
 namespace PCE.MonoBehaviours
 {
@@ -74,7 +75,7 @@ namespace PCE.MonoBehaviours
 					{
 
 						GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, this.positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
-
+						/*
 						if (PhotonNetwork.OfflineMode)
 						{
 							typeof(ProjectileInit).InvokeMember("OFFLINE_Init_SeparateGun", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, gameObject.GetComponent<ProjectileInit>(), new object[] { base.GetComponentInParent<Player>().playerID, (int)Traverse.Create(this.gunToShootFrom).Field("gunID").GetValue(), currentNumberOfProjectiles, 1f, UnityEngine.Random.Range(0f, 1f) });
@@ -92,15 +93,33 @@ namespace PCE.MonoBehaviours
 										UnityEngine.Random.Range(0f, 1f)
 							});
 						}
+						*/
+						if (PhotonNetwork.OfflineMode)
+                        {
+							this.RPCA_Shoot(gameObject.GetComponent<PhotonView>().ViewID,currentNumberOfProjectiles, 1f, UnityEngine.Random.Range(0f,1f));
+                        }
+
+                        else
+						{
+							this.gameObject.GetComponent<PhotonView>().RPC("RPCA_Shoot", RpcTarget.All, new object[]
+							{
+								gameObject.GetComponent<PhotonView>().ViewID,
+								currentNumberOfProjectiles,
+								1f,
+								UnityEngine.Random.Range(0f, 1f)
+							});
+						}
 					}
 				}
 			}
 			this.ResetTimer();
 
 		}
-		private void RPCA_Shoot(int numProj, float dmgM, float seed)
+		[PunRPC]
+		private void RPCA_Shoot(int bulletViewID, int numProj, float dmgM, float seed)
         {
-			this.gunToShootFrom.BulletInit(base.gameObject, numProj, dmgM, seed, true);
+			GameObject bulletObj = PhotonView.Find(bulletViewID).gameObject;
+			this.gunToShootFrom.BulletInit(bulletObj, numProj, dmgM, seed, true);
         }
 		public void SetGun(Gun gun)
 		{

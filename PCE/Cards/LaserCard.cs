@@ -23,7 +23,7 @@ namespace PCE.Cards
             List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
             ObjectsToSpawn laserSpawner = new ObjectsToSpawn { };
             ObjectsToSpawn laserGun = new ObjectsToSpawn { };
-            laserGun.AddToProjectile = new GameObject("LaserGun", typeof(LaserGun));
+            laserGun.AddToProjectile = new GameObject("LaserGunSpawner", typeof(LaserGunSpawner));//new GameObject("LaserGun", typeof(LaserGun));
             objectsToSpawn.Add(laserGun);
             
             gun.objectsToSpawn = objectsToSpawn.ToArray();
@@ -96,7 +96,43 @@ namespace PCE.Cards
             return CardThemeColor.CardThemeColorType.DestructiveRed;
         }
     }
-    public class LaserGun : MonoBehaviour
+    public class LaserGunSpawner : MonoBehaviour
+    {
+        private static bool Initialized = false;
+
+
+        GameObject laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
+
+        void Awake()
+        {
+            PhotonNetwork.PrefabPool.RegisterPrefab(laserGun.name, laserGun);
+        }
+
+        void Start()
+        {
+            if (!Initialized)
+            {
+                Initialized = true;
+                return;
+            }
+
+            //Destroy(gameObject, 1f);
+
+            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient) return;
+
+            //this.ExecuteAfterSeconds(0.5f, () =>
+            //{
+                PhotonNetwork.Instantiate(
+                    laserGun.name,
+                    transform.position,
+                    transform.rotation,
+                    0,
+                    new object[] { this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID }
+                );
+            //});
+        }
+    }
+    public class LaserGun : MonoBehaviour, IPunInstantiateMagicCallback
     {
 
         private readonly float duration = 20f;
@@ -105,6 +141,20 @@ namespace PCE.Cards
         private Gun gun;
         private Gun newGun;
         private Player player;
+        public void OnPhotonInstantiate(Photon.Pun.PhotonMessageInfo info)
+        {
+            UnityEngine.Debug.Log("LASERGUN: ONPHOTONINSTANTIATE");
+
+            object[] instantiationData = info.photonView.InstantiationData;
+
+            GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
+
+            this.gameObject.transform.SetParent(parent.transform);
+
+            this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
+            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
+
+        }
         void Start()
         {
 
@@ -238,6 +288,7 @@ namespace PCE.Cards
 
     public class LaserTrailSpawner : MonoBehaviour
     {
+        private static bool Initialized = false;
 
         GameObject laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView));
 
@@ -248,12 +299,17 @@ namespace PCE.Cards
 
         void Start()
         {
+            if (!Initialized)
+            {
+                Initialized = true;
+                return;
+            }
             //Destroy(gameObject, 1f);
 
             if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient) return;
 
-            this.ExecuteAfterSeconds(0.1f, () =>
-            {
+            //this.ExecuteAfterSeconds(0.1f, () =>
+            //{
                 PhotonNetwork.Instantiate(
                     laserTrail.name,
                     transform.position,
@@ -261,7 +317,7 @@ namespace PCE.Cards
                     0,
                     new object[] {this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID}
                 );
-            });
+            //});
         }
     }
 
