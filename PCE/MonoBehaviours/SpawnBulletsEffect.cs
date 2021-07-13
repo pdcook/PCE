@@ -55,7 +55,6 @@ namespace PCE.MonoBehaviours
 
 		private void Shoot()
         {
-			numShot++;
 			int currentNumberOfProjectiles = this.gunToShootFrom.lockGunToDefault ? 1 : (this.gunToShootFrom.numberOfProjectiles + Mathf.RoundToInt(this.gunToShootFrom.chargeNumberOfProjectilesTo * 0f));
 			for (int i = 0; i < this.gunToShootFrom.projectiles.Length; i++)
 			{
@@ -120,11 +119,13 @@ namespace PCE.MonoBehaviours
         {
 			GameObject bulletObj = PhotonView.Find(bulletViewID).gameObject;
 			this.gunToShootFrom.BulletInit(bulletObj, numProj, dmgM, seed, true);
+			this.numShot++;
         }
 		public void SetGun(Gun gun)
 		{
 			this.gunToShootFrom = this.gameObject.AddComponent<Gun>();
 			SpawnBulletsEffect.CopyGunStats(gun, this.gunToShootFrom);
+			Destroy(gun);
 		}
 		public void SetNumBullets(int num)
         {
