@@ -103,6 +103,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.DestructiveRed;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class LaserGunSpawner : MonoBehaviour
     {

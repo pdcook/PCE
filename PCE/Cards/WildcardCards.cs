@@ -89,6 +89,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class WildcardIICard : CustomCard
     {
@@ -143,6 +147,10 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
         }
     }
     public class WildcardIIICard : CustomCard
@@ -199,6 +207,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class WildcardIVCard : CustomCard
     {
@@ -254,6 +266,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class WildcardVCard : PCECustomCard
     {
@@ -302,6 +318,10 @@ namespace PCE.Cards
         public override bool GetEnabled()
         {
             return false;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
         }
     }
 }

@@ -96,6 +96,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
         [UnboundRPC]
         public static void OnDiscombobulateActivate(int playerID, float duration)
         {

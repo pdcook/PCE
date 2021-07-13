@@ -73,5 +73,9 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.MagicPink;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
 }

@@ -61,5 +61,9 @@ namespace PCE.Cards
         {
             return PlayerManager.instance.players.Where(enemyPlayer => enemyPlayer.teamID != player.teamID).ToList();
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
 }

@@ -77,5 +77,9 @@ namespace PCE.Cards
             return !blacklisted && (card.allowMultiple || !player.data.currentCards.Where(cardinfo => cardinfo.name == card.name).Any()) && (card.rarity == CardInfo.Rarity.Rare) && !card.cardName.Contains("Jackpot") && !card.cardName.Contains("Gamble");
 
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
 }

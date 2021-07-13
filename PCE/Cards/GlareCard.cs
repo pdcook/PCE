@@ -111,6 +111,10 @@ namespace PCE.Cards
             return effects;
 
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
 
     }
 }

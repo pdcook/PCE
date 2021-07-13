@@ -66,5 +66,9 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
 }

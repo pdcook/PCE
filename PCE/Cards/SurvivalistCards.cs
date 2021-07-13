@@ -93,6 +93,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class SurvivalistIICard : CustomCard
     {
@@ -148,6 +152,10 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
         }
     }
     public class SurvivalistIIICard : CustomCard
@@ -205,6 +213,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class SurvivalistIVCard : CustomCard
     {
@@ -261,6 +273,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.DefensiveBlue;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class SurvivalistVCard : PCECustomCard
     {
@@ -311,6 +327,10 @@ namespace PCE.Cards
         public override bool GetEnabled()
         {
             return false;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
         }
     }
 }

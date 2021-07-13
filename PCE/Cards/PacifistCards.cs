@@ -90,6 +90,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.NatureBrown;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class PacifistIICard : CustomCard
     {
@@ -145,6 +149,10 @@ namespace PCE.Cards
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
             return CardThemeColor.CardThemeColorType.NatureBrown;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
         }
     }
     public class PacifistIIICard : CustomCard
@@ -202,6 +210,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.NatureBrown;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class PacifistIVCard : CustomCard
     {
@@ -258,6 +270,10 @@ namespace PCE.Cards
         {
             return CardThemeColor.CardThemeColorType.NatureBrown;
         }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
     }
     public class PacifistVCard : PCECustomCard
     {
@@ -307,6 +323,10 @@ namespace PCE.Cards
         public override bool GetEnabled()
         {
             return false;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
         }
     }
 }
