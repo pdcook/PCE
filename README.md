@@ -15,12 +15,21 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 
 2. Install the *newest versions* of [UnboundLib and MMHOOK](https://github.com/Rounds-Modding/UnboundLib/releases).
 
-3. Install `PlayerJumpPatch` which you can find [here](https://rounds.thunderstore.io/package/Pykess/PlayerJumpPatch/).
+3. Install all other dependencies, which are listed [here](https://rounds.thunderstore.io/package/Pykess/PCE/).
 
 4. Copy `PCE.dll` to `/path/to/Steam/steamapps/common/ROUNDS/BepInEx/plugins/`
 
 ### Version Notes
 -----------------
+
+#### v0.2.1.0
+-------------
+
+- Laser has returned! And hopefully works.
+    - A few hopefully small known issues:
+        - After main-menuing, laser no longer works
+        - Laser does not work while the Rain/Wall/Nuke effects from Demonic possession are active
+- Using the new version of Unbound, cards now say PCE in the bottom left
 
 #### v0.2.0.3
 -------------

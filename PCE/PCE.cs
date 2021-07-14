@@ -23,7 +23,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.legraycasterspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes physics for small players
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)] // fixes allowMultiple and blacklistedCategories
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
-    [BepInPlugin(ModId, ModName, "0.2.0.3")]
+    [BepInPlugin(ModId, ModName, "0.2.1.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -120,6 +120,13 @@ namespace PCE
             for (int j = 0; j < players.Length; j++)
             {
                 CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
+            }
+            foreach (GameObject gameObject in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+            {
+                if (gameObject.name == "LaserTrail(Clone)")
+                {
+                    UnityEngine.GameObject.Destroy(gameObject);
+                }
             }
             yield break;
         }
