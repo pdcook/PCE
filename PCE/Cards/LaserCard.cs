@@ -15,7 +15,7 @@ namespace PCE.Cards
     public static class Assets
     {
         public readonly static GameObject laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
-        public readonly static GameObject laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(TrailRenderer));
+        public readonly static GameObject laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer), typeof(NetworkedTrailRenderer));
         public readonly static GameObject laserTrailSpawner = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));
 
     }
@@ -260,7 +260,7 @@ namespace PCE.Cards
             newGun.projectileSpeed = 10f;
             newGun.projectielSimulatonSpeed = 1f;
             newGun.projectileSize = 1f;
-            newGun.projectileColor = Color.red;
+            newGun.projectileColor = Color.clear;
             newGun.spread = 0f;
             newGun.destroyBulletAfter = this.duration;
             newGun.numberOfProjectiles = 1;
@@ -369,7 +369,7 @@ namespace PCE.Cards
             return new Vector3(v2.x, v2.y, 0);
         }
     }
-    class LaserHurtbox : MonoBehaviour, IPunInstantiateMagicCallback//, IPunObservable
+    class LaserHurtbox : MonoBehaviour, IPunInstantiateMagicCallback
     {
         private float startTime;
         private float damageMultiplier;
@@ -382,7 +382,7 @@ namespace PCE.Cards
         private readonly float[] minmaxwidth = new float[]{0.1f,0.5f};
         private readonly float baseDamageMultiplier = 2f;
 
-        private TrailRenderer trail;
+        private LineRenderer trail;
         private readonly int MAX = 100000;
         private int numPos;
         public Gun gun;
@@ -435,11 +435,14 @@ namespace PCE.Cards
 
             GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
 
-            this.gameObject.transform.SetParent(parent.transform);
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                this.gameObject.transform.SetParent(parent.transform);
 
-            this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
-            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-            this.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
+                this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
+                this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
+                this.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
+            }
 
             //this.gameObject.AddComponent<DestroyOnUnparent>();
 
@@ -478,16 +481,18 @@ namespace PCE.Cards
             this.duration = 10f;
 
             this.positions3d = new Vector3[MAX];
-            this.trail = this.gameObject.GetComponent<TrailRenderer>();
+            this.trail = this.gameObject.GetComponent<LineRenderer>();
         }
         void Start()
         {
 
             this.sync = true;
+            
+            /*
             if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
             {
                 this.gameObject.transform.SetParent(null);
-            }
+            }*/
 
             CardInfo[] cards = global::CardChoice.instance.cards;
             CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
@@ -500,10 +505,10 @@ namespace PCE.Cards
 
             this.ResetTimer();
             this.damageMultiplier = this.baseDamageMultiplier;
-            this.trail.minVertexDistance = 0.1f;
+            //this.trail.minVertexDistance = 0.1f;
             this.trail.enabled = true;
-            if (this.color.a < 0.1f) { this.color = new Color(this.color.r, this.color.g, this.color.b, 0.1f); }
-            this.trail.time = this.duration;
+            if (this.color.a < 0f) { this.color = new Color(this.color.r, this.color.g, this.color.b, 0f); }
+            //this.trail.time = this.duration;
             this.UpdateWidth();
         }
         void DestroyBulletAfter()
@@ -521,7 +526,7 @@ namespace PCE.Cards
             if (this.sync && !this.BulletClose())
             {
                 // if the bullet is off screen, unparent this object
-                this.gameObject.transform.SetParent(null);
+                //this.gameObject.transform.SetParent(null);
                 //this.trail.emitting = false;
                 // also stop syncing the laser
                 // TODO
@@ -529,7 +534,7 @@ namespace PCE.Cards
                 this.GetComponent<PhotonView>().Synchronization = ViewSynchronization.Off;
                 this.GetComponent<PhotonView>().ObservedComponents.Remove(this);
                 */
-                this.SyncTrail();
+                //this.SyncTrail();
                 this.sync = false;
             }
 
@@ -543,7 +548,7 @@ namespace PCE.Cards
             {
                 this.frames = 0;
                 this.numPos = this.trail.GetPositions(positions3d);
-                this.SyncTrail();
+                //this.SyncTrail();
                 this.UpdateDamage();
                 this.UpdateColor();
                 this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
@@ -558,17 +563,17 @@ namespace PCE.Cards
         }
         void SyncTrail()
         {
-            if (this.sync && !PhotonNetwork.OfflineMode && PhotonNetwork.IsMasterClient)
-            {
-                this.gameObject.GetComponent<PhotonView>().RPC("RPCA_SyncLaser", RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos});
-            }
+            //if (this.sync && !PhotonNetwork.OfflineMode && PhotonNetwork.IsMasterClient)
+            //{
+             //   this.gameObject.GetComponent<PhotonView>().RPC("RPCA_SyncLaser", RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos});
+            //}
         }
         [PunRPC]
         void RPCA_SyncLaser(Vector2[] positions, int num)
         {
-            UnityEngine.Debug.Log("SYNC");
-            this.trail.Clear();
-            this.trail.AddPositions(positions.toVector3Array());
+            //UnityEngine.Debug.Log("SYNC");
+            //this.trail.Clear();
+            //this.trail.AddPositions(positions.toVector3Array());
         }
         void UpdateDamage()
         {
@@ -619,5 +624,115 @@ namespace PCE.Cards
             this.startTime = Time.time;
         }
         
+    }
+
+    [RequireComponent(typeof(LineRenderer))]
+    public class NetworkedTrailRenderer : MonoBehaviour
+    {
+        private readonly int refreshRate = 0;
+        private readonly int initialDelay = 0;
+        private readonly int syncRate = 5;
+        private const int MAX = 1000;
+        private const float tolerance = 0.5f;
+
+        private LineRenderer line;
+        private List<Vector3> rawPositions3d = new List<Vector3>() { };
+        private Vector3[] positions3d;
+        private int numPos;
+        private PhotonView view;
+
+        private int frameCount = 0;
+        public Material material
+        {
+            get
+            {
+                return this.line.material;
+            }
+            set
+            {
+                this.line.material = value;
+            }
+        }
+        public Color color
+        {
+            get { return this.line.startColor; }
+            set { this.line.startColor = value; this.line.endColor = value; this.line.material.color = value; }
+        }
+        private float width
+        {
+            get { return this.line.startWidth; }
+            set { this.line.startWidth = value; this.line.endWidth = value; }
+        }
+        void Awake()
+        {
+            this.positions3d = new Vector3[MAX];
+        }
+        void Start()
+        {
+            this.line = this.gameObject.GetComponent<LineRenderer>();
+            this.view = this.gameObject.GetComponent<PhotonView>();
+
+            if (this.gameObject.transform.parent != null)
+            {
+                this.rawPositions3d.Add(this.gameObject.transform.position);
+                this.line.positionCount = this.rawPositions3d.Count;
+                this.line.SetPositions(this.rawPositions3d.ToArray());
+                this.numPos = this.line.GetPositions(this.positions3d);
+                this.rawPositions3d = this.positions3d.ToList().Take(this.numPos).ToList();
+            }
+        }
+        void Update()
+        {
+            if (this.line == null) { return; }
+            if (this.view.ViewID == 0) { return; }
+            if (this.gameObject.transform.parent == null) { return; }
+
+            this.frameCount++;
+
+            if ((this.refreshRate == 0 || this.frameCount % this.refreshRate == 0) && this.BulletClose())
+            {
+                this.rawPositions3d.Add(this.gameObject.transform.position);
+                this.line.positionCount = this.rawPositions3d.Count;
+                this.line.SetPositions(this.rawPositions3d.ToArray());
+                if (this.line.positionCount > 3) { this.line.Simplify(NetworkedTrailRenderer.tolerance); }
+                this.numPos = this.line.GetPositions(this.positions3d);
+                this.rawPositions3d = this.positions3d.ToList().Take(this.numPos).ToList();
+            }
+
+            if ((this.frameCount > this.initialDelay) && (this.syncRate == 0 || this.frameCount % this.syncRate == 0) && this.BulletClose())
+            {
+                this.SyncTrail();
+            }
+
+        }
+        bool BulletClose()
+        {
+            if (this.gameObject.transform.parent == null) { return false; }
+            Vector3 bulletpos = this.gameObject.transform.parent.transform.position;
+            return (UnityEngine.Mathf.Abs(bulletpos.x) < 100f && UnityEngine.Mathf.Abs(bulletpos.y) < 100f);
+        }
+        void SyncTrail()
+        {
+            if (!PhotonNetwork.OfflineMode && PhotonNetwork.IsMasterClient)
+            {
+                this.view.RPC("RPCA_SyncTrail", RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos, this.line.startWidth, this.line.startColor.r, this.line.startColor.g, this.line.startColor.b, this.line.startColor.a });
+            }
+        }
+        [PunRPC]
+        void RPCA_SyncTrail(Vector2[] positions, int num, float width, float r, float g, float b, float a)
+        {
+            // unparent once the host starts syncing the position
+            if (this.gameObject.transform.parent != null) { this.gameObject.transform.SetParent(null); }
+            UnityEngine.Debug.Log("SYNC");
+            this.line.positionCount = num;
+            this.line.SetPositions(positions.toVector3Array());
+            this.numPos = this.line.GetPositions(this.positions3d);
+            this.rawPositions3d = this.positions3d.ToList().Take(this.numPos).ToList();
+            this.width = width;
+            this.color = new Color(r, g, b, a);
+
+        }
+
+
     }
 }
