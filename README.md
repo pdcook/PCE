@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.1.2
+-------------
+
+- Hotfix: Laser's hurtbox should be better synced with its visuals now.
+
 #### v0.2.1.1
 -------------
 

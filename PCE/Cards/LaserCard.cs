@@ -510,7 +510,10 @@ namespace PCE.Cards
                 this.UpdateDamage();
                 this.UpdateColor();
                 this.UpdateWidth();
-                this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
+                if (this.damageMultiplier > 0f)
+                {
+                    this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
+                }
             }
 
         }
@@ -522,7 +525,15 @@ namespace PCE.Cards
         }
         void UpdateDamage()
         {
-            this.damageMultiplier = this.baseDamageMultiplier * this.intensity;
+            if (this.intensity >= 1f)
+            {
+                this.damageMultiplier = this.baseDamageMultiplier * this.intensity;
+            }
+            else
+            {
+                float damageMult = (-4.6f/this.duration)*((this.intensity - 1f) * (-1f * this.duration))+1f;
+                this.damageMultiplier = UnityEngine.Mathf.Clamp(damageMult, 0f, 1f);
+            }
         }
         void UpdateColor()
         {
@@ -571,7 +582,7 @@ namespace PCE.Cards
         private readonly int initialDelay = 0;
         private readonly int syncRate = 5;
         private const int MAX = 1000;
-        private const float tolerance = 0.5f;
+        private const float tolerance = 0.0f;
 
         private LineRenderer line;
         private List<Vector3> rawPositions3d = new List<Vector3>() { };
