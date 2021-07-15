@@ -22,6 +22,18 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.1.1
+-------------
+
+- Laser Balancing
+    - Buffed damage of Laser
+
+- Important bugfixes
+    - Ghost Bullets and Phantom (from Cards+) are now exclusive
+    - Laser now works after going to the main menu
+    - Switched to using better card category system built into CardChoiceSpawnUniqueCardPatch
+    - Fixed issue that caused one of the secret cards to not spawn properly
+
 #### v0.2.1.0
 -------------
 

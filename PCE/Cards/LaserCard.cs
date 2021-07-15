@@ -12,16 +12,64 @@ using Photon;
 
 namespace PCE.Cards
 {
-    public static class Assets
+    public class Assets
     {
-        public readonly static GameObject laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
-        public readonly static GameObject laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer), typeof(NetworkedTrailRenderer));
-        public readonly static GameObject laserTrailSpawner = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));
+        private static GameObject _laserGun = null;
 
+        internal static GameObject laserGun
+        {
+            get
+            {
+                if (Assets._laserGun != null) { return Assets._laserGun; }
+                else
+                {
+                    Assets._laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
+                    UnityEngine.GameObject.DontDestroyOnLoad(Assets._laserGun);
+
+                    return Assets._laserGun;
+                }
+            }
+            set { }
+        }
+
+        private static GameObject _laserTrailSpawner = null;
+
+        internal static GameObject laserTrailSpawner
+        {
+            get
+            {
+                if (Assets._laserTrailSpawner != null) { return Assets._laserTrailSpawner; }
+                else
+                {
+                    Assets._laserTrailSpawner = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));
+                    UnityEngine.GameObject.DontDestroyOnLoad(Assets._laserTrailSpawner);
+
+                    return Assets._laserTrailSpawner;
+                }
+            }
+            set { }
+        }
+
+        private static GameObject _laserTrail = null;
+
+        internal static GameObject laserTrail
+        {
+            get
+            {
+                if (Assets._laserTrail != null) { return Assets._laserTrail; }
+                else
+                {
+                    Assets._laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer), typeof(NetworkedTrailRenderer));
+                    UnityEngine.GameObject.DontDestroyOnLoad(Assets._laserTrail);
+
+                    return Assets._laserTrail;
+                }
+            }
+            set { }
+        }
     }
     public class LaserCard : CustomCard
     {
-
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
@@ -113,20 +161,17 @@ namespace PCE.Cards
                 return;
             }
 
-            //Destroy(gameObject, 1f);
 
             if (!PhotonNetwork.OfflineMode && !this.gameObject.transform.parent.GetComponent<ProjectileHit>().ownPlayer.data.view.IsMine) return;
 
-            //this.ExecuteAfterSeconds(0.5f, () =>
-            //{
-                PhotonNetwork.Instantiate(
-                    Assets.laserGun.name,
-                    transform.position,
-                    transform.rotation,
-                    0,
-                    new object[] { this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID }
-                );
-            //});
+
+            PhotonNetwork.Instantiate(
+                Assets.laserGun.name,
+                transform.position,
+                transform.rotation,
+                0,
+                new object[] { this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID }
+            );
         }
     }
     public class LaserGun : MonoBehaviour, IPunInstantiateMagicCallback
@@ -140,8 +185,6 @@ namespace PCE.Cards
         private Player player;
         public void OnPhotonInstantiate(Photon.Pun.PhotonMessageInfo info)
         {
-            //UnityEngine.Debug.Log("LASERGUN: ONPHOTONINSTANTIATE");
-
             object[] instantiationData = info.photonView.InstantiationData;
 
             GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
@@ -158,11 +201,8 @@ namespace PCE.Cards
         {
 
             // get the projectile, player, and gun this is attached to
-            //if (this.gameObject.transform.parent == null) { return; }
             this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
-            //if (this.projectile == null) { return; }
             this.player = this.projectile.ownPlayer;
-            //if (this.player == null) { return; }
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
 
             // create a new gun for the spawnbulletseffect
@@ -259,15 +299,7 @@ namespace PCE.Cards
             // make the lasertrail objectToSpawn
             ObjectsToSpawn laserTrail = new ObjectsToSpawn { };
             laserTrail.AddToProjectile = Assets.laserTrailSpawner;//new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(DestroyOnUnparent));
-            //LaserHurtbox laser = laserTrail.AddToProjectile.gameObject.GetComponent<LaserHurtbox>();
-            /*
-            laser.player = this.player;
-            laser.gun = newGun;
-            laser.duration = this.duration/2f;
-            laser.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
-            laser.color = Color.red;
-            laser.material = new Material(material); // clone the material
-            */
+
             newGun.objectsToSpawn = new ObjectsToSpawn[] { laserTrail };
 
             // set the gun of the spawnbulletseffect
@@ -305,25 +337,13 @@ namespace PCE.Cards
 
             if (!PhotonNetwork.OfflineMode && !this.transform.parent.GetComponent<PhotonView>().IsMine) return;
 
-            if (this.gameObject.transform.parent == null)
-            {
-                //UnityEngine.Debug.Log("NO PARENT");
-                //if (this.gameObject.GetComponent<ProjectileHit>() == null)
-                //{
-                //    UnityEngine.Debug.Log("NO PROJECTILE");
-                //}
-            }    
-
-            //this.ExecuteAfterSeconds(0.1f, () =>
-            //{
-                PhotonNetwork.Instantiate(
-                    Assets.laserTrail.name,
-                    transform.position,
-                    transform.rotation,
-                    0,
-                    new object[] {this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID}
-                );
-            //});
+            PhotonNetwork.Instantiate(
+                Assets.laserTrail.name,
+                transform.position,
+                transform.rotation,
+                0,
+                new object[] {this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID}
+            );
         }
     }
 
@@ -362,7 +382,7 @@ namespace PCE.Cards
 
         public float duration;
         private readonly float[] minmaxwidth = new float[]{0.1f,0.5f};
-        private readonly float baseDamageMultiplier = 1f;
+        private readonly float baseDamageMultiplier = 1.5f;
 
         private LineRenderer trail;
         private readonly int MAX = 100000;
@@ -411,13 +431,12 @@ namespace PCE.Cards
         }
         public void OnPhotonInstantiate(Photon.Pun.PhotonMessageInfo info)
         {
-            //UnityEngine.Debug.Log("ONPHOTONINSTANTIATE");
 
             object[] instantiationData = info.photonView.InstantiationData;
 
             GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
 
-            if (PhotonNetwork.OfflineMode || this.GetComponent<PhotonView>().IsMine)//PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.OfflineMode || this.GetComponent<PhotonView>().IsMine)
             {
                 this.gameObject.transform.SetParent(parent.transform);
 
@@ -426,29 +445,10 @@ namespace PCE.Cards
                 this.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
             }
 
-            //this.gameObject.AddComponent<DestroyOnUnparent>();
-
         }
-        /*
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-            if (stream.IsWriting)
-            {
-                this.numPos = this.trail.GetPositions(positions3d);
-                stream.SendNext(this.positions3d.ToList<Vector3>().Take(this.numPos).ToArray());
-                stream.SendNext(this.numPos);
-            }
-            else
-            {
-                this.positions3d = (Vector3[])stream.ReceiveNext();
-                this.numPos = (int)stream.ReceiveNext();
-                this.trail.SetPositions(this.positions3d.ToList<Vector3>().Take(this.numPos).ToArray());
-            }
-        }*/
 
         void Destroy()
         {
-            //UnityEngine.GameObject.Destroy(this.gameObject.transform.parent.gameObject);
             if (PhotonNetwork.OfflineMode || this.gameObject.GetComponent<PhotonView>().IsMine) { PhotonNetwork.Destroy(this.gameObject.GetComponent<PhotonView>()); }
             Destroy(this.gameObject);
         }
@@ -464,12 +464,6 @@ namespace PCE.Cards
         {
 
             this.sync = true;
-            
-            /*
-            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
-            {
-                this.gameObject.transform.SetParent(null);
-            }*/
 
             CardInfo[] cards = global::CardChoice.instance.cards;
             CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
@@ -482,10 +476,8 @@ namespace PCE.Cards
 
             this.ResetTimer();
             this.damageMultiplier = this.baseDamageMultiplier;
-            //this.trail.minVertexDistance = 0.1f;
             this.trail.enabled = true;
             if (this.color.a < 0f) { this.color = new Color(this.color.r, this.color.g, this.color.b, 0f); }
-            //this.trail.time = this.duration;
             this.UpdateWidth();
         }
         void DestroyBulletAfter()
@@ -502,16 +494,6 @@ namespace PCE.Cards
 
             if (this.sync && !this.BulletClose())
             {
-                // if the bullet is off screen, unparent this object
-                //this.gameObject.transform.SetParent(null);
-                //this.trail.emitting = false;
-                // also stop syncing the laser
-                // TODO
-                /*
-                this.GetComponent<PhotonView>().Synchronization = ViewSynchronization.Off;
-                this.GetComponent<PhotonView>().ObservedComponents.Remove(this);
-                */
-                //this.SyncTrail();
                 this.sync = false;
             }
 
@@ -525,7 +507,6 @@ namespace PCE.Cards
             {
                 this.frames = 0;
                 this.numPos = this.trail.GetPositions(positions3d);
-                //this.SyncTrail();
                 this.UpdateDamage();
                 this.UpdateColor();
                 this.UpdateWidth();
@@ -538,20 +519,6 @@ namespace PCE.Cards
             if (this.gameObject.transform.parent == null) { return false; }
             Vector3 bulletpos = this.gameObject.transform.parent.transform.position;
             return (UnityEngine.Mathf.Abs(bulletpos.x) < 40f && UnityEngine.Mathf.Abs(bulletpos.y) < 30f);
-        }
-        void SyncTrail()
-        {
-            //if (this.sync && !PhotonNetwork.OfflineMode && PhotonNetwork.IsMasterClient)
-            //{
-             //   this.gameObject.GetComponent<PhotonView>().RPC("RPCA_SyncLaser", RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos});
-            //}
-        }
-        [PunRPC]
-        void RPCA_SyncLaser(Vector2[] positions, int num)
-        {
-            //UnityEngine.Debug.Log("SYNC");
-            //this.trail.Clear();
-            //this.trail.AddPositions(positions.toVector3Array());
         }
         void UpdateDamage()
         {
@@ -584,14 +551,7 @@ namespace PCE.Cards
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
                                     BindingFlags.NonPublic, null, this.gun, new object[] { }))
                         {
-
-                            //UnityEngine.Debug.Log("baseDamage: " + this.baseDamage.ToString());
-                            //UnityEngine.Debug.Log("damageMult: " + this.damageMultiplier.ToString());
-                            //UnityEngine.Debug.Log("Intensity: " + this.intensity.ToString());
-
-
                             componentInParent.CallTakeDamage(base.transform.forward * this.baseDamage * this.damageMultiplier, collider.transform.position, this.gun.gameObject, this.player, true);
-
                         }
                     }
                 }
@@ -695,7 +655,7 @@ namespace PCE.Cards
         }
         void SyncTrail()
         {
-            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)//PhotonNetwork.IsMasterClient)
+            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
             {
                 this.view.RPC("RPCA_SyncTrail", RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos, this.line.startWidth, this.line.startColor.r, this.line.startColor.g, this.line.startColor.b, this.line.startColor.a });
             }
@@ -705,7 +665,6 @@ namespace PCE.Cards
         {
             // unparent once the host starts syncing the position
             if (this.gameObject.transform.parent != null) { this.gameObject.transform.SetParent(null); }
-            //UnityEngine.Debug.Log("SYNC");
             this.line.positionCount = num;
             this.line.SetPositions(positions.toVector3Array());
             this.numPos = this.line.GetPositions(this.positions3d);
@@ -716,7 +675,7 @@ namespace PCE.Cards
         }
         void SyncAppearance()
         {
-            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)//PhotonNetwork.IsMasterClient)
+            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
             {
                 this.view.RPC("RPCA_SyncAppearance", RpcTarget.Others, new object[] { this.line.startWidth, this.line.startColor.r, this.line.startColor.g, this.line.startColor.b, this.line.startColor.a });
             }

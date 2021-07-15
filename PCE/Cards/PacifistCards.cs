@@ -11,38 +11,18 @@ using PCE.MonoBehaviours;
 using System.Reflection;
 using HarmonyLib;
 using System.Linq;
-
+using CardChoiceSpawnUniqueCardPatch.CustomCategories;
 
 namespace PCE.Cards
 {
-    public class PacifistCategories
-    {
-        // singleton design, so that the categories are only created once
-        public static readonly PacifistCategories instance = new PacifistCategories();
-
-        public CardCategory[] categories;
-        public CardCategory[] blacklistedCategories
-        {
-            get { return (SurvivalistCategories.instance.categories.Concat(WildcardCategories.instance.categories)).ToArray(); }
-            set { }
-        }
-        private PacifistCategories()
-        {
-            PacifistCategories instance = this;
-
-            CardCategory category = ScriptableObject.CreateInstance<CardCategory>();
-            category.name = "Pacifist";
-            this.categories = new CardCategory[] { category };
-        }
-    }
     public class PacifistICard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = PacifistCategories.instance.categories;
-            cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -101,8 +81,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = PacifistCategories.instance.categories;
-            cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -161,8 +141,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = PacifistCategories.instance.categories;
-            cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -221,8 +201,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = PacifistCategories.instance.categories;
-            cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
@@ -281,8 +261,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = PacifistCategories.instance.categories;
-            cardInfo.blacklistedCategories = PacifistCategories.instance.blacklistedCategories;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {

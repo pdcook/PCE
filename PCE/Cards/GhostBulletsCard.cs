@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnboundLib.Cards;
 using UnityEngine;
+using CardChoiceSpawnUniqueCardPatch.CustomCategories;
 
 namespace PCE.Cards
 {
@@ -14,6 +15,8 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Ghost") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Phantom"), CustomCardCategories.instance.CardCategory("Ghost")};
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
