@@ -17,7 +17,7 @@ namespace PCE.Patches
     [HarmonyPatch(typeof(ProjectileHit), "RPCA_DoHit")]
     class ProjectileHitPatchRPCA_DoHit
     {
-		// postfix to run HitEffect s and WasHitEffect s
+		// postfix to run HitEffect s and WasHitEffect s and HitSurfaceEffect s
 		private static void Postfix(ProjectileHit __instance, Vector2 hitPoint, Vector2 hitNormal, Vector2 vel, int viewID, int colliderID, bool wasBlocked)
         {
 			HitInfo hitInfo = new HitInfo();
@@ -33,6 +33,16 @@ namespace PCE.Patches
 				hitInfo.collider = MapManager.instance.currentMap.Map.GetComponentsInChildren<Collider2D>()[colliderID];
 				hitInfo.transform = hitInfo.collider.transform;
 			}
+
+			// if the bullet hit a collider, run the hit effects
+			if (hitInfo.collider && __instance.gameObject.GetComponentInChildren<StopRecursion>() == null)
+            {
+				HitSurfaceEffect[] hitSurfaceEffects = __instance.ownPlayer.data.stats.GetAdditionalData().HitSurfaceEffects;
+				foreach (HitSurfaceEffect hitSurfaceEffect in hitSurfaceEffects)
+				{
+					hitSurfaceEffect.Hit(hitPoint, hitNormal, vel);
+				}
+            }				
 
 			HealthHandler healthHandler = null;
 			if (hitInfo.transform)

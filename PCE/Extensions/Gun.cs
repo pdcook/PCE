@@ -13,10 +13,16 @@ namespace PCE.Extensions
     public class GunAdditionalData
     {
         public float minDistanceMultiplier;
+        public int fragmentationProjectiles;
+        public int fireworkProjectiles;
+        public bool allowStop;
 
         public GunAdditionalData()
         {
             minDistanceMultiplier = 1f;
+            fragmentationProjectiles = 0;
+            fireworkProjectiles = 0;
+            allowStop = false;
         }
     }
     public static class GunExtension
@@ -48,6 +54,8 @@ namespace PCE.Extensions
             {
                 obj.GetOrAddComponent<ChangeDamageMultiplierAfterDistanceTravelled>().distance *= __instance.GetAdditionalData().minDistanceMultiplier;
             }
+            MoveTransform component3 = obj.GetComponent<MoveTransform>();
+            component3.allowStop = __instance.GetAdditionalData().allowStop;
         }
     }
     // reset extra gun attributes when resetstats is called
@@ -57,6 +65,10 @@ namespace PCE.Extensions
         private static void Prefix(Gun __instance)
         {
             __instance.GetAdditionalData().minDistanceMultiplier = 1f;
+            __instance.GetAdditionalData().fragmentationProjectiles = 0;
+            __instance.GetAdditionalData().fireworkProjectiles = 0;
+            __instance.GetAdditionalData().allowStop = false;
+
         }
     }
 }

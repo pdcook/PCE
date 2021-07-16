@@ -2,24 +2,35 @@
 using System.Collections.Generic;
 using System.Text;
 using UnboundLib.Cards;
-using UnboundLib;
 using UnityEngine;
+using UnboundLib;
+using PCE.MonoBehaviours;
+using Photon.Pun;
+using System.Reflection;
+using PCE.Extensions;
 using System.Linq;
+using PCE.RoundsEffects;
+using PCE.Utils;
 
 namespace PCE.Cards
 {
-    public class StraightShotCard : CustomCard
+    public class FireworksCard : CustomCard
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            cardInfo.allowMultiple = false;
+
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            gun.gravity = 0f;
-            gun.projectileSpeed *= 0.85f;
-            gunAmmo.reloadTimeMultiplier = 0.7f;
-
+            if (gun.GetAdditionalData().fireworkProjectiles == 0)
+            {
+                ObjectsToSpawn fireworkObj = new ObjectsToSpawn() { };
+                fireworkObj.AddToProjectile = new GameObject("FireworkSpawner", typeof(FireworkSpawner));
+                List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
+                objectsToSpawn.Add(fireworkObj);
+                gun.objectsToSpawn = objectsToSpawn.ToArray();
+            }
+            gun.GetAdditionalData().fireworkProjectiles += 3;
 
         }
         public override void OnRemoveCard()
@@ -28,12 +39,13 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Straight Shot";
+            return "Fireworks";
         }
         protected override string GetDescription()
         {
-            return "Bullets follow a straight line";
+            return "Bullets that hit the top of the battlefield pop like fireworks.";
         }
+
         protected override GameObject GetCardArt()
         {
             return null;
@@ -41,36 +53,23 @@ namespace PCE.Cards
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Uncommon;
+            return CardInfo.Rarity.Common;
         }
 
         protected override CardInfoStat[] GetStats()
         {
-            return new CardInfoStat[]
-            {
-                new CardInfoStat
-                {
-                positive = false,
-                stat = "Bullet Speed",
-                amount = "-15%",
-                simepleAmount = CardInfoStat.SimpleAmount.slightlyLower
-                },
-                new CardInfoStat
-                {
-                positive = true,
-                stat = "Reload Speed",
-                amount = "+30%",
-                simepleAmount = CardInfoStat.SimpleAmount.Some
-                },
-            };
+            return null;
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.FirepowerYellow;
+            return CardThemeColor.CardThemeColorType.DestructiveRed;
         }
         public override string GetModName()
         {
             return "PCE";
         }
     }
+
+
+
 }

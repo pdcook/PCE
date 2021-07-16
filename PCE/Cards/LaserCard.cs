@@ -9,10 +9,11 @@ using PCE.MonoBehaviours;
 using System.Reflection;
 using Photon.Pun;
 using Photon;
+using PCE.Utils;
 
 namespace PCE.Cards
 {
-    public class Assets
+    public class LaserAssets
     {
         private static GameObject _laserGun = null;
 
@@ -20,13 +21,13 @@ namespace PCE.Cards
         {
             get
             {
-                if (Assets._laserGun != null) { return Assets._laserGun; }
+                if (LaserAssets._laserGun != null) { return LaserAssets._laserGun; }
                 else
                 {
-                    Assets._laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
-                    UnityEngine.GameObject.DontDestroyOnLoad(Assets._laserGun);
+                    LaserAssets._laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
+                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserGun);
 
-                    return Assets._laserGun;
+                    return LaserAssets._laserGun;
                 }
             }
             set { }
@@ -38,13 +39,13 @@ namespace PCE.Cards
         {
             get
             {
-                if (Assets._laserTrailSpawner != null) { return Assets._laserTrailSpawner; }
+                if (LaserAssets._laserTrailSpawner != null) { return LaserAssets._laserTrailSpawner; }
                 else
                 {
-                    Assets._laserTrailSpawner = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));
-                    UnityEngine.GameObject.DontDestroyOnLoad(Assets._laserTrailSpawner);
+                    LaserAssets._laserTrailSpawner = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));
+                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserTrailSpawner);
 
-                    return Assets._laserTrailSpawner;
+                    return LaserAssets._laserTrailSpawner;
                 }
             }
             set { }
@@ -56,13 +57,13 @@ namespace PCE.Cards
         {
             get
             {
-                if (Assets._laserTrail != null) { return Assets._laserTrail; }
+                if (LaserAssets._laserTrail != null) { return LaserAssets._laserTrail; }
                 else
                 {
-                    Assets._laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer), typeof(NetworkedTrailRenderer));
-                    UnityEngine.GameObject.DontDestroyOnLoad(Assets._laserTrail);
+                    LaserAssets._laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer), typeof(NetworkedTrailRenderer));
+                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserTrail);
 
-                    return Assets._laserTrail;
+                    return LaserAssets._laserTrail;
                 }
             }
             set { }
@@ -77,9 +78,8 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
-            ObjectsToSpawn laserSpawner = new ObjectsToSpawn { };
             ObjectsToSpawn laserGun = new ObjectsToSpawn { };
-            laserGun.AddToProjectile = new GameObject("LaserGunSpawner", typeof(LaserGunSpawner));//new GameObject("LaserGun", typeof(LaserGun));
+            laserGun.AddToProjectile = new GameObject("LaserGunSpawner", typeof(LaserGunSpawner));
             objectsToSpawn.Add(laserGun);
             
             gun.objectsToSpawn = objectsToSpawn.ToArray();
@@ -148,8 +148,8 @@ namespace PCE.Cards
         {
             if (!Initialized)
             {
-                PhotonNetwork.PrefabPool.RegisterPrefab(Assets.laserGun.name, Assets.laserGun);
-                PhotonNetwork.PrefabPool.RegisterPrefab(Assets.laserTrail.name, Assets.laserTrail);
+                PhotonNetwork.PrefabPool.RegisterPrefab(LaserAssets.laserGun.name, LaserAssets.laserGun);
+                PhotonNetwork.PrefabPool.RegisterPrefab(LaserAssets.laserTrail.name, LaserAssets.laserTrail);
             }
         }
 
@@ -166,13 +166,18 @@ namespace PCE.Cards
 
 
             PhotonNetwork.Instantiate(
-                Assets.laserGun.name,
+                LaserAssets.laserGun.name,
                 transform.position,
                 transform.rotation,
                 0,
                 new object[] { this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID }
             );
         }
+    }
+
+    public class LaserGunGun : Gun
+    {
+
     }
     public class LaserGun : MonoBehaviour, IPunInstantiateMagicCallback
     {
@@ -206,7 +211,7 @@ namespace PCE.Cards
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
 
             // create a new gun for the spawnbulletseffect
-            this.newGun = this.player.gameObject.AddComponent<Gun>();
+            this.newGun = this.player.gameObject.AddComponent<LaserGunGun>();
 
             SpawnBulletsEffect effect = this.player.gameObject.AddComponent<SpawnBulletsEffect>();
             // set the position and direction to fire
@@ -298,9 +303,8 @@ namespace PCE.Cards
             
             // make the lasertrail objectToSpawn
             ObjectsToSpawn laserTrail = new ObjectsToSpawn { };
-            laserTrail.AddToProjectile = Assets.laserTrailSpawner;//new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(DestroyOnUnparent));
-
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { laserTrail };
+            laserTrail.AddToProjectile = LaserAssets.laserTrailSpawner;
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { laserTrail, PreventRecursion.stopRecursionObjectToSpawn };
 
             // set the gun of the spawnbulletseffect
             effect.SetGun(newGun);
@@ -338,7 +342,7 @@ namespace PCE.Cards
             if (!PhotonNetwork.OfflineMode && !this.transform.parent.GetComponent<PhotonView>().IsMine) return;
 
             PhotonNetwork.Instantiate(
-                Assets.laserTrail.name,
+                LaserAssets.laserTrail.name,
                 transform.position,
                 transform.rotation,
                 0,

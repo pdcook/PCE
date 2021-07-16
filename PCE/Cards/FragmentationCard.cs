@@ -5,26 +5,25 @@ using UnboundLib.Cards;
 using UnityEngine;
 using UnboundLib;
 using PCE.MonoBehaviours;
+using Photon.Pun;
+using System.Reflection;
+using PCE.Extensions;
+using System.Linq;
+using PCE.RoundsEffects;
+using PCE.Utils;
 
 namespace PCE.Cards
 {
     public class FragmentationCard : CustomCard
     {
-        // not yet implemented
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
 
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            GameObject effect = new UnityEngine.GameObject("fragmentation");
-            SpawnBulletsEffect spawnBullets = effect.AddComponent<SpawnBulletsEffect>();
-
-            ObjectsToSpawn objectsToSpawn = new ObjectsToSpawn();
-            objectsToSpawn.effect = effect;
-            objectsToSpawn.spawnOn = ObjectsToSpawn.SpawnOn.notPlayer;
-            objectsToSpawn.AddToProjectile = effect; // ???
-
+            gun.GetAdditionalData().fragmentationProjectiles += 5;
+            player.gameObject.GetOrAddComponent<FragmentationHitSurfaceEffect>();
 
         }
         public override void OnRemoveCard()
@@ -37,7 +36,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Bullets split into multiple bullets after hitting the ground.";
+            return "Bullets split into fragments on impact.";
         }
 
         protected override GameObject GetCardArt()
@@ -47,7 +46,7 @@ namespace PCE.Cards
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Uncommon;
+            return CardInfo.Rarity.Common;
         }
 
         protected override CardInfoStat[] GetStats()
@@ -63,4 +62,7 @@ namespace PCE.Cards
             return "PCE";
         }
     }
+
+
+
 }

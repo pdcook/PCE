@@ -23,6 +23,7 @@ namespace PCE.Extensions
         public float glare;
         public HitEffect[] HitEffects;
         public WasHitEffect[] WasHitEffects;
+        public HitSurfaceEffect[] HitSurfaceEffects;
         public bool mulligan;
 
         public CharacterStatModifiersAdditionalData()
@@ -34,6 +35,7 @@ namespace PCE.Extensions
             glare = 0f;
             HitEffects = new HitEffect[] { };
             WasHitEffects = new WasHitEffect[] { };
+            HitSurfaceEffects = new HitSurfaceEffect[] { };
             mulligan = false;
         }
     }
@@ -84,6 +86,7 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().glare = 0f;
             __instance.GetAdditionalData().HitEffects = new HitEffect[] { };
             __instance.GetAdditionalData().WasHitEffects = new WasHitEffect[] { };
+            __instance.GetAdditionalData().HitSurfaceEffects = new HitSurfaceEffect[] { };
             __instance.GetAdditionalData().mulligan = false;
 
             Gravity gravity = __instance.GetComponent<Gravity>();
@@ -101,6 +104,7 @@ namespace PCE.Extensions
         {
             __instance.GetAdditionalData().HitEffects = __instance.GetComponentsInChildren<HitEffect>();
             __instance.GetAdditionalData().WasHitEffects = __instance.GetComponentsInChildren<WasHitEffect>();
+            __instance.GetAdditionalData().HitSurfaceEffects = __instance.GetComponentsInChildren<HitSurfaceEffect>();
 
         }
     }

@@ -9,6 +9,7 @@ using PCE.MonoBehaviours;
 using Photon.Pun;
 using System.Linq;
 using PCE.Extensions;
+using PCE.Utils;
 
 namespace PCE.MonoBehaviours
 {
@@ -221,7 +222,7 @@ namespace PCE.MonoBehaviours
         }
         public List<MonoBehaviour> Effect_NukeEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Gun newGun = this.gameObject.AddComponent<Gun>();
+            Gun newGun = this.gameObject.AddComponent<NukeGun>();
 
             SpawnBulletsEffect effect = player.gameObject.AddComponent<SpawnBulletsEffect>();
             effect.SetDirection(new Vector3(0f, 1f, 0f));
@@ -242,7 +243,7 @@ namespace PCE.MonoBehaviours
             newGun.spread = 0f;
             newGun.multiplySpread = 0f;
             newGun.damageAfterDistanceMultiplier = 1f;
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { };
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };
 
             effect.SetGun(newGun);
 
@@ -324,7 +325,7 @@ namespace PCE.MonoBehaviours
         }
         public List<MonoBehaviour> Effect_RainEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Gun newGun = this.gameObject.AddComponent<Gun>();
+            Gun newGun = this.gameObject.AddComponent<RainGun>();
 
             SpawnBulletsEffect effect = player.gameObject.AddComponent<SpawnBulletsEffect>();
             effect.SetDirection(new Vector3(0f, -1f, 0f));
@@ -347,7 +348,7 @@ namespace PCE.MonoBehaviours
             newGun.numberOfProjectiles = 1;
             newGun.ignoreWalls = false;
             newGun.damageAfterDistanceMultiplier = 1f;
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { };
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };
 
 
             effect.SetGun(newGun);
@@ -362,7 +363,7 @@ namespace PCE.MonoBehaviours
         }
         public List<MonoBehaviour> Effect_WallEffect(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            Gun newGun = this.gameObject.AddComponent<Gun>();
+            Gun newGun = this.gameObject.AddComponent<WallGun>();
 
             SpawnBulletsEffect effect = player.gameObject.AddComponent<SpawnBulletsEffect>();
             effect.SetDirection(new Vector3(0f, -1f, 0f));
@@ -385,7 +386,7 @@ namespace PCE.MonoBehaviours
             newGun.numberOfProjectiles = 1;
             newGun.ignoreWalls = true;
             newGun.damageAfterDistanceMultiplier = 1f;
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { };
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };
 
             Traverse.Create(newGun).Field("spreadOfLastBullet").SetValue(0f);
 
@@ -454,4 +455,12 @@ namespace PCE.MonoBehaviours
         }
 
     }
+
+    public class NukeGun : Gun
+    { }
+    public class WallGun : Gun
+    { }
+
+    public class RainGun : Gun
+    { }
 }

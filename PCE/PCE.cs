@@ -70,6 +70,8 @@ namespace PCE
             CustomCard.BuildCard<StraightShotCard>();
             CustomCard.BuildCard<SuperBallCard>();
             CustomCard.BuildCard<RetreatCard>();
+            CustomCard.BuildCard<FragmentationCard>();
+            CustomCard.BuildCard<FireworksCard>();
 
             CustomCard.BuildCard<SurvivalistICard>();
             CustomCard.BuildCard<SurvivalistIICard>();
@@ -90,6 +92,10 @@ namespace PCE
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetTimers()); // I sure hope this doesn't have unintended side effects...
+
+            GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetEffectsBetweenBattles());
+            GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
+
         }
 
         private IEnumerator CommitMurders()

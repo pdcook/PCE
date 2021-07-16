@@ -8,6 +8,7 @@ using System.Reflection;
 using PCE.MonoBehaviours;
 using Photon.Pun;
 using UnboundLib.Networking;
+using PCE.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -19,8 +20,8 @@ namespace PCE.MonoBehaviours
 		private int numBullets = 1;
 		private int numShot = 0;
 		private Gun gunToShootFrom;
-		private Vector3 directionToShoot = Vector3.zero;
-		private Vector3 positionToShootFrom = Vector3.zero;
+		private List<Vector3> directionsToShoot = new List<Vector3>();
+		private List<Vector3> positionsToShootFrom = new List<Vector3>();
 		private float timeBetweenShots = 0f;
 		private float timeSinceLastShot;
 
@@ -60,7 +61,15 @@ namespace PCE.MonoBehaviours
 			{
 				for (int j = 0; j < currentNumberOfProjectiles; j++)
 				{
-					Vector3 directionToShootThisBullet = this.directionToShoot;
+					Vector3 directionToShootThisBullet;
+					if (this.directionsToShoot.Count == 0)
+                    {
+						directionToShootThisBullet = Vector3.down;
+                    }
+					else
+                    {
+						directionToShootThisBullet = this.directionsToShoot[this.numShot % this.directionsToShoot.Count];
+                    }
 					if (this.gunToShootFrom.spread != 0f)
 					{
 						// randomly spread shots
@@ -72,8 +81,16 @@ namespace PCE.MonoBehaviours
 
 					if ((bool)typeof(Gun).InvokeMember("CheckIsMine", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, this.gunToShootFrom, new object[] { }))
 					{
-
-						GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, this.positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
+						Vector3 positionToShootFrom;
+						if (this.positionsToShootFrom.Count == 0)
+						{
+							positionToShootFrom = Vector3.zero;
+						}
+						else
+						{
+							positionToShootFrom = this.positionsToShootFrom[this.numShot % this.positionsToShootFrom.Count];
+						}
+						GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
 						/*
 						if (PhotonNetwork.OfflineMode)
 						{
@@ -133,12 +150,20 @@ namespace PCE.MonoBehaviours
         }
 		public void SetPosition(Vector3 pos)
         {
-			this.positionToShootFrom = pos;
+			this.positionsToShootFrom = new List<Vector3>(){ pos };
         }
 		public void SetDirection(Vector3 dir)
-        {
-			this.directionToShoot = dir;
+		{
+			this.directionsToShoot = new List<Vector3>() { dir };
         }
+		public void SetPositions(List<Vector3> pos)
+        {
+			this.positionsToShootFrom = pos;
+        }
+		public void SetDirections(List<Vector3> dir)
+		{
+			this.directionsToShoot = dir;
+		}
 		public void SetTimeBetweenShots(float delay)
         {
 			this.timeBetweenShots = delay;
@@ -228,6 +253,9 @@ namespace PCE.MonoBehaviours
 			copyToGun.unblockable = copyFromGun.unblockable;
 			copyToGun.useCharge = copyFromGun.useCharge;
 			copyToGun.waveMovement = copyFromGun.waveMovement;
+
+
+			copyToGun.GetAdditionalData().allowStop = copyFromGun.GetAdditionalData().allowStop;
 
 			Traverse.Create(copyToGun).Field("attackAction").SetValue((Action)Traverse.Create(copyFromGun).Field("attackAction").GetValue());
 			//Traverse.Create(copyToGun).Field("gunAmmo").SetValue((GunAmmo)Traverse.Create(copyFromGun).Field("gunAmmo").GetValue());
