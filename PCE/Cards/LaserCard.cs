@@ -161,7 +161,6 @@ namespace PCE.Cards
                 return;
             }
 
-
             if (!PhotonNetwork.OfflineMode && !this.gameObject.transform.parent.GetComponent<ProjectileHit>().ownPlayer.data.view.IsMine) return;
 
 
@@ -337,6 +336,7 @@ namespace PCE.Cards
                 Initialized = true;
                 return;
             }
+
             Destroy(gameObject, 1f);
 
             if (!PhotonNetwork.OfflineMode && !this.transform.parent.GetComponent<PhotonView>().IsMine) return;
@@ -443,6 +443,11 @@ namespace PCE.Cards
             if (PhotonNetwork.OfflineMode || this.GetComponent<PhotonView>().IsMine)
             {
                 this.gameObject.transform.SetParent(parent.transform);
+
+                if (this.gameObject.transform.parent.gameObject.name.ToLower().Contains("emp"))
+                {
+                    Destroy(this.gameObject);
+                }
 
                 this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
                 this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
