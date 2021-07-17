@@ -12,19 +12,20 @@ using PCE.Extensions;
 
 namespace PCE.Cards
 {
-    public class JackpotCard : PCECustomCard
+    public class JackpotCard : CustomCard
     {
         /*
         *  An Uncommon card which gives the player a random Rare card
         */
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
+            cardInfo.GetAdditionalData().canBeAssigned = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             CardInfo randomCard = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            base.AddCardToPlayer(player, randomCard);
+            Extensions.Cards.instance.AddCardToPlayer(player, randomCard);
         }
         public override void OnRemoveCard()
         {

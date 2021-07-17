@@ -72,6 +72,8 @@ namespace PCE
             CustomCard.BuildCard<RetreatCard>();
             CustomCard.BuildCard<FragmentationCard>();
             CustomCard.BuildCard<FireworksCard>();
+            CustomCard.BuildCard<ShuffleCard>();
+            CustomCard.BuildCard<PacBulletsCard>();
 
             CustomCard.BuildCard<SurvivalistICard>();
             CustomCard.BuildCard<SurvivalistIICard>();
@@ -95,6 +97,8 @@ namespace PCE
 
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetEffectsBetweenBattles());
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
+
+            GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => this.ExtraPicks());
 
         }
 
@@ -143,6 +147,26 @@ namespace PCE
             for (int j = 0; j < players.Length; j++)
             {
                 CustomEffects.ResetAllTimers(players[j].gameObject);
+            }
+            yield break;
+        }
+
+        private IEnumerator ExtraPicks()
+        {
+            foreach(Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<Shuffle>() != null)
+                {
+                    yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickStart);
+                    yield return player.GetComponent<Shuffle>().WaitForSyncUp();
+                    CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
+                    yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
+                    Destroy(player.GetComponent<Shuffle>());
+                    Extensions.Cards.instance.RemoveCardsFromPlayer(player, Extensions.Cards.instance.GetPlayerCardsWithCondition(player, null,null,null,null,null,null,null,(card,player,g,ga,d,h,gr,b,s)=>card.name=="Shuffle"), Extensions.Cards.SelectionType.All);
+                    yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
+                    yield return new WaitForSecondsRealtime(0.1f);
+
+                }
             }
             yield break;
         }

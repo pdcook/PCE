@@ -12,23 +12,24 @@ using PCE.Extensions;
 
 namespace PCE.Cards
 {
-    public class RiskyGambleCard : PCECustomCard
+    public class RiskyGambleCard : CustomCard
     {
         /*
         *  An Uncommon card which gives the player two random Common cards
         */
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
+            cardInfo.GetAdditionalData().canBeAssigned = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             CardInfo randomCard1 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            base.AddCardToPlayer(player, randomCard1);
+            Extensions.Cards.instance.AddCardToPlayer(player, randomCard1);
 
             CardInfo randomCard2 = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            base.AddCardToPlayer(player, randomCard2);
+            Extensions.Cards.instance.AddCardToPlayer(player, randomCard2);
 
         }
         public override void OnRemoveCard()

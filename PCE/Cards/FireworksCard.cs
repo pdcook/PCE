@@ -32,6 +32,9 @@ namespace PCE.Cards
             }
             gun.GetAdditionalData().fireworkProjectiles += 3;
 
+            gun.damage *= 1.15f;
+            gun.projectileSpeed *= 1.15f;
+
         }
         public override void OnRemoveCard()
         {
@@ -43,7 +46,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Bullets that hit the top of the battlefield pop like fireworks.";
+            return "Bullets pop like fireworks when above the battlefield.";
         }
 
         protected override GameObject GetCardArt()
@@ -58,7 +61,31 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                    positive = true,
+                    stat = "Fireworks",
+                    amount = "+3",
+                    simepleAmount = CardInfoStat.SimpleAmount.Some
+                },
+                new CardInfoStat
+                {
+                    positive = true,
+                    stat = "Damage",
+                    amount = "+15%",
+                    simepleAmount = CardInfoStat.SimpleAmount.aLittleBitOf
+                },
+                new CardInfoStat
+                {
+                    positive = true,
+                    stat = "Bullet Speed",
+                    amount = "+15%",
+                    simepleAmount = CardInfoStat.SimpleAmount.aLittleBitOf
+                },
+
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {

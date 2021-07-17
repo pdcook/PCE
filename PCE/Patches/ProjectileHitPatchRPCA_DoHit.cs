@@ -13,10 +13,32 @@ using System.Reflection;
 
 namespace PCE.Patches
 {
-    [Serializable]
+	[Serializable]
+	[HarmonyPatch(typeof(ProjectileHit), "Start")]
+	class ProjectileHitPatchStart
+	{
+		private static void Prefix(ProjectileHit __instance)
+        {
+			__instance.GetAdditionalData().startTime = Time.time;
+        }
+	}
+	[Serializable]
     [HarmonyPatch(typeof(ProjectileHit), "RPCA_DoHit")]
     class ProjectileHitPatchRPCA_DoHit
     {
+		// prefix to prevent unwanted bullet on bullet collisions
+		private static bool Prefix(ProjectileHit __instance, Vector2 hitPoint, Vector2 hitNormal, Vector2 vel, int viewID, int colliderID, bool wasBlocked)
+        {
+			if (__instance.ownPlayer != null && __instance.ownPlayer.GetComponent<Holding>().holdable.GetComponent<Gun>() != null)
+            {
+				if (Time.time < __instance.GetAdditionalData().startTime + __instance.GetAdditionalData().inactiveDelay || Time.time < __instance.GetAdditionalData().startTime + __instance.ownPlayer.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().inactiveDelay)
+				{
+					return false; // don't run DoHit if the initial delay is not over
+				}
+
+			}
+			return true;
+        }
 		// postfix to run HitEffect s and WasHitEffect s and HitSurfaceEffect s
 		private static void Postfix(ProjectileHit __instance, Vector2 hitPoint, Vector2 hitNormal, Vector2 vel, int viewID, int colliderID, bool wasBlocked)
         {

@@ -24,6 +24,7 @@ namespace PCE.MonoBehaviours
 		private List<Vector3> positionsToShootFrom = new List<Vector3>();
 		private float timeBetweenShots = 0f;
 		private float timeSinceLastShot;
+		private GameObject newWeaponsBase;
 
 		private Player player;
 
@@ -51,7 +52,7 @@ namespace PCE.MonoBehaviours
         }
         public void OnDestroy()
         {
-			Destroy(this.gunToShootFrom);
+			Destroy(this.newWeaponsBase);
 		}
 
 		private void Shoot()
@@ -91,25 +92,7 @@ namespace PCE.MonoBehaviours
 							positionToShootFrom = this.positionsToShootFrom[this.numShot % this.positionsToShootFrom.Count];
 						}
 						GameObject gameObject = PhotonNetwork.Instantiate(this.gunToShootFrom.projectiles[i].objectToSpawn.gameObject.name, positionToShootFrom, Quaternion.LookRotation(directionToShootThisBullet), 0, null);
-						/*
-						if (PhotonNetwork.OfflineMode)
-						{
-							typeof(ProjectileInit).InvokeMember("OFFLINE_Init_SeparateGun", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic, null, gameObject.GetComponent<ProjectileInit>(), new object[] { base.GetComponentInParent<Player>().playerID, (int)Traverse.Create(this.gunToShootFrom).Field("gunID").GetValue(), currentNumberOfProjectiles, 1f, UnityEngine.Random.Range(0f, 1f) });
 
-						}
-						else
-						{
-							gameObject.GetComponent<PhotonView>().RPC("RPCA_Init_SeparateGun", RpcTarget.All, new object[]
-							{
-
-										base.GetComponentInParent<CharacterData>().view.OwnerActorNr,
-										(int)Traverse.Create(this.gunToShootFrom).Field("gunID").GetValue(),
-										currentNumberOfProjectiles,
-										1f,
-										UnityEngine.Random.Range(0f, 1f)
-							});
-						}
-						*/
 						if (PhotonNetwork.OfflineMode)
                         {
 							this.RPCA_Shoot(gameObject.GetComponent<PhotonView>().ViewID,currentNumberOfProjectiles, 1f, UnityEngine.Random.Range(0f,1f));
@@ -140,7 +123,15 @@ namespace PCE.MonoBehaviours
         }
 		public void SetGun(Gun gun)
 		{
-			this.gunToShootFrom = this.gameObject.AddComponent<Gun>();
+			this.newWeaponsBase = UnityEngine.GameObject.Instantiate(this.player.GetComponent<Holding>().holdable.GetComponent<Gun>().gameObject);
+			foreach (Transform child in this.newWeaponsBase.transform)
+            {
+				if (child.GetComponentsInChildren<SpriteRenderer>() != null)
+                {
+					Destroy(child.gameObject);
+                }
+            }
+			this.gunToShootFrom = this.newWeaponsBase.GetComponent<Gun>();
 			SpawnBulletsEffect.CopyGunStats(gun, this.gunToShootFrom);
 			Destroy(gun);
 		}
@@ -253,7 +244,6 @@ namespace PCE.MonoBehaviours
 			copyToGun.unblockable = copyFromGun.unblockable;
 			copyToGun.useCharge = copyFromGun.useCharge;
 			copyToGun.waveMovement = copyFromGun.waveMovement;
-
 
 			copyToGun.GetAdditionalData().allowStop = copyFromGun.GetAdditionalData().allowStop;
 

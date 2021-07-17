@@ -252,7 +252,7 @@ namespace PCE.Cards
             return "PCE";
         }
     }
-    public class WildcardVCard : PCECustomCard
+    public class WildcardVCard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)

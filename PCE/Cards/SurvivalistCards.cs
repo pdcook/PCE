@@ -256,7 +256,7 @@ namespace PCE.Cards
             return "PCE";
         }
     }
-    public class SurvivalistVCard : PCECustomCard
+    public class SurvivalistVCard : CustomCard
     {
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)

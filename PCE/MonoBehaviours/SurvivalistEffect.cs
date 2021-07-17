@@ -49,7 +49,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V] && !this.Vexists)
             {
                 // build and add survivalist V card
-                CustomCard.BuildCard<SurvivalistVCard>(cardInfo => cardInfo.GetComponent<PCECustomCard>().AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<SurvivalistVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 

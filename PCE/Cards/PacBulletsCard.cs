@@ -14,7 +14,7 @@ using PCE.Utils;
 
 namespace PCE.Cards
 {
-    public class FragmentationCard : CustomCard
+    public class PacBulletsCard : CustomCard
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
@@ -22,9 +22,16 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            gun.GetAdditionalData().fragmentationProjectiles += 5;
-            player.gameObject.GetOrAddComponent<FragmentationHitSurfaceEffect>();
-
+            if (gun.GetAdditionalData().wraps == 0)
+            {
+                ObjectsToSpawn fireworkObj = new ObjectsToSpawn() { };
+                fireworkObj.AddToProjectile = new GameObject("PacBulletsSpawner", typeof(PacBulletSpawner));
+                List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
+                objectsToSpawn.Add(fireworkObj);
+                gun.objectsToSpawn = objectsToSpawn.ToArray();
+            }
+            gun.GetAdditionalData().wraps += 3;
+            gun.gravity *= 0.5f;
         }
         public override void OnRemoveCard()
         {
@@ -32,11 +39,11 @@ namespace PCE.Cards
 
         protected override string GetTitle()
         {
-            return "Fragmentation";
+            return "Pac-Bullets";
         }
         protected override string GetDescription()
         {
-            return "Bullets split into fragments on impact.";
+            return "Bullets around from the edge of the screen.";
         }
 
         protected override GameObject GetCardArt()
@@ -46,7 +53,7 @@ namespace PCE.Cards
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Uncommon;
+            return CardInfo.Rarity.Common;
         }
 
         protected override CardInfoStat[] GetStats()
@@ -56,15 +63,23 @@ namespace PCE.Cards
                 new CardInfoStat
                 {
                     positive = true,
-                    stat = "Bullet Fragments",
-                    amount = "+5",
+                    stat = "Bullet Warps",
+                    amount = "+3",
                     simepleAmount = CardInfoStat.SimpleAmount.Some
+                },
+                new CardInfoStat
+                {
+                    positive = true,
+                    stat = "Bullet Gravity",
+                    amount = "-50%",
+                    simepleAmount = CardInfoStat.SimpleAmount.aLotLower
                 }
+
             };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
+            return CardThemeColor.CardThemeColorType.MagicPink;
         }
         public override string GetModName()
         {

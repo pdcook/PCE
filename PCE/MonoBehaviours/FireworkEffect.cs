@@ -68,21 +68,20 @@ namespace PCE.MonoBehaviours
         }
     }
     [RequireComponent(typeof(PhotonView))]
-    //[RequireComponent(typeof(OffscreenManager))]
     public class FireworkEffect : MonoBehaviour, IPunInstantiateMagicCallback
     {
         private static readonly System.Random rng = new System.Random();
 
-        private readonly int defaultDelay = 30;
+        private readonly float defaultDelay = 0.5f;
         private readonly int bullets = 10;
         private readonly float radius = 2f;
 
-        private int delay {
+        private float delay {
             get
             {
-                if (this.pops > 0)
+                if (this.numPops > 0)
                 {
-                    return (int)UnityEngine.Mathf.RoundToInt(UnityEngine.Mathf.Clamp(this.defaultDelay*3f / this.pops, 1, this.defaultDelay));
+                    return UnityEngine.Mathf.Clamp(this.defaultDelay * 3f / this.numPops, 0.03f, this.defaultDelay);
                 }
                 else
                 {
@@ -93,7 +92,7 @@ namespace PCE.MonoBehaviours
         }
 
         private int numPops;
-        private int frames = 0;
+        private float time;
         private int pops = 0;
 
         private readonly float tolerance = 0.2f;
@@ -117,7 +116,10 @@ namespace PCE.MonoBehaviours
             this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
         }
-
+        void ResetTimer()
+        {
+            this.time = Time.time;
+        }
         void Awake()
         {
 
@@ -131,6 +133,7 @@ namespace PCE.MonoBehaviours
             this.numPops = this.gun.GetAdditionalData().fireworkProjectiles;
 
             this.mainCam = MainCam.instance.transform.GetComponent<Camera>();
+            this.ResetTimer();
         }
         void Update()
         {
@@ -141,14 +144,13 @@ namespace PCE.MonoBehaviours
                 Destroy(this);
                 return;
             }
-            if (this.frames < this.delay)
+            if (Time.time < this.delay + this.time)
             {
-                this.frames++;
                 return;
             }
-            if (this.frames >= this.delay)
+            else
             {
-                this.frames = 0;
+                this.ResetTimer();
                 this.pops++;
 
                 Vector3 pos = this.mainCam.WorldToScreenPoint(this.transform.position);
@@ -199,12 +201,14 @@ namespace PCE.MonoBehaviours
             newGun.spread = 1f;
             newGun.numberOfProjectiles = 1;
             newGun.projectiles = (from e in Enumerable.Range(0, newGun.numberOfProjectiles) from x in newGun.projectiles select x).ToList().Take(newGun.numberOfProjectiles).ToArray();
-            newGun.damage /= 10f;
+            newGun.damage = UnityEngine.Mathf.Clamp(newGun.damage/5f, 0.2f, float.MaxValue);
             newGun.projectileSpeed = 0.5f;
             newGun.drag = 20f;
             newGun.dragMinSpeed = 0f;
             newGun.gravity = 1f;
+            newGun.reflects = 0;
             newGun.GetAdditionalData().allowStop = true;
+            newGun.GetAdditionalData().inactiveDelay = 0.1f;
             newGun.damageAfterDistanceMultiplier = 1f;
             newGun.projectileColor = color;
             newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };

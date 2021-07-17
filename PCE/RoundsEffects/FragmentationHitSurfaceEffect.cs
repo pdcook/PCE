@@ -42,9 +42,10 @@ namespace PCE.RoundsEffects
             newGun.spread = 0.2f;
             newGun.numberOfProjectiles = UnityEngine.Mathf.RoundToInt(this.gun.GetAdditionalData().fragmentationProjectiles / 5);
             newGun.projectiles = (from e in Enumerable.Range(0, newGun.numberOfProjectiles) from x in newGun.projectiles select x).ToList().Take(newGun.numberOfProjectiles).ToArray();
-            newGun.damage /= 2f;
+            newGun.damage = UnityEngine.Mathf.Clamp(newGun.damage/2f, 0.5f, float.MaxValue);
             newGun.projectileSpeed = UnityEngine.Mathf.Clamp(velocity.magnitude / 100f, 0.1f, 1f);
             newGun.damageAfterDistanceMultiplier = 1f;
+            newGun.GetAdditionalData().inactiveDelay = 0.1f;
             newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };
 
             // set the gun of the spawnbulletseffect

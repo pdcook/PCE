@@ -15,6 +15,8 @@ namespace PCE.Extensions
         public float minDistanceMultiplier;
         public int fragmentationProjectiles;
         public int fireworkProjectiles;
+        public int wraps;
+        public float inactiveDelay;
         public bool allowStop;
 
         public GunAdditionalData()
@@ -22,6 +24,8 @@ namespace PCE.Extensions
             minDistanceMultiplier = 1f;
             fragmentationProjectiles = 0;
             fireworkProjectiles = 0;
+            wraps = 0;
+            inactiveDelay = 0f;
             allowStop = false;
         }
     }
@@ -67,8 +71,9 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().minDistanceMultiplier = 1f;
             __instance.GetAdditionalData().fragmentationProjectiles = 0;
             __instance.GetAdditionalData().fireworkProjectiles = 0;
+            __instance.GetAdditionalData().wraps = 0;
             __instance.GetAdditionalData().allowStop = false;
-
+            __instance.GetAdditionalData().inactiveDelay = 0f;
         }
     }
 }

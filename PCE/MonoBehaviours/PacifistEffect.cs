@@ -48,7 +48,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.pacifists[PacifistType.V] && !this.Vexists)
             {
                 // build and add pacifist V card
-                CustomCard.BuildCard<PacifistVCard>(cardInfo => cardInfo.GetComponent<PCECustomCard>().AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<PacifistVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 

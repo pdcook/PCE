@@ -45,7 +45,7 @@ namespace PCE.MonoBehaviours
                 Player otherPlayer = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)];
 
                 // while the other player isn't alive or is the current player
-                while ((PlayerStatus.PlayerAliveAndSimulated(otherPlayer) || otherPlayer.playerID == this.player.playerID) && i < this.maxAttemps)
+                while ((!PlayerStatus.PlayerAliveAndSimulated(otherPlayer) || otherPlayer.playerID == this.player.playerID) && i < this.maxAttemps)
                 {
                     otherPlayer = PlayerManager.instance.players[rng.Next(0, PlayerManager.instance.players.Count)];
                     i++;
