@@ -21,7 +21,7 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             gun.ignoreWalls = true;
-            gun.bulletDamageMultiplier = 0.25f;
+            gun.bulletDamageMultiplier = 0.5f;
             gun.projectileColor = Color.clear;
             if (gun.destroyBulletAfter == 0f) { gun.destroyBulletAfter = 5f; }
             gun.unblockable = true;
@@ -64,7 +64,7 @@ namespace PCE.Cards
                 {
                 positive = false,
                 stat = "Damage",
-                amount = "-75%",
+                amount = "-50%",
                 simepleAmount = CardInfoStat.SimpleAmount.aLotLower
                 },
             };
