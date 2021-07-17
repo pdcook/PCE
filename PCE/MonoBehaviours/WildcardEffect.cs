@@ -42,7 +42,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
             {
                 // build and add wildcard V card
-                CustomCard.BuildCard<WildcardVCard>(cardInfo => cardInfo.GetComponent<PCECustomCard>().AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<WildcardVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
@@ -151,7 +151,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
             {
                 // build and hide wildcard V card
-                CustomCard.BuildCard<WildcardIVCard>(cardInfo => cardInfo.GetComponent<PCECustomCard>().AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<WildcardVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
