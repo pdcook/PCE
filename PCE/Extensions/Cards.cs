@@ -20,7 +20,7 @@ namespace PCE.Extensions
         {
             Cards instance = this;
         }
-        public void AddCardToPlayer(Player player, CardInfo card)
+        public void AddCardToPlayer(Player player, CardInfo card, bool reassign = false)
         {
             // adds the card "card" to the player "player"
             if (card == null) { return; }
@@ -29,7 +29,7 @@ namespace PCE.Extensions
                 // assign card locally
                 ApplyCardStats cardStats = card.gameObject.GetComponentInChildren<ApplyCardStats>();
                 cardStats.GetComponent<CardInfo>().sourceCard = card;
-                if (card.GetAdditionalData().canBeAssigned)
+                if (!reassign || card.GetAdditionalData().canBeReassigned)
                 {
                     cardStats.Pick(player.playerID, true, PickerType.Player);
                 }
@@ -50,15 +50,15 @@ namespace PCE.Extensions
                     array2[j] = array[j].data.view.ControllerActorNr;
                 }
 
-                NetworkingManager.RPC(typeof(Cards), "RPCA_AssignCard", new object[] { Cards.instance.GetCardID(card), array2 });
+                NetworkingManager.RPC(typeof(Cards), "RPCA_AssignCard", new object[] { Cards.instance.GetCardID(card), array2, reassign });
 
             }
         }
-        public void AddCardsToPlayer(Player player, CardInfo[] cards)
+        public void AddCardsToPlayer(Player player, CardInfo[] cards, bool reassign = false)
         {
             foreach (CardInfo card in cards)
             {
-                this.AddCardToPlayer(player, card);
+                this.AddCardToPlayer(player, card, reassign);
             }
         }
 
@@ -105,7 +105,7 @@ namespace PCE.Extensions
             this.RemoveAllCardsFromPlayer(player);
 
             // then add back only the ones we didn't remove
-            this.AddCardsToPlayer(player, newCards.ToArray());
+            this.AddCardsToPlayer(player, newCards.ToArray(), true);
 
             // return the card that was removed
             return originalCards[idx];
@@ -165,7 +165,7 @@ namespace PCE.Extensions
             this.RemoveAllCardsFromPlayer(player);
 
             // then add back only the ones we didn't remove
-            this.AddCardsToPlayer(player, newCards.ToArray());
+            this.AddCardsToPlayer(player, newCards.ToArray(), true);
 
             // return the number of cards removed
             return indecesToRemove.Count;
@@ -227,7 +227,7 @@ namespace PCE.Extensions
             this.RemoveAllCardsFromPlayer(player);
 
             // then add back the new card
-            this.AddCardsToPlayer(player, newCards.ToArray());
+            this.AddCardsToPlayer(player, newCards.ToArray(), true);
 
             // return the card that was removed
             return originalCards[idx];
@@ -291,13 +291,13 @@ namespace PCE.Extensions
             this.RemoveAllCardsFromPlayer(player);
 
             // then add back the new cards
-            this.AddCardsToPlayer(player, newCards.ToArray());
+            this.AddCardsToPlayer(player, newCards.ToArray(), true);
 
             // return the number of cards replaced
             return indecesToReplace.Count;
         }
         [UnboundRPC]
-        public static void RPCA_AssignCard(int cardID, int[] actorIDs)
+        public static void RPCA_AssignCard(int cardID, int[] actorIDs, bool reassign)
         {
             Player playerToUpgrade;
 
@@ -318,7 +318,7 @@ namespace PCE.Extensions
 
                 Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(playerToUpgrade);
 
-                if (cards[cardID].GetAdditionalData().canBeAssigned)
+                if (!reassign || cards[cardID].GetAdditionalData().canBeReassigned)
                 {
                     typeof(ApplyCardStats).InvokeMember("ApplyStats",
                                         BindingFlags.Instance | BindingFlags.InvokeMethod |

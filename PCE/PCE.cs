@@ -162,7 +162,7 @@ namespace PCE
                     CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
                     yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
                     Destroy(player.GetComponent<Shuffle>());
-                    Extensions.Cards.instance.RemoveCardsFromPlayer(player, Extensions.Cards.instance.GetPlayerCardsWithCondition(player, null,null,null,null,null,null,null,(card,player,g,ga,d,h,gr,b,s)=>card.name=="Shuffle"), Extensions.Cards.SelectionType.All);
+                    this.ExecuteAfterSeconds(0.1f, () => Extensions.Cards.instance.RemoveCardsFromPlayer(player, Extensions.Cards.instance.GetPlayerCardsWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.name == "Shuffle"), Extensions.Cards.SelectionType.All));
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
                     yield return new WaitForSecondsRealtime(0.1f);
 

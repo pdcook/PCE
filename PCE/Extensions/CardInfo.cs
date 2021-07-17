@@ -10,11 +10,11 @@ namespace PCE.Extensions
     [Serializable]
     public class CardInfoAdditionalData
     {
-        public bool canBeAssigned;
+        public bool canBeReassigned;
 
         public CardInfoAdditionalData()
         {
-            canBeAssigned = true;
+            canBeReassigned = true;
         }
     }
     public static class CardInfoExtension
