@@ -10,8 +10,9 @@ using HarmonyLib;
 using UnboundLib.Networking;
 using UnityEngine;
 using TMPro;
+using PCE.Extensions;
 
-namespace PCE.Extensions
+namespace PCE.Utils
 {
     public sealed class Cards
     {
