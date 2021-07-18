@@ -43,7 +43,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Bullets around from the edge of the screen.";
+            return "Bullets wrap around from the edge of the screen.";
         }
 
         protected override GameObject GetCardArt()

@@ -34,7 +34,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Enemies turn to solid gold when you touch them.";
+            return "Players turn to solid gold when you touch them.";
         }
 
         protected override GameObject GetCardArt()
