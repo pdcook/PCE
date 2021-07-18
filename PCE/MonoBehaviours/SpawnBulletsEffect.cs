@@ -133,7 +133,7 @@ namespace PCE.MonoBehaviours
             }
 			this.gunToShootFrom = this.newWeaponsBase.GetComponent<Gun>();
 			SpawnBulletsEffect.CopyGunStats(gun, this.gunToShootFrom);
-			Destroy(gun);
+			Destroy(gun, 1f);
 		}
 		public void SetNumBullets(int num)
         {

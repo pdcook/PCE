@@ -120,8 +120,8 @@ namespace PCE
                     int i = 0;
                     Player oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
 
-                    // while the other player isn't alive or is on the same team as the current player
-                    while ((!PlayerStatus.PlayerAliveAndSimulated(oppPlayer) || oppPlayer.teamID == players[j].teamID) && i < 1000)
+                    // while the other player is on the same team as the current player
+                    while ((oppPlayer.teamID == players[j].teamID) && i < 1000)
                     {
                         oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
                         i++;
@@ -186,15 +186,18 @@ namespace PCE
         }
         private IEnumerator RandomCard()
         {
+            float delay = 0f;
             this.ExecuteAfterSeconds(0.1f, () =>
-            {
+            { 
                 foreach (Player player in PlayerManager.instance.players.ToArray())
                 {
                     if (player.GetComponent<RandomCardEffect>() != null)
                     {
+                        UnityEngine.Debug.Log(delay.ToString());
                         int idx = player.GetComponent<RandomCardEffect>().index;
                         string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
-                        Extensions.Cards.instance.ReplaceCard(player, idx, Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Extensions.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") })), twoLetterCode, 2f);
+                        Extensions.Cards.instance.ReplaceCard(player, idx, Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Extensions.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") })), twoLetterCode, 1f, delay);
+                        delay += 1f;
                     }
                 }
             });

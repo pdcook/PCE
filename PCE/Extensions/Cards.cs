@@ -68,7 +68,7 @@ namespace PCE.Extensions
 
             }
         }
-        public void AddCardsToPlayer(Player player, CardInfo[] cards, bool reassign = false, string[] twoLetterCodes = null, float[] forceDisplays = null, float[] forceDisplayDelay = null)
+        public void AddCardsToPlayer(Player player, CardInfo[] cards, bool reassign = false, string[] twoLetterCodes = null, float[] forceDisplays = null, float[] forceDisplayDelays = null)
         {
             bool[] reassigns = new bool[cards.Length];
             for (int i = 0; i < cards.Length; i++)
@@ -76,7 +76,7 @@ namespace PCE.Extensions
                 reassigns[i] = reassign;
             }
 
-            this.AddCardsToPlayer(player, cards, reassigns, twoLetterCodes, forceDisplays);
+            this.AddCardsToPlayer(player, cards, reassigns, twoLetterCodes, forceDisplays, forceDisplayDelays);
         }
         public void AddCardsToPlayer(Player player, CardInfo[] cards, bool[] reassigns = null, string[] twoLetterCodes = null, float[] forceDisplays = null, float[] forceDisplayDelays = null)
         {
@@ -593,6 +593,8 @@ namespace PCE.Extensions
 
         private static void SilentAddToCardBar(int teamID, CardInfo card, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
         {
+            UnityEngine.Debug.Log("DELAY: " + forceDisplayDelay.ToString());
+
             CardBar[] cardBars = (CardBar[])Traverse.Create(CardBarHandler.instance).Field("cardBars").GetValue();
 
             Traverse.Create(cardBars[teamID]).Field("ci").SetValue(card);
