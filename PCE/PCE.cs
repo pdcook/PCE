@@ -13,6 +13,7 @@ using PCE.MonoBehaviours;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
+using CardChoiceSpawnUniqueCardPatch;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -37,7 +38,7 @@ namespace PCE
             PCE.ArtAssets = AssetUtils.LoadAssetBundleFromResources("pceassetbundle", typeof(PCE).Assembly);
             if (PCE.ArtAssets == null)
             {
-                global::Debug.Log("Failed to load PCE art asset bundle");
+                UnityEngine.Debug.Log("Failed to load PCE art asset bundle");
             }
 
             // build all cards
@@ -90,6 +91,8 @@ namespace PCE
             CustomCard.BuildCard<WildcardIIICard>();
             CustomCard.BuildCard<WildcardIVCard>();
 
+            CustomCard.BuildCard<RandomCard>(Cards.RandomCard.callback);
+
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
@@ -99,6 +102,8 @@ namespace PCE
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
 
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => this.ExtraPicks());
+
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.RandomCard());
 
         }
 
@@ -111,7 +116,16 @@ namespace PCE
                 if (players[j].data.stats.GetAdditionalData().murder >= 1)
                 {
                     players[j].data.stats.GetAdditionalData().murder--;
-                    Player oppPlayer = PlayerManager.instance.GetOtherPlayer(players[j]);
+
+                    int i = 0;
+                    Player oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
+
+                    // while the other player isn't alive or is on the same team as the current player
+                    while ((!PlayerStatus.PlayerAliveAndSimulated(oppPlayer) || oppPlayer.teamID == players[j].teamID) && i < 1000)
+                    {
+                        oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
+                        i++;
+                    }
                     Unbound.Instance.ExecuteAfterSeconds(2f, delegate
                     {
                         oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
@@ -168,6 +182,22 @@ namespace PCE
 
                 }
             }
+            yield break;
+        }
+        private IEnumerator RandomCard()
+        {
+            this.ExecuteAfterSeconds(0.1f, () =>
+            {
+                foreach (Player player in PlayerManager.instance.players.ToArray())
+                {
+                    if (player.GetComponent<RandomCardEffect>() != null)
+                    {
+                        int idx = player.GetComponent<RandomCardEffect>().index;
+                        string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
+                        Extensions.Cards.instance.ReplaceCard(player, idx, Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Extensions.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") })), twoLetterCode, 2f);
+                    }
+                }
+            });
             yield break;
         }
 

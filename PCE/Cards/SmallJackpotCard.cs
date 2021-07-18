@@ -21,13 +21,14 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.GetAdditionalData().canBeReassigned = false;
+            cardInfo.categories = new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
 
-            CardInfo randomCard = Extensions.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
+            CardInfo randomCard = Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            Extensions.Cards.instance.AddCardToPlayer(player, randomCard);
+            Extensions.Cards.instance.AddCardToPlayer(player, randomCard, false, "", 2f);
         }
         public override void OnRemoveCard()
         {
@@ -67,17 +68,7 @@ namespace PCE.Cards
             // card cannot be another Gamble / Jackpot card
             // card cannot be from a blacklisted catagory of any other card
 
-            bool blacklisted = false;
-
-            foreach (CardInfo currentCard in player.data.currentCards)
-            {
-                if (card.categories.Intersect(currentCard.blacklistedCategories).Any())
-                {
-                    blacklisted = true;
-                }
-            }
-
-            return !blacklisted && (card.allowMultiple || !player.data.currentCards.Where(cardinfo => cardinfo.name == card.name).Any()) && (card.rarity == CardInfo.Rarity.Uncommon) && !card.cardName.Contains("Jackpot") && !card.cardName.Contains("Gamble");
+            return (card.rarity == CardInfo.Rarity.Uncommon) && !card.cardName.Contains("Jackpot") && !card.cardName.Contains("Gamble");
 
         }
         public override string GetModName()

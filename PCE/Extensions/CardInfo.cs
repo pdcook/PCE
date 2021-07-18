@@ -11,10 +11,12 @@ namespace PCE.Extensions
     public class CardInfoAdditionalData
     {
         public bool canBeReassigned;
+        public bool isRandom;
 
         public CardInfoAdditionalData()
         {
             canBeReassigned = true;
+            isRandom = false;
         }
     }
     public static class CardInfoExtension

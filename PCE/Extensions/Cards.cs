@@ -8,6 +8,8 @@ using UnboundLib.Cards;
 using System.Reflection;
 using HarmonyLib;
 using UnboundLib.Networking;
+using UnityEngine;
+using TMPro;
 
 namespace PCE.Extensions
 {
@@ -20,23 +22,35 @@ namespace PCE.Extensions
         {
             Cards instance = this;
         }
-        public void AddCardToPlayer(Player player, CardInfo card, bool reassign = false)
+        public void AddCardToPlayer(Player player, CardInfo card, bool reassign = false, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
         {
             // adds the card "card" to the player "player"
             if (card == null) { return; }
             else if (PhotonNetwork.OfflineMode)
             {
                 // assign card locally
+                CardInfo[] cards = global::CardChoice.instance.cards;
                 ApplyCardStats cardStats = card.gameObject.GetComponentInChildren<ApplyCardStats>();
+
+                // call Start to initialize card stat components for base-game cards
+                typeof(ApplyCardStats).InvokeMember("Start",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, cardStats, new object[] { });
                 cardStats.GetComponent<CardInfo>().sourceCard = card;
+
+                Traverse.Create(cardStats).Field("playerToUpgrade").SetValue(player);
+
                 if (!reassign || card.GetAdditionalData().canBeReassigned)
                 {
-                    cardStats.Pick(player.playerID, true, PickerType.Player);
+                    typeof(ApplyCardStats).InvokeMember("ApplyStats",
+                                        BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                        BindingFlags.NonPublic, null, cardStats, new object[] { });
                 }
                 else
                 {
-                    CardBarHandler.instance.AddCard(player.playerID, cardStats.GetComponent<CardInfo>().sourceCard);
+                    player.data.currentCards.Add(card);
                 }
+                Cards.SilentAddToCardBar(player.playerID, cardStats.GetComponent<CardInfo>().sourceCard, twoLetterCode, forceDisplay, forceDisplayDelay);
             }
             else if (PhotonNetwork.IsMasterClient)
             {
@@ -50,15 +64,58 @@ namespace PCE.Extensions
                     array2[j] = array[j].data.view.ControllerActorNr;
                 }
 
-                NetworkingManager.RPC(typeof(Cards), "RPCA_AssignCard", new object[] { Cards.instance.GetCardID(card), array2, reassign });
+                NetworkingManager.RPC(typeof(Cards), "RPCA_AssignCard", new object[] { Cards.instance.GetCardID(card), array2, reassign, twoLetterCode, forceDisplay, forceDisplayDelay});
 
             }
         }
-        public void AddCardsToPlayer(Player player, CardInfo[] cards, bool reassign = false)
+        public void AddCardsToPlayer(Player player, CardInfo[] cards, bool reassign = false, string[] twoLetterCodes = null, float[] forceDisplays = null, float[] forceDisplayDelay = null)
         {
-            foreach (CardInfo card in cards)
+            bool[] reassigns = new bool[cards.Length];
+            for (int i = 0; i < cards.Length; i++)
             {
-                this.AddCardToPlayer(player, card, reassign);
+                reassigns[i] = reassign;
+            }
+
+            this.AddCardsToPlayer(player, cards, reassigns, twoLetterCodes, forceDisplays);
+        }
+        public void AddCardsToPlayer(Player player, CardInfo[] cards, bool[] reassigns = null, string[] twoLetterCodes = null, float[] forceDisplays = null, float[] forceDisplayDelays = null)
+        {
+            if (reassigns == null)
+            {
+                reassigns = new bool[cards.Length];
+                for(int i = 0; i < reassigns.Length; i++)
+                {
+                    reassigns[i] = false;
+                }
+            }
+            if (twoLetterCodes == null)
+            {
+                twoLetterCodes = new string[cards.Length];
+                for (int i = 0; i < twoLetterCodes.Length; i++)
+                {
+                    twoLetterCodes[i] = "";
+                }
+            }
+            if (forceDisplays == null)
+            {
+                forceDisplays = new float[cards.Length];
+                for (int i = 0; i < forceDisplays.Length; i++)
+                {
+                    forceDisplays[i] = 0f;
+                }
+            }
+            if (forceDisplayDelays == null)
+            {
+                forceDisplayDelays = new float[cards.Length];
+                for (int i = 0; i < forceDisplayDelays.Length; i++)
+                {
+                    forceDisplayDelays[i] = 0f;
+                }
+            }
+
+            for (int i = 0; i<cards.Length; i++)
+            {
+                this.AddCardToPlayer(player, cards[i], reassigns[i], twoLetterCodes[i], forceDisplays[i], forceDisplayDelays[i]);
             }
         }
 
@@ -104,7 +161,7 @@ namespace PCE.Extensions
             // now we remove all of the cards from the player
             this.RemoveAllCardsFromPlayer(player);
 
-            // then add back only the ones we didn't remove
+            // then add back only the ones we didn't remove, marking them as reassignments
             this.AddCardsToPlayer(player, newCards.ToArray(), true);
 
             // return the card that was removed
@@ -184,7 +241,12 @@ namespace PCE.Extensions
             {
                 if (card.GetComponent<CustomCard>() != null)
                 {
-                    card.GetComponent<CustomCard>().OnRemoveCard();
+                    try
+                    {
+                        card.GetComponent<CustomCard>().OnRemoveCard();
+                    }
+                    catch (NotImplementedException)
+                    { }
                 }
             }
 
@@ -206,8 +268,12 @@ namespace PCE.Extensions
             return cards.ToArray(); // return the removed cards
 
         }
-        public CardInfo ReplaceCard(Player player, int idx, CardInfo newCard)
+        public CardInfo ReplaceCard(Player player, int idx, CardInfo newCard, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
         {
+            List<string> twoLetterCodes = new List<string>() { };
+            List<float> forceDisplays = new List<float>() { };
+            List<float> forceDisplayDelays = new List<float>() { };
+
             // copy player's currentCards list
             List<CardInfo> originalCards = new List<CardInfo>() { };
             foreach (CardInfo origCard in player.data.currentCards)
@@ -219,21 +285,37 @@ namespace PCE.Extensions
 
             for (int i = 0; i < originalCards.Count; i++)
             {
-                if (i != idx) { newCards.Add(originalCards[i]); }
-                else { newCards.Add(newCard); }
+                if (i != idx)
+                {
+                    newCards.Add(originalCards[i]);
+                    twoLetterCodes.Add("");
+                    forceDisplays.Add(0f);
+                    forceDisplayDelays.Add(0f);
+                }
+                else
+                {
+                    newCards.Add(newCard);
+                    twoLetterCodes.Add(twoLetterCode);
+                    forceDisplays.Add(forceDisplay);
+                    forceDisplayDelays.Add(forceDisplayDelay);
+                }
             }
 
             // now we remove all of the cards from the player
             this.RemoveAllCardsFromPlayer(player);
 
             // then add back the new card
-            this.AddCardsToPlayer(player, newCards.ToArray(), true);
+            this.AddCardsToPlayer(player, newCards.ToArray(), true, twoLetterCodes.ToArray(), forceDisplays.ToArray(), forceDisplayDelays.ToArray());
 
             // return the card that was removed
             return originalCards[idx];
         }
-        public int ReplaceCard(Player player, CardInfo cardToReplace, CardInfo newCard, SelectionType selectType = SelectionType.All)
+        public int ReplaceCard(Player player, CardInfo cardToReplace, CardInfo newCard, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f, SelectionType selectType = SelectionType.All)
         {
+            List<string> twoLetterCodes = new List<string>() { };
+            List<float> forceDisplays = new List<float>() { };
+            List<float> forceDisplayDelays = new List<float>() { };
+
             // copy player's currentCards list
             List<CardInfo> originalCards = new List<CardInfo>() { };
             foreach (CardInfo origCard in player.data.currentCards)
@@ -280,10 +362,16 @@ namespace PCE.Extensions
                 if (!indecesToReplace.Contains(i))
                 {
                     newCards.Add(originalCards[i]);
+                    twoLetterCodes.Add("");
+                    forceDisplays.Add(0f);
+                    forceDisplayDelays.Add(0f);
                 }
                 else
                 {
                     newCards.Add(newCard);
+                    twoLetterCodes.Add(twoLetterCode);
+                    forceDisplays.Add(forceDisplay);
+                    forceDisplayDelays.Add(forceDisplayDelay);
                 }
             }
 
@@ -291,13 +379,13 @@ namespace PCE.Extensions
             this.RemoveAllCardsFromPlayer(player);
 
             // then add back the new cards
-            this.AddCardsToPlayer(player, newCards.ToArray(), true);
+            this.AddCardsToPlayer(player, newCards.ToArray(), true, twoLetterCodes.ToArray(), forceDisplays.ToArray(), forceDisplayDelays.ToArray());
 
             // return the number of cards replaced
             return indecesToReplace.Count;
         }
         [UnboundRPC]
-        public static void RPCA_AssignCard(int cardID, int[] actorIDs, bool reassign)
+        public static void RPCA_AssignCard(int cardID, int[] actorIDs, bool reassign, string twoLetterCode, float forceDisplay, float forceDisplayDelay)
         {
             Player playerToUpgrade;
 
@@ -324,7 +412,11 @@ namespace PCE.Extensions
                                         BindingFlags.Instance | BindingFlags.InvokeMethod |
                                         BindingFlags.NonPublic, null, cardStats, new object[] { });
                 }
-                CardBarHandler.instance.AddCard(playerToUpgrade.playerID, cardStats.GetComponent<CardInfo>().sourceCard);
+                else
+                {
+                    playerToUpgrade.data.currentCards.Add(cards[cardID]);
+                }
+                Cards.SilentAddToCardBar(playerToUpgrade.playerID, cardStats.GetComponent<CardInfo>().sourceCard, twoLetterCode, forceDisplay, forceDisplayDelay);
             }
         }
         [UnboundRPC]
@@ -373,6 +465,18 @@ namespace PCE.Extensions
             return unique;
         }
 
+        public bool CardIsNotBlacklisted(CardInfo card, CardCategory[] blacklistedCategories)
+        {
+            bool blacklisted = false;
+
+            if (card.categories.Intersect(blacklistedCategories).Any())
+            {
+                blacklisted = true;
+            }
+
+            return !blacklisted;
+        }
+
         public bool CardDoesNotConflictWithCards(CardInfo card, CardInfo[] cards)
         {
             bool conflicts = false;
@@ -412,9 +516,9 @@ namespace PCE.Extensions
         {
             return player.data.currentCards.Where(cardinfo => condition(cardinfo, player, gun, gunAmmo, data, health, gravity, block, characterStats)).ToArray();
         }
-        public int GetRandomCardIDWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition, int maxattempts = 1000)
+        public int NORARITY_GetRandomCardIDWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition, int maxattempts = 1000)
         {
-            CardInfo card = this.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, condition, maxattempts);
+            CardInfo card = this.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, condition, maxattempts);
             if (card != null)
             {
                 return this.GetCardID(card);
@@ -425,7 +529,8 @@ namespace PCE.Extensions
             }
             
         }
-        public CardInfo GetRandomCardWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition, int maxattempts = 1000)
+        // get random card without respecting rarity, but always respecting PlayerIsAllowedCard
+        public CardInfo NORARITY_GetRandomCardWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition, int maxattempts = 1000)
         {
             // get array of all cards
             CardInfo[] cards = global::CardChoice.instance.cards;
@@ -436,13 +541,13 @@ namespace PCE.Extensions
             int i = 0;
 
             // draw a random card until it's an uncommon or the maximum number of attempts was reached
-            while (!condition(cards[rID], player, gun, gunAmmo, data, health, gravity, block, characterStats) && i < maxattempts)
+            while (!(condition(cards[rID], player, gun, gunAmmo, data, health, gravity, block, characterStats) && this.PlayerIsAllowedCard(player,cards[rID])) && i < maxattempts)
             {
                 rID = rng.Next(0, cards.Length);
                 i++;
             }
 
-            if (!condition(cards[rID], player, gun, gunAmmo, data, health, gravity, block, characterStats))
+            if (!(condition(cards[rID], player, gun, gunAmmo, data, health, gravity, block, characterStats) && this.PlayerIsAllowedCard(player, cards[rID])))
             {
                 return null;
             }
@@ -452,10 +557,76 @@ namespace PCE.Extensions
             }
 
         }
+        // get random card using the base-game's spawn method (which respects rarities), also satisfying some conditions - always including PlayerIsAllowedCard
+        public CardInfo GetRandomCardWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition, int maxattempts = 1000)
+        {
 
+            CardInfo card = ((GameObject)typeof(CardChoice).InvokeMember("GetRanomCard",
+                        BindingFlags.Instance | BindingFlags.InvokeMethod |
+                        BindingFlags.NonPublic, null, global::CardChoice.instance, new object[] { })).GetComponent<CardInfo>();
+
+            int i = 0;
+
+            // draw a random card until it's an uncommon or the maximum number of attempts was reached
+            while (!(condition(card, player, gun, gunAmmo, data, health, gravity, block, characterStats) && this.PlayerIsAllowedCard(player, card)) && i < maxattempts)
+            {
+                card = ((GameObject)typeof(CardChoice).InvokeMember("GetRanomCard",
+                           BindingFlags.Instance | BindingFlags.InvokeMethod |
+                           BindingFlags.NonPublic, null, global::CardChoice.instance, new object[] { })).GetComponent<CardInfo>();
+                i++;
+            }
+
+            if (!(condition(card, player, gun, gunAmmo, data, health, gravity, block, characterStats) && this.PlayerIsAllowedCard(player, card)))
+            {
+                return null;
+            }
+            else
+            {
+                return card;
+            }
+
+        }
         public int GetCardID(CardInfo card)
         {
             return Array.IndexOf(global::CardChoice.instance.cards, card);
         }
+
+        private static void SilentAddToCardBar(int teamID, CardInfo card, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
+        {
+            CardBar[] cardBars = (CardBar[])Traverse.Create(CardBarHandler.instance).Field("cardBars").GetValue();
+
+            Traverse.Create(cardBars[teamID]).Field("ci").SetValue(card);
+            GameObject source = (GameObject)Traverse.Create(cardBars[teamID]).Field("source").GetValue();
+            GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(source, source.transform.position, source.transform.rotation, source.transform.parent);
+            gameObject.transform.localScale = Vector3.one;
+            string text = card.cardName;
+            if (twoLetterCode != "") { text = twoLetterCode; }
+            text = text.Substring(0, 2);
+            string text2 = text[0].ToString().ToUpper();
+            if (text.Length > 1)
+            {
+                string str = text[1].ToString().ToLower();
+                text = text2 + str;
+            }
+            else
+            {
+                text = text2;
+            }
+            gameObject.GetComponentInChildren<TextMeshProUGUI>().text = text;
+            Traverse.Create(gameObject.GetComponent<CardBarButton>()).Field("card").SetValue(card);
+            gameObject.gameObject.SetActive(true);
+            if (forceDisplay > 0f)
+            {
+                cardBars[teamID].ExecuteAfterSeconds(forceDisplayDelay+0.1f, () =>
+                {
+                    gameObject.GetComponent<CardBarButton>().OnPointerEnter(null);
+                });
+                cardBars[teamID].ExecuteAfterSeconds(forceDisplayDelay+forceDisplay+0.1f, () =>
+                {
+                    gameObject.GetComponent<CardBarButton>().OnPointerExit(null);
+                });
+            }
+        }
+
     }
 }

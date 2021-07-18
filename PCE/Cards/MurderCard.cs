@@ -11,6 +11,7 @@ namespace PCE.Cards
 {
     public class MurderCard : CustomCard
     {
+        public static System.Random rng = new System.Random();
         /*
         *  A rare card which kills the opposing player immediately at the start of the next round
         */
