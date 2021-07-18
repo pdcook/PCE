@@ -49,7 +49,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V] && !this.Vexists)
             {
                 // build and add survivalist V card
-                CustomCard.BuildCard<SurvivalistVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<SurvivalistVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
@@ -123,7 +123,7 @@ namespace PCE.MonoBehaviours
         {
             foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
             {
-                this.survivalists[survivalistType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
+                this.survivalists[survivalistType] = (Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
             }
         }
         private bool HasCompleteSet()

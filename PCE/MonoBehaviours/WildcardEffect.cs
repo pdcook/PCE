@@ -42,7 +42,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
             {
                 // build and add wildcard V card
-                CustomCard.BuildCard<WildcardVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<WildcardVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
@@ -151,7 +151,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
             {
                 // build and hide wildcard V card
-                CustomCard.BuildCard<WildcardVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<WildcardVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
@@ -210,7 +210,7 @@ namespace PCE.MonoBehaviours
         {
             foreach (WildcardType wildcardType in Enum.GetValues(typeof(WildcardType)))
             {
-                this.wildcards[wildcardType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[wildcardType]) > 0);
+                this.wildcards[wildcardType] = (Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[wildcardType]) > 0);
             }
         }
 

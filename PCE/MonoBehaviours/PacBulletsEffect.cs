@@ -134,26 +134,60 @@ namespace PCE.MonoBehaviours
             }
             if (flag)
             {
-                this.projectile.GetAdditionalData().startTime = Time.time;
-                this.projectile.GetAdditionalData().inactiveDelay = 0.02f;
-                Color origColor = this.projectile.GetComponentInChildren<SpriteRenderer>().color;
-                Color origStartColor = this.projectile.GetComponentInChildren<TrailRenderer>().startColor;
-                Color origEndColor = this.projectile.GetComponentInChildren<TrailRenderer>().endColor;
-
-                this.projectile.GetComponentInChildren<SpriteRenderer>().color = Color.clear;
-                this.projectile.GetComponentInChildren<TrailRenderer>().startColor = Color.clear;
-                this.projectile.GetComponentInChildren<TrailRenderer>().endColor = Color.clear;
-
-                this.parent.transform.position = this.mainCam.ScreenToWorldPoint(new Vector3(pos.x*(float)Screen.width, pos.y*(float)Screen.height, pos.z));
-                this.wraps++;
-
-                this.ExecuteAfterSeconds(0.02f, () => 
+                // offline
+                if (PhotonNetwork.OfflineMode)
                 {
-                    this.projectile.GetComponentInChildren<SpriteRenderer>().color = origColor;
-                    this.projectile.GetComponentInChildren<TrailRenderer>().startColor = origStartColor;
-                    this.projectile.GetComponentInChildren<TrailRenderer>().endColor = origEndColor;
-                });
+                    this.RPCA_WrapBullet(pos.x, pos.y, pos.z);
+                }
+                // network
+                else if (this.view.IsMine)
+                {
+                    this.view.RPC("RPCA_WrapBullet", RpcTarget.All, new object[] {pos.x, pos.y, pos.z});
+                }
             }
+        }
+        [PunRPC]
+        private void RPCA_WrapBullet(float x, float y, float z)
+        {
+            this.projectile.GetAdditionalData().startTime = Time.time;
+            this.projectile.GetAdditionalData().inactiveDelay = float.MaxValue;
+
+            TrailRenderer[] trailRenderers = this.projectile.GetComponentsInChildren<TrailRenderer>();
+            Renderer[] renderers = this.projectile.GetComponentsInChildren<Renderer>();
+            ParticleSystem[] particleSystems = this.projectile.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem particleSystem in particleSystems)
+            {
+                particleSystem.Clear(true);
+            }
+            foreach (TrailRenderer trailRenderer in trailRenderers)
+            {
+                trailRenderer.Clear();
+            }
+            foreach (Renderer renderer in renderers)
+            {
+                renderer.enabled = false;
+            }
+
+            this.parent.transform.position = this.mainCam.ScreenToWorldPoint(new Vector3(x * (float)Screen.width, y * (float)Screen.height, z));
+            this.wraps++;
+
+            this.ExecuteAfterFrames(2, () =>
+            {
+                foreach (Renderer renderer in renderers)
+                {
+                    renderer.enabled = true;
+                }
+                foreach (TrailRenderer trailRenderer in trailRenderers)
+                {
+                    trailRenderer.Clear();
+                }
+                foreach (ParticleSystem particleSystem in particleSystems)
+                {
+                    particleSystem.Clear(true);
+                }
+            });
+            this.ExecuteAfterFrames(5, () => this.projectile.GetAdditionalData().inactiveDelay = 0f);
         }
     }
 }

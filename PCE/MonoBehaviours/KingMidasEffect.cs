@@ -6,6 +6,9 @@ using UnityEngine;
 using System.Linq;
 using HarmonyLib;
 using PCE.Extensions;
+using UnboundLib.Networking;
+using Photon.Pun;
+using System.Reflection;
 
 namespace PCE.MonoBehaviours
 {
@@ -41,7 +44,17 @@ namespace PCE.MonoBehaviours
                     if (displacement.magnitude <= this.range)
                     {
                         // if the other player is within range, then add the gold effect to them
-                        otherPlayer.gameObject.GetOrAddComponent<GoldEffect>();
+
+                        // locally
+                        if (PhotonNetwork.OfflineMode)
+                        {
+                            otherPlayer.gameObject.GetOrAddComponent<GoldEffect>();
+                        }
+                        // via network
+                        else if (this.player.GetComponent<PhotonView>().IsMine)
+                        {
+                            NetworkingManager.RPC(typeof(KingMidasEffect), "RPCA_TurnGold", new object[] { otherPlayer.data.view.ControllerActorNr });
+                        }
                     }
 
                 }
@@ -54,6 +67,16 @@ namespace PCE.MonoBehaviours
         public void Destroy()
         {
             UnityEngine.Object.Destroy(this);
+        }
+
+        [UnboundRPC]
+        private static void RPCA_TurnGold(int actorID)
+        {
+            Player playerToEffect = (Player)typeof(PlayerManager).InvokeMember("GetPlayerWithActorID",
+                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                    BindingFlags.NonPublic, null, PlayerManager.instance, new object[] { actorID });
+
+            playerToEffect.gameObject.GetOrAddComponent<GoldEffect>();
         }
 
     }

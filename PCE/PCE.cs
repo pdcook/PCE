@@ -176,7 +176,7 @@ namespace PCE
                     CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
                     yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
                     Destroy(player.GetComponent<Shuffle>());
-                    this.ExecuteAfterSeconds(0.1f, () => Extensions.Cards.instance.RemoveCardsFromPlayer(player, Extensions.Cards.instance.GetPlayerCardsWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.name == "Shuffle"), Extensions.Cards.SelectionType.All));
+                    this.ExecuteAfterSeconds(0.1f, () => Utils.Cards.instance.RemoveCardsFromPlayer(player, Utils.Cards.instance.GetPlayerCardsWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.name == "Shuffle"), Utils.Cards.SelectionType.All));
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
                     yield return new WaitForSecondsRealtime(0.1f);
 
@@ -196,7 +196,7 @@ namespace PCE
                         UnityEngine.Debug.Log(delay.ToString());
                         int idx = player.GetComponent<RandomCardEffect>().index;
                         string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
-                        Extensions.Cards.instance.ReplaceCard(player, idx, Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Extensions.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") })), twoLetterCode, 1f, delay);
+                        Utils.Cards.instance.ReplaceCard(player, idx, Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") })), twoLetterCode, 1f, delay);
                         delay += 1f;
                     }
                 }

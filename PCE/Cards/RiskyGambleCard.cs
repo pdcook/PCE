@@ -24,13 +24,13 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            CardInfo randomCard1 = Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
+            CardInfo randomCard1 = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            Extensions.Cards.instance.AddCardToPlayer(player, randomCard1, false, "", 1f, 0f);
+            Utils.Cards.instance.AddCardToPlayer(player, randomCard1, false, "", 1f, 0f);
 
-            CardInfo randomCard2 = Extensions.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
+            CardInfo randomCard2 = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            Extensions.Cards.instance.AddCardToPlayer(player, randomCard2, false, "", 1f, 1f);
+            Utils.Cards.instance.AddCardToPlayer(player, randomCard2, false, "", 1f, 1f);
 
         }
         public override void OnRemoveCard()

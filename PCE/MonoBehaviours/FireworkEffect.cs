@@ -72,7 +72,7 @@ namespace PCE.MonoBehaviours
     {
         private static readonly System.Random rng = new System.Random();
 
-        private readonly float defaultDelay = 0.5f;
+        private readonly float defaultDelay = 0.15f;
         private readonly int bullets = 10;
         private readonly float radius = 2f;
 
@@ -151,7 +151,6 @@ namespace PCE.MonoBehaviours
             else
             {
                 this.ResetTimer();
-                this.pops++;
 
                 Vector3 pos = this.mainCam.WorldToScreenPoint(this.transform.position);
                 pos.x /= (float)Screen.width;

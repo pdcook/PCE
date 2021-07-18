@@ -48,7 +48,7 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.pacifists[PacifistType.V] && !this.Vexists)
             {
                 // build and add pacifist V card
-                CustomCard.BuildCard<PacifistVCard>(cardInfo => Extensions.Cards.instance.AddCardToPlayer(base.player, cardInfo));
+                CustomCard.BuildCard<PacifistVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
                 this.Vexists = true;
             }
 
@@ -122,7 +122,7 @@ namespace PCE.MonoBehaviours
         {
             foreach (PacifistType pacifistType in Enum.GetValues(typeof(PacifistType)))
             {
-                this.pacifists[pacifistType] = (Extensions.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[pacifistType]) > 0);
+                this.pacifists[pacifistType] = (Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[pacifistType]) > 0);
             }
         }
         private bool HasCompleteSet()
