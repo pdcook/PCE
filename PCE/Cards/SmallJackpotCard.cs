@@ -28,7 +28,9 @@ namespace PCE.Cards
 
             CardInfo randomCard = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            Utils.Cards.instance.AddCardToPlayer(player, randomCard, false, "", 2f);
+            //Utils.Cards.instance.AddCardToPlayer(player, randomCard, false, "", 2f);
+            Utils.Cards.instance.AddCardToPlayer(player, randomCard);
+            Utils.CardBarUtils.instance.ShowAtEndOfPhase(player, randomCard);
         }
         public override void OnRemoveCard()
         {

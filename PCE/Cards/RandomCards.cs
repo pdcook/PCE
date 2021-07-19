@@ -15,34 +15,52 @@ using TMPro;
 
 namespace PCE.Cards
 {
-    public class RandomCard : CustomCard
+    public class RandomCommonCard : RandomCard
     {
-        internal static string cardName = "RANDOM";
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        protected override GameObject GetCardArt()
         {
-            cardInfo.allowMultiple = false;
-            cardInfo.GetAdditionalData().isRandom = true;
+            return null;
         }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            //CardInfo randomCard = Utils.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            //base.ReplaceCard(player, data.currentCards.Count - 1, randomCard);
-            player.gameObject.GetOrAddComponent<RandomCardEffect>();
-        }
-        public override void OnRemoveCard()
+        protected override CardInfo.Rarity GetRarity()
         {
+            return CardInfo.Rarity.Common;
+        }
+
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.TechWhite;
         }
 
         protected override string GetTitle()
         {
-            return cardName;
+            return "Common";
         }
-        protected override string GetDescription()
+    }
+    public class RandomUncommonCard : RandomCard
+    {
+        protected override GameObject GetCardArt()
         {
-            return "...";
+            return null;
         }
 
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Uncommon;
+        }
+
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.ColdBlue;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Uncommon";
+        }
+    }
+    public class RandomRareCard : RandomCard
+    {
         protected override GameObject GetCardArt()
         {
             return null;
@@ -53,13 +71,38 @@ namespace PCE.Cards
             return CardInfo.Rarity.Rare;
         }
 
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.EvilPurple;
+        }
+
+        protected override string GetTitle()
+        {
+            return "Rare";
+        }
+    }
+    public abstract class RandomCard : CustomCard
+    {
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+            cardInfo.GetAdditionalData().isRandom = true;
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+            RandomCardEffect effect = player.gameObject.GetOrAddComponent<RandomCardEffect>();
+            effect.indeces.Add(player.data.currentCards.Count);
+        }
+        public override void OnRemoveCard()
+        {
+        }
+        protected override string GetDescription()
+        {
+            return "...";
+        }
+
         protected override CardInfoStat[] GetStats()
         {
             return null;
-        }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.TechWhite;
         }
         public override string GetModName()
         {
@@ -74,6 +117,8 @@ namespace PCE.Cards
         private class RandomCardVisualEffect : MonoBehaviour
         {
             private static System.Random random = new System.Random();
+            private Color origTriangleColor;
+            private float origTriangleHue;
             public static string RandomString(int length)
             {
                 const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=<>?:\"{ }|,./;'[]\\'~";
@@ -86,7 +131,7 @@ namespace PCE.Cards
 
                 for (int i = 0; i < words; i++)
                 {
-                    sentence += RandomString(random.Next(1, 6))+" ";
+                    sentence += RandomString(random.Next(1, 6)) + " ";
                 }
 
                 return sentence;
@@ -115,14 +160,14 @@ namespace PCE.Cards
                 return res;
 
             }
-            
+
             private TextMeshProUGUI description;
             private TextMeshProUGUI cardName;
             private List<UnityEngine.UI.Image> triangles = new List<UnityEngine.UI.Image>() { };
-            private List<float> triangleTimers = new List<float>() { -1f, -1f, -1f, -1f};
+            private List<float> triangleTimers = new List<float>() { -1f, -1f, -1f, -1f };
             private List<float> triangleFlashDurations = new List<float>() { 1f, 1f, 1f, 1f };
             private readonly List<float> flashMinMax = new List<float>() { 0.2f, 2f };
-            private List<bool> flashUp = new List<bool>() {false, false, false, false};
+            private List<bool> flashUp = new List<bool>() { false, false, false, false };
             private void Start()
             {
                 TextMeshProUGUI[] allChildrenRecursive = this.gameObject.GetComponentsInChildren<TextMeshProUGUI>();
@@ -156,8 +201,10 @@ namespace PCE.Cards
                     if (img.gameObject.name == "Triangle")
                     {
                         this.triangles.Add(img);
+                        this.origTriangleColor = img.color;
                     }
                 }
+                Color.RGBToHSV(this.origTriangleColor, out this.origTriangleHue, out float s, out float v);
 
                 this.flashUp = new List<bool>() { random.Next(0, 2) == 1, random.Next(0, 2) == 1, random.Next(0, 2) == 1, random.Next(0, 2) == 1 };
                 for (int i = 0; i < 4; i++)
@@ -170,7 +217,7 @@ namespace PCE.Cards
             }
             private void Update()
             {
-                this.description.text = "<mspace=0.5em>"+ObfuscateString("Get a different random card each battle.")+ "</mspace>";
+                this.description.text = "<mspace=0.5em>" + ObfuscateString("Get a different random card each battle.") + "</mspace>";
                 this.cardName.text = "<mspace=0.5em>" + ObfuscateString("RANDOM") + "</mspace>";
 
                 this.UpdateAllTriangles();
@@ -192,12 +239,19 @@ namespace PCE.Cards
                     {
                         perc = 1f - perc;
                     }
-                    this.triangles[i].color = new Color(perc, perc, perc, 1f);
+                    if (this.gameObject.GetComponent<CardInfo>().rarity == CardInfo.Rarity.Common)
+                    {
+                        this.triangles[i].color = Color.HSVToRGB(this.origTriangleHue, 0f, perc);
+                    }
+                    else
+                    {
+                        this.triangles[i].color = Color.HSVToRGB(this.origTriangleHue, perc, perc);
+                    }
                 }
             }
             private void GetNewFlashDuration(int idx)
             {
-                this.triangleFlashDurations[idx] = (this.flashMinMax[1]-this.flashMinMax[0])*(float)random.NextDouble() + this.flashMinMax[0];
+                this.triangleFlashDurations[idx] = (this.flashMinMax[1] - this.flashMinMax[0]) * (float)random.NextDouble() + this.flashMinMax[0];
             }
             private void ResetTriangleTimer(int idx)
             {
@@ -208,8 +262,11 @@ namespace PCE.Cards
 
     public class RandomCardEffect : MonoBehaviour
     {
-        internal int index;
+        private Player player;
         private static System.Random random = new System.Random();
+        internal List<int> indeces = new List<int>() { };
+        private readonly float dH = 0.001f;
+        private float sign = 1f;
 
         internal string twoLetterCode
         {
@@ -221,17 +278,27 @@ namespace PCE.Cards
             }
             set { }
         }
-
         void Start()
         {
-            if (this.gameObject.GetComponent<Player>() != null)
+            this.player = this.gameObject.GetComponent<Player>();
+        }
+        void Update()
+        {
+            foreach (int idx in indeces)
             {
-                List<CardInfo> cards = this.gameObject.GetComponent<Player>().data.currentCards;
-                
-                this.index = Enumerable.Range(0, cards.Count).Where(idx => cards[idx].name == RandomCard.cardName).ToList()[0];
+                UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare = Utils.CardBarUtils.instance.GetCardBarSquare(player, idx).transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>();
+                Color.RGBToHSV(cardSquare.color, out float h, out float s, out float v);
+                if (h + this.sign*this.dH > 1f || h + this.sign*this.dH < 0f)
+                {
+                    this.sign *= -1f;
+                }
+                Color newColor = Color.HSVToRGB(UnityEngine.Mathf.Clamp(h + this.sign * this.dH, 0f, 1f), s, v);
+                newColor.a = cardSquare.color.a;
+                cardSquare.color = newColor;
             }
         }
 
-    }
 
+    }
+    
 }

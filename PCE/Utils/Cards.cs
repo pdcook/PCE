@@ -161,10 +161,12 @@ namespace PCE.Utils
 
             // now we remove all of the cards from the player
             this.RemoveAllCardsFromPlayer(player);
-
-            // then add back only the ones we didn't remove, marking them as reassignments
-            this.AddCardsToPlayer(player, newCards.ToArray(), true);
-
+            Unbound.Instance.ExecuteAfterSeconds(0.1f, () =>
+            {
+                Utils.CardBarUtils.instance.ClearCardBar(player);
+                // then add back only the ones we didn't remove, marking them as reassignments
+                this.AddCardsToPlayer(player, newCards.ToArray(), true);
+            });
             // return the card that was removed
             return originalCards[idx];
         }
@@ -220,15 +222,17 @@ namespace PCE.Utils
             }
 
             // now we remove all of the cards from the player
-            this.RemoveAllCardsFromPlayer(player);
-
-            // then add back only the ones we didn't remove
-            this.AddCardsToPlayer(player, newCards.ToArray(), true);
-
+            this.RemoveAllCardsFromPlayer(player, false);
+            Unbound.Instance.ExecuteAfterSeconds(0.1f, () =>
+            {
+                Utils.CardBarUtils.instance.ClearCardBar(player);
+                // then add back only the ones we didn't remove
+                this.AddCardsToPlayer(player, newCards.ToArray(), true);
+            });
             // return the number of cards removed
             return indecesToRemove.Count;
         }
-        public CardInfo[] RemoveAllCardsFromPlayer(Player player)
+        public CardInfo[] RemoveAllCardsFromPlayer(Player player, bool clearBar = true)
         {
             // copy currentCards
             List<CardInfo> cards = new List<CardInfo>();
@@ -257,20 +261,29 @@ namespace PCE.Utils
                 typeof(Player).InvokeMember("FullReset",
                         BindingFlags.Instance | BindingFlags.InvokeMethod |
                         BindingFlags.NonPublic, null, player, new object[] { });
-                CardBar[] cardBars = (CardBar[])Traverse.Create(CardBarHandler.instance).Field("cardBars").GetValue();
-                cardBars[player.teamID].ClearBar();
+                if (clearBar)
+                {
+                    Utils.CardBarUtils.instance.ClearCardBar(player);
+                }
             }
             else if (PhotonNetwork.IsMasterClient)
             {
                 NetworkingManager.RPC(typeof(Cards), "RPCA_FullReset", new object[] { player.data.view.ControllerActorNr });
-                NetworkingManager.RPC(typeof(Cards), "RPCA_ClearCardBar", new object[] { player.data.view.ControllerActorNr });
+                if (clearBar)
+                {
+                    Utils.CardBarUtils.instance.ClearCardBar(player);
+                }
             }
 
             return cards.ToArray(); // return the removed cards
 
         }
-        public CardInfo ReplaceCard(Player player, int idx, CardInfo newCard, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
+        public System.Collections.IEnumerator ReplaceCard(Player player, int idx, CardInfo newCard, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
         {
+            if (newCard == null)
+            {
+                yield break;
+            }
             List<string> twoLetterCodes = new List<string>() { };
             List<float> forceDisplays = new List<float>() { };
             List<float> forceDisplayDelays = new List<float>() { };
@@ -305,14 +318,77 @@ namespace PCE.Utils
             // now we remove all of the cards from the player
             this.RemoveAllCardsFromPlayer(player);
 
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            Utils.CardBarUtils.instance.ClearCardBar(player);
             // then add back the new card
             this.AddCardsToPlayer(player, newCards.ToArray(), true, twoLetterCodes.ToArray(), forceDisplays.ToArray(), forceDisplayDelays.ToArray());
 
+            yield break;
             // return the card that was removed
-            return originalCards[idx];
+            //return originalCards[idx];
         }
-        public int ReplaceCard(Player player, CardInfo cardToReplace, CardInfo newCard, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f, SelectionType selectType = SelectionType.All)
+        public System.Collections.IEnumerator ReplaceCards(Player player, int[] indeces, CardInfo[] newCards, string[] twoLetterCodes = null)
         {
+            if (twoLetterCodes == null)
+            {
+                twoLetterCodes = new string[indeces.Length];
+                for (int i = 0; i < twoLetterCodes.Length; i++)
+                {
+                    twoLetterCodes[i] = "";
+                }
+            }
+            // copy player's currentCards list
+            List<CardInfo> originalCards = new List<CardInfo>() { };
+            foreach (CardInfo origCard in player.data.currentCards)
+            {
+                originalCards.Add(origCard);
+            }
+
+            List<CardInfo> newCardsToAssign = new List<CardInfo>() { };
+            List<string> twoLetterCodesToAssign = new List<string>() { };
+
+            int j = 0;
+            for (int i = 0; i < originalCards.Count; i++)
+            {
+                if (!indeces.Contains(i))
+                {
+                    newCardsToAssign.Add(originalCards[i]);
+                    twoLetterCodesToAssign.Add("");
+                }
+                else if (newCards[j] == null)
+                {
+                    newCardsToAssign.Add(originalCards[i]);
+                    twoLetterCodesToAssign.Add("");
+                    j++;
+                }
+                else
+                {
+                    newCardsToAssign.Add(newCards[j]);
+                    twoLetterCodesToAssign.Add(twoLetterCodes[j]);
+                    j++;
+                }
+            }
+
+            // now we remove all of the cards from the player
+            this.RemoveAllCardsFromPlayer(player);
+
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            Utils.CardBarUtils.instance.ClearCardBar(player);
+            // then add back the new cards
+            this.AddCardsToPlayer(player, newCardsToAssign.ToArray(), true, twoLetterCodesToAssign.ToArray());
+
+            yield break;
+            // return the card that was removed
+            //return originalCards[idx];
+        }
+        public System.Collections.IEnumerator ReplaceCard(Player player, CardInfo cardToReplace, CardInfo newCard, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f, SelectionType selectType = SelectionType.All)
+        {
+            if (newCard == null)
+            {
+                yield break;
+            }
             List<string> twoLetterCodes = new List<string>() { };
             List<float> forceDisplays = new List<float>() { };
             List<float> forceDisplayDelays = new List<float>() { };
@@ -379,11 +455,19 @@ namespace PCE.Utils
             // now we remove all of the cards from the player
             this.RemoveAllCardsFromPlayer(player);
 
-            // then add back the new cards
-            this.AddCardsToPlayer(player, newCards.ToArray(), true, twoLetterCodes.ToArray(), forceDisplays.ToArray(), forceDisplayDelays.ToArray());
+            //Unbound.Instance.ExecuteAfterSeconds(0.1f, () =>
+            //{
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            Utils.CardBarUtils.instance.ClearCardBar(player);
+                // then add back the new card
+                this.AddCardsToPlayer(player, newCards.ToArray(), true, twoLetterCodes.ToArray(), forceDisplays.ToArray(), forceDisplayDelays.ToArray());
+            //});
+
+            yield break;
 
             // return the number of cards replaced
-            return indecesToReplace.Count;
+            //return indecesToReplace.Count;
         }
         [UnboundRPC]
         public static void RPCA_AssignCard(int cardID, int[] actorIDs, bool reassign, string twoLetterCode, float forceDisplay, float forceDisplayDelay)
@@ -482,15 +566,17 @@ namespace PCE.Utils
         {
             bool conflicts = false;
 
+            if (cards.Length == 0) { return !conflicts; }
+
             foreach (CardInfo otherCard in cards)
             {
-                if (card.categories.Intersect(otherCard.blacklistedCategories).Any())
+                if (card.categories != null && otherCard.blacklistedCategories != null && card.categories.Intersect(otherCard.blacklistedCategories).Any())
                 {
                     conflicts = true;
                 }
             }
 
-            return conflicts;
+            return !conflicts;
         }
 
         public bool PlayerIsAllowedCard(Player player, CardInfo card)
@@ -591,11 +677,13 @@ namespace PCE.Utils
         {
             return Array.IndexOf(global::CardChoice.instance.cards, card);
         }
+        public CardInfo GetCardWithID(int cardID)
+        {
+            return global::CardChoice.instance.cards[cardID];
+        }
 
         private static void SilentAddToCardBar(int teamID, CardInfo card, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
         {
-            UnityEngine.Debug.Log("DELAY: " + forceDisplayDelay.ToString());
-
             CardBar[] cardBars = (CardBar[])Traverse.Create(CardBarHandler.instance).Field("cardBars").GetValue();
 
             Traverse.Create(cardBars[teamID]).Field("ci").SetValue(card);
@@ -618,6 +706,7 @@ namespace PCE.Utils
             gameObject.GetComponentInChildren<TextMeshProUGUI>().text = text;
             Traverse.Create(gameObject.GetComponent<CardBarButton>()).Field("card").SetValue(card);
             gameObject.gameObject.SetActive(true);
+            /*
             if (forceDisplay > 0f)
             {
                 cardBars[teamID].ExecuteAfterSeconds(forceDisplayDelay+0.1f, () =>
@@ -628,7 +717,7 @@ namespace PCE.Utils
                 {
                     gameObject.GetComponent<CardBarButton>().OnPointerExit(null);
                 });
-            }
+            }*/
         }
 
     }

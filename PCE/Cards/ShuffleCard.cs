@@ -23,9 +23,6 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            //CardInfo randomCard = Utils.Cards.instance.GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
-
-            //base.ReplaceCard(player, data.currentCards.Count - 1, randomCard);
             player.gameObject.GetOrAddComponent<Shuffle>();
         }
         public override void OnRemoveCard()

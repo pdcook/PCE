@@ -7,6 +7,7 @@ using System.Reflection;
 using HarmonyLib;
 using PCE.MonoBehaviours;
 using PCE.RoundsEffects;
+using PCE.Cards;
 
 namespace PCE.Extensions
 {
@@ -92,6 +93,12 @@ namespace PCE.Extensions
             foreach (HitEffect hitEffect in hitEffects) { if (hitEffect != null) { hitEffect.Destroy(); } }
             WasHitEffect[] wasHitEffects = gameObject.GetComponents<WasHitEffect>();
             foreach (WasHitEffect wasHitEffect in wasHitEffects) { if (wasHitEffect != null) { wasHitEffect.Destroy(); } }
+        }
+
+        public static void DestroyAllRandomCardEffects(GameObject gameObject)
+        {
+            RandomCardEffect[] randomCardEffects = gameObject.GetComponents<RandomCardEffect>();
+            foreach (RandomCardEffect randomCardEffect in randomCardEffects) { if (randomCardEffect != null) { UnityEngine.GameObject.Destroy(randomCardEffect); } }
         }
     }
 }

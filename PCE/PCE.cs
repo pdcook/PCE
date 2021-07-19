@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using CardChoiceSpawnUniqueCardPatch;
+using PCE.Utils;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -91,7 +92,9 @@ namespace PCE
             CustomCard.BuildCard<WildcardIIICard>();
             CustomCard.BuildCard<WildcardIVCard>();
 
-            CustomCard.BuildCard<RandomCard>(Cards.RandomCard.callback);
+            CustomCard.BuildCard<RandomCommonCard>(Cards.RandomCard.callback);
+            CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
+            CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
 
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
@@ -102,8 +105,12 @@ namespace PCE
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
 
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => this.ExtraPicks());
+            GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => Utils.CardBarUtils.instance.EndPickPhaseShow());
 
-            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.RandomCard());
+            GameModeManager.AddHook(GameModeHooks.HookPointStart, (gm) => this.RandomCard());
+
+            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ClearRandomCards());
+            GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => this.ClearRandomCards());
 
         }
 
@@ -186,21 +193,33 @@ namespace PCE
         }
         private IEnumerator RandomCard()
         {
-            float delay = 0f;
-            this.ExecuteAfterSeconds(0.1f, () =>
-            { 
-                foreach (Player player in PlayerManager.instance.players.ToArray())
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
                 {
-                    if (player.GetComponent<RandomCardEffect>() != null)
+                    List<int> indeces = new List<int>(player.GetComponent<RandomCardEffect>().indeces);
+                    List<string> twoLetterCodes = new List<string>() { };
+                    List<CardInfo> newCards = new List<CardInfo>() { };
+                    foreach (int idx in indeces)
                     {
-                        UnityEngine.Debug.Log(delay.ToString());
-                        int idx = player.GetComponent<RandomCardEffect>().index;
                         string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
-                        Utils.Cards.instance.ReplaceCard(player, idx, Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") })), twoLetterCode, 1f, delay);
-                        delay += 1f;
+                        CardInfo card = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+                        twoLetterCodes.Add(twoLetterCode);
+                        newCards.Add(card);
                     }
+                    yield return Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
+                    yield return Utils.CardBarUtils.instance.ShowImmediate(player, newCards.ToArray());
                 }
-            });
+            }
+            yield break;
+        }
+
+        private IEnumerator ClearRandomCards()
+        {
+            foreach (Player player in PlayerManager.instance.players)
+            {
+                CustomEffects.DestroyAllRandomCardEffects(player.gameObject);
+            }
             yield break;
         }
 
