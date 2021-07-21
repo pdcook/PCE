@@ -35,6 +35,8 @@ namespace PCE
         }
         private void Start()
         {
+            // register credits with unbound
+            //Unbound.RegisterCredits(ModName, new string[] { "Pykess" }, "github", "https://github.com/pdcook/PCE");
 
             PCE.ArtAssets = AssetUtils.LoadAssetBundleFromResources("pceassetbundle", typeof(PCE).Assembly);
             if (PCE.ArtAssets == null)

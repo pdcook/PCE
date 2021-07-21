@@ -19,7 +19,7 @@ namespace PCE.MonoBehaviours
 
 		private int numBullets = 1;
 		private int numShot = 0;
-		private Gun gunToShootFrom;
+		private Gun gunToShootFrom = null;
 		private List<Vector3> directionsToShoot = new List<Vector3>();
 		private List<Vector3> positionsToShootFrom = new List<Vector3>();
 		private float timeBetweenShots = 0f;
@@ -41,7 +41,7 @@ namespace PCE.MonoBehaviours
 
         void Update()
         {
-			if (this.numShot >= this.numBullets)
+			if (this.numShot >= this.numBullets || this.gunToShootFrom == null)
             {
 				Destroy(this);
             }
@@ -50,7 +50,11 @@ namespace PCE.MonoBehaviours
 				Shoot();
             }
         }
-        public void OnDestroy()
+		void OnDisable()
+        {
+			Destroy(this);
+        }
+        void OnDestroy()
         {
 			Destroy(this.newWeaponsBase);
 		}
@@ -123,17 +127,21 @@ namespace PCE.MonoBehaviours
         }
 		public void SetGun(Gun gun)
 		{
-			this.newWeaponsBase = UnityEngine.GameObject.Instantiate(this.player.GetComponent<Holding>().holdable.GetComponent<Gun>().gameObject);
+			this.newWeaponsBase = UnityEngine.GameObject.Instantiate(this.player.GetComponent<Holding>().holdable.GetComponent<Gun>().gameObject, new Vector3(500f,500f,-100f), Quaternion.identity);
+			UnityEngine.GameObject.DontDestroyOnLoad(this.newWeaponsBase);
 			foreach (Transform child in this.newWeaponsBase.transform)
             {
-				if (child.GetComponentsInChildren<SpriteRenderer>() != null)
+				if (child.GetComponentInChildren<Renderer>() != null)
                 {
-					Destroy(child.gameObject);
+					foreach (Renderer renderer in child.GetComponentsInChildren<Renderer>())
+                    {
+						renderer.enabled = false;
+                    }
                 }
             }
 			this.gunToShootFrom = this.newWeaponsBase.GetComponent<Gun>();
 			SpawnBulletsEffect.CopyGunStats(gun, this.gunToShootFrom);
-			Destroy(gun, 1f);
+			//Destroy(gun, 1f);
 		}
 		public void SetNumBullets(int num)
         {
