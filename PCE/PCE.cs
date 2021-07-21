@@ -25,7 +25,8 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.legraycasterspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes physics for small players
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)] // fixes allowMultiple and blacklistedCategories
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
-    [BepInPlugin(ModId, ModName, "0.2.1.2")]
+    [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
+    [BepInPlugin(ModId, ModName, "0.2.2.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -36,7 +37,7 @@ namespace PCE
         private void Start()
         {
             // register credits with unbound
-            //Unbound.RegisterCredits(ModName, new string[] { "Pykess" }, "github", "https://github.com/pdcook/PCE");
+            Unbound.RegisterCredits(ModName, new string[] { "Pykess" }, "github", "https://github.com/pdcook/PCE");
 
             PCE.ArtAssets = AssetUtils.LoadAssetBundleFromResources("pceassetbundle", typeof(PCE).Assembly);
             if (PCE.ArtAssets == null)

@@ -22,6 +22,19 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.2.0
+-------------
+
+- New Cards, New Menus, New Displays, New Dependencies, New Things!
+    - Cards:
+        - Fireworks
+        - Fragmentation
+        - Pac-Bullets
+        - Shuffle
+    - Using the newest version of Unbound, PCE now has a credits menu
+    - Jackpot and Gamble cards now automatically show what cards they drew at the end of the pick phase
+    - New dependency: TemporaryStatsPatch. Patches bugs in the base game that caused issues with some cards when combined with modded cards
+
 #### v0.2.1.2
 -------------
 
