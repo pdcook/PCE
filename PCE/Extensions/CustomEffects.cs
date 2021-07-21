@@ -94,11 +94,5 @@ namespace PCE.Extensions
             WasHitEffect[] wasHitEffects = gameObject.GetComponents<WasHitEffect>();
             foreach (WasHitEffect wasHitEffect in wasHitEffects) { if (wasHitEffect != null) { wasHitEffect.Destroy(); } }
         }
-
-        public static void DestroyAllRandomCardEffects(GameObject gameObject)
-        {
-            RandomCardEffect[] randomCardEffects = gameObject.GetComponents<RandomCardEffect>();
-            foreach (RandomCardEffect randomCardEffect in randomCardEffects) { if (randomCardEffect != null) { UnityEngine.GameObject.Destroy(randomCardEffect); } }
-        }
     }
 }

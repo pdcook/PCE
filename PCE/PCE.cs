@@ -94,10 +94,6 @@ namespace PCE
             CustomCard.BuildCard<WildcardIIICard>();
             CustomCard.BuildCard<WildcardIVCard>();
 
-            CustomCard.BuildCard<RandomCommonCard>(Cards.RandomCard.callback);
-            CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
-            CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
-
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
@@ -108,11 +104,6 @@ namespace PCE
 
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => this.ExtraPicks());
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => Utils.CardBarUtils.instance.EndPickPhaseShow());
-
-            GameModeManager.AddHook(GameModeHooks.HookPointStart, (gm) => this.RandomCard());
-
-            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ClearRandomCards());
-            GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => this.ClearRandomCards());
 
         }
 
@@ -193,38 +184,6 @@ namespace PCE
             }
             yield break;
         }
-        private IEnumerator RandomCard()
-        {
-            foreach (Player player in PlayerManager.instance.players.ToArray())
-            {
-                if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
-                {
-                    List<int> indeces = new List<int>(player.GetComponent<RandomCardEffect>().indeces);
-                    List<string> twoLetterCodes = new List<string>() { };
-                    List<CardInfo> newCards = new List<CardInfo>() { };
-                    foreach (int idx in indeces)
-                    {
-                        string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
-                        CardInfo card = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && card.GetAdditionalData().canBeReassigned && !card.GetAdditionalData().isRandom && Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
-                        twoLetterCodes.Add(twoLetterCode);
-                        newCards.Add(card);
-                    }
-                    yield return Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
-                    yield return Utils.CardBarUtils.instance.ShowImmediate(player, newCards.ToArray());
-                }
-            }
-            yield break;
-        }
-
-        private IEnumerator ClearRandomCards()
-        {
-            foreach (Player player in PlayerManager.instance.players)
-            {
-                CustomEffects.DestroyAllRandomCardEffects(player.gameObject);
-            }
-            yield break;
-        }
-
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 
         private const string ModName = "Pykess's Card Expansion (PCE)";
