@@ -47,7 +47,7 @@ namespace PCE
 
             // build all cards
 
-            CustomCard.BuildCard<LaserCard>();
+            //CustomCard.BuildCard<LaserCard>();
             CustomCard.BuildCard<GhostBulletsCard>();
             CustomCard.BuildCard<TractorBeamCard>();
             CustomCard.BuildCard<MoonShoesCard>();
@@ -84,16 +84,19 @@ namespace PCE
             CustomCard.BuildCard<SurvivalistIICard>();
             CustomCard.BuildCard<SurvivalistIIICard>();
             CustomCard.BuildCard<SurvivalistIVCard>();
+            CustomCard.BuildCard<SurvivalistVCard>(card => { SurvivalistVCard.self = card; Utils.Cards.instance.AddHiddenCard(SurvivalistVCard.self); });
 
             CustomCard.BuildCard<PacifistICard>();
             CustomCard.BuildCard<PacifistIICard>();
             CustomCard.BuildCard<PacifistIIICard>();
             CustomCard.BuildCard<PacifistIVCard>();
+            CustomCard.BuildCard<PacifistVCard>(card => { PacifistVCard.self = card; Utils.Cards.instance.AddHiddenCard(PacifistVCard.self); });
 
             CustomCard.BuildCard<WildcardICard>();
             CustomCard.BuildCard<WildcardIICard>();
             CustomCard.BuildCard<WildcardIIICard>();
             CustomCard.BuildCard<WildcardIVCard>();
+            CustomCard.BuildCard<WildcardVCard>(card => { WildcardVCard.self = card; Utils.Cards.instance.AddHiddenCard(WildcardVCard.self); });
 
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
@@ -170,17 +173,14 @@ namespace PCE
         {
             foreach(Player player in PlayerManager.instance.players.ToArray())
             {
-                if (player.GetComponent<Shuffle>() != null)
+                while (player.data.stats.GetAdditionalData().shuffles > 0)
                 {
+                    player.data.stats.GetAdditionalData().shuffles -= 1;
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickStart);
-                    yield return player.GetComponent<Shuffle>().WaitForSyncUp();
                     CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
                     yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
-                    Destroy(player.GetComponent<Shuffle>());
-                    this.ExecuteAfterSeconds(0.1f, () => Utils.Cards.instance.RemoveCardsFromPlayer(player, Utils.Cards.instance.GetPlayerCardsWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => card.name == "Shuffle"), Utils.Cards.SelectionType.All));
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
                     yield return new WaitForSecondsRealtime(0.1f);
-
                 }
             }
             yield break;

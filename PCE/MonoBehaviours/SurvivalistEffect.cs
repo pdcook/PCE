@@ -27,7 +27,6 @@ namespace PCE.MonoBehaviours
         private readonly float colorFlashThreshMaxFrac = 0.25f;
 
         private float multiplier;
-        private bool Vexists = false;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
@@ -46,11 +45,11 @@ namespace PCE.MonoBehaviours
             // update which survivalist cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V] && !this.Vexists)
+            if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V])
             {
-                // build and add survivalist V card
-                CustomCard.BuildCard<SurvivalistVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
-                this.Vexists = true;
+                Utils.Cards.instance.AddCardToPlayer(player, SurvivalistVCard.self);
+                Unbound.Instance.StartCoroutine(Utils.CardBarUtils.instance.ShowImmediate(player.teamID, SurvivalistVCard.self));
+                Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<SurvivalistColorEffect>());
             }
 
             if (!this.survivalists[SurvivalistType.V])
@@ -148,5 +147,32 @@ namespace PCE.MonoBehaviours
             {SurvivalistType.V, "Survivalist V" },
         };
 
+    }
+    public class SurvivalistColorEffect : MonoBehaviour
+    {
+        private Player player;
+        internal List<int> indeces = new List<int>() { };
+        private Color color = Color.blue;
+        void Start()
+        {
+            Color.RGBToHSV(this.color, out float h, out float s, out float v);
+
+            this.player = this.gameObject.GetComponent<Player>();
+            GameObject[] cardSquareObjs = Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
+            List<UnityEngine.UI.ProceduralImage.ProceduralImage> cardSquares = new List<UnityEngine.UI.ProceduralImage.ProceduralImage>() { };
+            foreach (GameObject obj in cardSquareObjs)
+            {
+                cardSquares.Add(obj.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>());
+            }
+
+            foreach (UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare in cardSquares)
+            {
+                Color.RGBToHSV(cardSquare.color, out float h_, out float s_, out float v_);
+                Color newColor = Color.HSVToRGB(h, s_, v_);
+                newColor.a = cardSquare.color.a;
+
+                cardSquare.color = newColor;
+            }
+        }
     }
 }

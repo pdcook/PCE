@@ -258,6 +258,8 @@ namespace PCE.Cards
     public class PacifistVCard : CustomCard
     {
 
+        internal static CardInfo self = null;
+
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;

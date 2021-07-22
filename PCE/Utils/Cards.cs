@@ -19,6 +19,25 @@ namespace PCE.Utils
         // singleton design, so that the RNG isn't reset each call
         public static readonly Cards instance = new Cards();
         private static readonly System.Random rng = new System.Random();
+        private List<CardInfo> hiddenCards = new List<CardInfo>() { };
+
+        private List<CardInfo> ACTIVEANDHIDDENCARDS
+        {
+            get 
+            {
+                return this.activeCards.ToList().Concat(this.hiddenCards).ToList();
+            }
+            set { }
+        }
+        private CardInfo[] activeCards
+        {
+            get
+            {
+                return global::CardChoice.instance.cards;
+            }
+            set { }
+        }
+
         private Cards()
         {
             Cards instance = this;
@@ -30,7 +49,6 @@ namespace PCE.Utils
             else if (PhotonNetwork.OfflineMode)
             {
                 // assign card locally
-                CardInfo[] cards = global::CardChoice.instance.cards;
                 ApplyCardStats cardStats = card.gameObject.GetComponentInChildren<ApplyCardStats>();
 
                 // call Start to initialize card stat components for base-game cards
@@ -476,7 +494,7 @@ namespace PCE.Utils
 
             for (int i = 0; i < actorIDs.Length; i++)
             {
-                CardInfo[] cards = global::CardChoice.instance.cards;
+                CardInfo[] cards = Cards.instance.ACTIVEANDHIDDENCARDS.ToArray();
                 ApplyCardStats cardStats = cards[cardID].gameObject.GetComponentInChildren<ApplyCardStats>();
 
                 // call Start to initialize card stat components for base-game cards
@@ -562,7 +580,7 @@ namespace PCE.Utils
             return !blacklisted;
         }
 
-        public bool CardDoesNotConflictWithCards(CardInfo card, CardInfo[] cards)
+        public bool CardDoesNotConflictWithCardsCategories(CardInfo card, CardInfo[] cards)
         {
             bool conflicts = false;
 
@@ -577,6 +595,22 @@ namespace PCE.Utils
             }
 
             return !conflicts;
+        }
+        public bool CardDoesNotConflictWithCards(CardInfo card, CardInfo[] cards)
+        {
+            bool conflicts = false;
+
+            if (cards.Length == 0) { return !conflicts; }
+
+            foreach (CardInfo otherCard in cards)
+            {
+                if (card.categories != null && otherCard.blacklistedCategories != null && card.categories.Intersect(otherCard.blacklistedCategories).Any())
+                {
+                    conflicts = true;
+                }
+            }
+
+            return !conflicts && (card.allowMultiple || !cards.Where(cardinfo => cardinfo.name == card.name).Any());
         }
 
         public bool PlayerIsAllowedCard(Player player, CardInfo card)
@@ -619,8 +653,8 @@ namespace PCE.Utils
         // get random card without respecting rarity, but always respecting PlayerIsAllowedCard
         public CardInfo NORARITY_GetRandomCardWithCondition(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats, Func<CardInfo, Player, Gun, GunAmmo, CharacterData, HealthHandler, Gravity, Block, CharacterStatModifiers, bool> condition, int maxattempts = 1000)
         {
-            // get array of all cards
-            CardInfo[] cards = global::CardChoice.instance.cards;
+            // get array of all ACTIVE cards
+            CardInfo[] cards = this.activeCards;
 
             // pseudorandom number generator
             int rID = rng.Next(0, cards.Length); // random card index
@@ -675,14 +709,14 @@ namespace PCE.Utils
         }
         public int GetCardID(CardInfo card)
         {
-            return Array.IndexOf(global::CardChoice.instance.cards, card);
+            return Array.IndexOf(this.ACTIVEANDHIDDENCARDS.ToArray(), card);
         }
         public CardInfo GetCardWithID(int cardID)
         {
-            return global::CardChoice.instance.cards[cardID];
+            return this.ACTIVEANDHIDDENCARDS[cardID];
         }
 
-        private static void SilentAddToCardBar(int teamID, CardInfo card, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
+        internal static void SilentAddToCardBar(int teamID, CardInfo card, string twoLetterCode = "", float forceDisplay = 0f, float forceDisplayDelay = 0f)
         {
             CardBar[] cardBars = (CardBar[])Traverse.Create(CardBarHandler.instance).Field("cardBars").GetValue();
 
@@ -706,18 +740,11 @@ namespace PCE.Utils
             gameObject.GetComponentInChildren<TextMeshProUGUI>().text = text;
             Traverse.Create(gameObject.GetComponent<CardBarButton>()).Field("card").SetValue(card);
             gameObject.gameObject.SetActive(true);
-            /*
-            if (forceDisplay > 0f)
-            {
-                cardBars[teamID].ExecuteAfterSeconds(forceDisplayDelay+0.1f, () =>
-                {
-                    gameObject.GetComponent<CardBarButton>().OnPointerEnter(null);
-                });
-                cardBars[teamID].ExecuteAfterSeconds(forceDisplayDelay+forceDisplay+0.1f, () =>
-                {
-                    gameObject.GetComponent<CardBarButton>().OnPointerExit(null);
-                });
-            }*/
+        }
+
+        internal void AddHiddenCard(CardInfo card)
+        {
+            this.hiddenCards.Add(card);
         }
 
     }

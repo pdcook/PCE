@@ -18,12 +18,12 @@ namespace PCE.Cards
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") };
+            //cardInfo.allowMultiple = false;
+            //cardInfo.categories = new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            player.gameObject.GetOrAddComponent<Shuffle>();
+            characterStats.GetAdditionalData().shuffles += 1;
         }
         public override void OnRemoveCard()
         {
@@ -59,37 +59,6 @@ namespace PCE.Cards
         public override string GetModName()
         {
             return "PCE";
-        }
-    }
-
-    public class Shuffle : MonoBehaviour
-    {
-        public static Shuffle instance;
-        void Awake()
-        {
-            Shuffle.instance = this;
-        }
-        public IEnumerator WaitForSyncUp()
-        {
-            if (PhotonNetwork.OfflineMode)
-            {
-                yield break;
-            }
-
-            yield return this.SyncMethod(nameof(Shuffle.RPC_RequestSync), null, PhotonNetwork.LocalPlayer.ActorNumber);
-        }
-        [UnboundRPC]
-        public static void RPC_RequestSync(int requestingPlayer)
-        {
-            NetworkingManager.RPC(typeof(Shuffle), nameof(Shuffle.RPC_SyncResponse), requestingPlayer, PhotonNetwork.LocalPlayer.ActorNumber);
-        }
-        [UnboundRPC]
-        public static void RPC_SyncResponse(int requestingPlayer, int readyPlayer)
-        {
-            if (PhotonNetwork.LocalPlayer.ActorNumber == requestingPlayer)
-            {
-                Shuffle.instance.RemovePendingRequest(readyPlayer, nameof(Shuffle.RPC_RequestSync));
-            }
         }
     }
 }

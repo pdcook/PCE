@@ -25,6 +25,7 @@ namespace PCE.Extensions
         public WasHitEffect[] WasHitEffects;
         public HitSurfaceEffect[] HitSurfaceEffects;
         public bool mulligan;
+        public int shuffles;
 
         public CharacterStatModifiersAdditionalData()
         {
@@ -37,6 +38,7 @@ namespace PCE.Extensions
             WasHitEffects = new WasHitEffect[] { };
             HitSurfaceEffects = new HitSurfaceEffect[] { };
             mulligan = false;
+            shuffles = 0;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -88,6 +90,7 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().WasHitEffects = new WasHitEffect[] { };
             __instance.GetAdditionalData().HitSurfaceEffects = new HitSurfaceEffect[] { };
             __instance.GetAdditionalData().mulligan = false;
+            __instance.GetAdditionalData().shuffles = 0;
 
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;

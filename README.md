@@ -22,6 +22,18 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.2.1
+-------------
+
+- "Emergency" Hotfix
+    - Fixed some gamebreaking bugs
+        - All secret cards were prevented from spawning online
+        - Shuffle did not work consistently
+        - Laser did not work online (has once again been temporarily removed while its being fixed)
+        - Gamble and Risky Gamble could give players unallowed cards online
+    - Players can now pick multiple shuffle cards without issue
+    - Risky Gamble can now give players shuffle cards
+
 #### v0.2.2.0
 -------------
 

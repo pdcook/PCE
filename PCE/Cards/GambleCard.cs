@@ -29,13 +29,11 @@ namespace PCE.Cards
 
             CardInfo randomCard1 = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
 
-            //Utils.Cards.instance.AddCardToPlayer(player, randomCard1, false, "", 1f, 0f);
             Utils.Cards.instance.AddCardToPlayer(player, randomCard1);
             Utils.CardBarUtils.instance.ShowAtEndOfPhase(player, randomCard1);
 
-            CardInfo randomCard2 = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
+            CardInfo randomCard2 = Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, (card, p, g, ga, d, h, gr, b, s) => this.condition(card, p, g, ga, d, h, gr, b, s) && Utils.Cards.instance.CardDoesNotConflictWithCards(card, new CardInfo[] { randomCard1 }));
 
-            //Utils.Cards.instance.AddCardToPlayer(player, randomCard2, false, "", 1f, 1f);
             Utils.Cards.instance.AddCardToPlayer(player, randomCard2);
             Utils.CardBarUtils.instance.ShowAtEndOfPhase(player, randomCard2);
 

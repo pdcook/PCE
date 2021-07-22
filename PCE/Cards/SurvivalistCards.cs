@@ -258,6 +258,7 @@ namespace PCE.Cards
     }
     public class SurvivalistVCard : CustomCard
     {
+        internal static CardInfo self = null;
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {

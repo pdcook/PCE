@@ -11,7 +11,10 @@ using PCE.MonoBehaviours;
 using System.Reflection;
 using HarmonyLib;
 using System.Linq;
+using UnboundLib.Networking;
 using CardChoiceSpawnUniqueCardPatch.CustomCategories;
+using Photon.Pun;
+using PCE.Utils;
 
 
 namespace PCE.Cards
@@ -254,6 +257,7 @@ namespace PCE.Cards
     }
     public class WildcardVCard : CustomCard
     {
+        internal static CardInfo self = null;
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {

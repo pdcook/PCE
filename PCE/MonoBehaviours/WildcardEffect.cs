@@ -31,7 +31,6 @@ namespace PCE.MonoBehaviours
         private float timeToWait = 0f;
         private bool wait = true;
         private bool active = false;
-        private bool Vexists = false;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
@@ -39,11 +38,11 @@ namespace PCE.MonoBehaviours
 
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
+            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V])
             {
-                // build and add wildcard V card
-                CustomCard.BuildCard<WildcardVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
-                this.Vexists = true;
+                Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
+                Unbound.Instance.StartCoroutine(Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
+                Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
 
             if (this.wait == this.active)
@@ -148,11 +147,11 @@ namespace PCE.MonoBehaviours
             // update which wildcard cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.Vexists)
+            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V])
             {
-                // build and hide wildcard V card
-                CustomCard.BuildCard<WildcardVCard>(cardInfo => Utils.Cards.instance.AddCardToPlayer(base.player, cardInfo));
-                this.Vexists = true;
+                Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
+                Unbound.Instance.StartCoroutine(Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
+                Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
 
             foreach (WildcardType wildcardType in Enum.GetValues(typeof(WildcardType)))
@@ -247,5 +246,32 @@ namespace PCE.MonoBehaviours
             this.multiplier = mult;
         }
 
+    }
+    public class WildcardColorEffect : MonoBehaviour
+    {
+        private Player player;
+        internal List<int> indeces = new List<int>() { };
+        private Color color = Color.magenta;
+        void Start()
+        {
+            Color.RGBToHSV(this.color, out float h, out float s, out float v);
+
+            this.player = this.gameObject.GetComponent<Player>();
+            GameObject[] cardSquareObjs = Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
+            List<UnityEngine.UI.ProceduralImage.ProceduralImage> cardSquares = new List<UnityEngine.UI.ProceduralImage.ProceduralImage>() { };
+            foreach (GameObject obj in cardSquareObjs)
+            {
+                cardSquares.Add(obj.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>());
+            }
+
+            foreach (UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare in cardSquares)
+            {
+                Color.RGBToHSV(cardSquare.color, out float h_, out float s_, out float v_);
+                Color newColor = Color.HSVToRGB(h, s_, v_);
+                newColor.a = cardSquare.color.a;
+
+                cardSquare.color = newColor;
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace PCE.Utils
         // singleton design
         public static readonly CardBarUtils instance = new CardBarUtils();
 
-        private static readonly float displayDuration = 1f;
+        private static readonly float displayDuration = 1.5f;
         private static readonly Vector3 localShift = new Vector3(-50f, 0f, 0f);
         private static readonly float barlocalScaleMult = 1.1f;
         private static readonly float cardLocalScaleMult = 1f;
@@ -88,7 +88,7 @@ namespace PCE.Utils
                 return;
             }
             this.PlayersCardBar(teamID).OnHover(Cards.instance.GetCardWithID(cardID), Vector3.zero);
-            ((GameObject)Traverse.Create(this.PlayersCardBar(teamID)).Field("currentCard").GetValue()).GetComponentInChildren<SetScaleToZero>().transform.localScale = Vector3.one * Utils.CardBarUtils.cardLocalScaleMult;
+            ((GameObject)Traverse.Create(this.PlayersCardBar(teamID)).Field("currentCard").GetValue()).gameObject.transform.localScale = Vector3.one * Utils.CardBarUtils.cardLocalScaleMult;
         }
 
         public void HideCard(Player player)
@@ -224,7 +224,15 @@ namespace PCE.Utils
         {
             foreach (Player player in PlayerManager.instance.players)
             {
-                Color orig = this.GetPlayersBarColor(player);
+                Color orig = Color.clear;
+                try
+                {
+                    orig = this.GetPlayersBarColor(player);
+                }
+                catch
+                {
+                    continue;
+                }
 
                 if (this.cardsToShow[player].Count > 0)
                 {
