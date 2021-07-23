@@ -93,6 +93,10 @@ namespace PCE.Extensions
             foreach (HitEffect hitEffect in hitEffects) { if (hitEffect != null) { hitEffect.Destroy(); } }
             WasHitEffect[] wasHitEffects = gameObject.GetComponents<WasHitEffect>();
             foreach (WasHitEffect wasHitEffect in wasHitEffects) { if (wasHitEffect != null) { wasHitEffect.Destroy(); } }
+
+            HitSurfaceEffect[] hitSurfaceEffects = gameObject.GetComponents<HitSurfaceEffect>();
+            foreach (HitSurfaceEffect hitSurfaceEffect in hitSurfaceEffects) { if (hitSurfaceEffect != null) { hitSurfaceEffect.Destroy(); } }
+
         }
     }
 }

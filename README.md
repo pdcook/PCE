@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.2.2
+-------------
+
+- Readded laser which should work online again
+
 #### v0.2.2.1
 -------------
 

@@ -294,8 +294,10 @@ namespace PCE.Cards
             newGun.gravity = 0f;
 
             // get the bullet trail material from the targetbounce card
-            CardInfo[] cards = global::CardChoice.instance.cards;
-            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+            List<CardInfo> activecards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> inactivecards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
+            CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
             ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
             Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
@@ -474,8 +476,10 @@ namespace PCE.Cards
 
             this.sync = true;
 
-            CardInfo[] cards = global::CardChoice.instance.cards;
-            CardInfo targetBounceCard = (new List<CardInfo>(cards)).Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+            List<CardInfo> activecards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> inactivecards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
+            CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
             ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
             Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;

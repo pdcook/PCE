@@ -47,7 +47,7 @@ namespace PCE
 
             // build all cards
 
-            //CustomCard.BuildCard<LaserCard>();
+            CustomCard.BuildCard<LaserCard>();
             CustomCard.BuildCard<GhostBulletsCard>();
             CustomCard.BuildCard<TractorBeamCard>();
             CustomCard.BuildCard<MoonShoesCard>();
