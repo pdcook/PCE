@@ -17,7 +17,14 @@ namespace PCE.RoundsEffects
             
             if (selfDamage || (damagedPlayer != null && damagedPlayer.teamID == this.gameObject.GetComponent<Player>().teamID))
             {
-                damagedPlayer.data.healthHandler.Heal(damage.magnitude * (1f - this.multiplier));
+                if (damagedPlayer.data.health - damage.magnitude <= 0f)
+                {
+                    damagedPlayer.data.healthHandler.Heal(damage.magnitude * (1f - this.multiplier));
+                }
+                else
+                {
+                    Unbound.Instance.ExecuteAfterFrames(2, () => damagedPlayer.data.healthHandler.Heal(damage.magnitude * (1f - this.multiplier)));
+                }
             }
         }
 

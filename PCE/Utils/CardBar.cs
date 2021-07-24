@@ -79,6 +79,17 @@ namespace PCE.Utils
         }
         public void ShowCard(int teamID, int cardID)
         {
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(CardBarUtils), nameof(RPCA_ShowCard), new object[] { teamID, Cards.instance.GetCardWithID(cardID).name });
+            }
+        }
+
+        [UnboundRPC]
+        private static void RPCA_ShowCard(int teamID, string cardName)
+        {
+            int cardID = Cards.instance.GetCardID(cardName);
+
             try
             {
                 if (Cards.instance.GetCardWithID(cardID) == null) { return; }
@@ -87,8 +98,9 @@ namespace PCE.Utils
             {
                 return;
             }
-            this.PlayersCardBar(teamID).OnHover(Cards.instance.GetCardWithID(cardID), Vector3.zero);
-            ((GameObject)Traverse.Create(this.PlayersCardBar(teamID)).Field("currentCard").GetValue()).gameObject.transform.localScale = Vector3.one * Utils.CardBarUtils.cardLocalScaleMult;
+            CardBarUtils.instance.PlayersCardBar(teamID).OnHover(Cards.instance.GetCardWithID(cardID), Vector3.zero);
+            ((GameObject)Traverse.Create(CardBarUtils.instance.PlayersCardBar(teamID)).Field("currentCard").GetValue()).gameObject.transform.localScale = Vector3.one * Utils.CardBarUtils.cardLocalScaleMult;
+
         }
 
         public void HideCard(Player player)
@@ -97,7 +109,15 @@ namespace PCE.Utils
         }
         public void HideCard(int teamID)
         {
-            this.PlayersCardBar(teamID).StopHover();
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(CardBarUtils), nameof(RPCA_HideCard), new object[] { teamID });
+            }
+        }
+        [UnboundRPC]
+        private static void RPCA_HideCard(int teamID)
+        {
+            CardBarUtils.instance.PlayersCardBar(teamID).StopHover();
         }
         public GameObject GetCardBarSquare(int teamID, int idx)
         {

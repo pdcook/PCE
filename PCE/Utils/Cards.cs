@@ -707,6 +707,10 @@ namespace PCE.Utils
             }
 
         }
+        public int GetCardID(string cardName)
+        {
+            return this.ACTIVEANDHIDDENCARDS.Where(card => card.name == cardName).Select(card => this.GetCardID(card)).FirstOrDefault();
+        }
         public int GetCardID(CardInfo card)
         {
             return Array.IndexOf(this.ACTIVEANDHIDDENCARDS.ToArray(), card);
