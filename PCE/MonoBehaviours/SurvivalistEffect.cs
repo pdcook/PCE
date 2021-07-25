@@ -47,8 +47,8 @@ namespace PCE.MonoBehaviours
 
             if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V])
             {
-                Utils.Cards.instance.AddCardToPlayer(player, SurvivalistVCard.self);
-                Unbound.Instance.StartCoroutine(Utils.CardBarUtils.instance.ShowImmediate(player.teamID, SurvivalistVCard.self));
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, SurvivalistVCard.self);
+                Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, SurvivalistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<SurvivalistColorEffect>());
             }
 
@@ -122,7 +122,7 @@ namespace PCE.MonoBehaviours
         {
             foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
             {
-                this.survivalists[survivalistType] = (Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
+                this.survivalists[survivalistType] = (ModdingUtils.Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
             }
         }
         private bool HasCompleteSet()
@@ -158,7 +158,7 @@ namespace PCE.MonoBehaviours
             Color.RGBToHSV(this.color, out float h, out float s, out float v);
 
             this.player = this.gameObject.GetComponent<Player>();
-            GameObject[] cardSquareObjs = Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
+            GameObject[] cardSquareObjs = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
             List<UnityEngine.UI.ProceduralImage.ProceduralImage> cardSquares = new List<UnityEngine.UI.ProceduralImage.ProceduralImage>() { };
             foreach (GameObject obj in cardSquareObjs)
             {

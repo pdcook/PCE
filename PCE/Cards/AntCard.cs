@@ -21,7 +21,7 @@ namespace PCE.Cards
             gun.bulletDamageMultiplier *= 2f;
             gunAmmo.maxAmmo -= 2;
 
-            if (Utils.Cards.instance.CountPlayerCardsWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, (card, p, g, ga, d, h, gr, b, c) => card.name == this.GetTitle()) == 0)
+            if (ModdingUtils.Utils.Cards.instance.CountPlayerCardsWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, (card, p, g, ga, d, h, gr, b, c) => card.name == this.GetTitle()) == 0)
             {
                 // only apply movementspeed buff and jump debuff if the player doesn't have any ant cards yet
                 characterStats.movementSpeed *= 1.25f;

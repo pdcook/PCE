@@ -15,6 +15,7 @@ using System.Linq;
 using System.Collections.Generic;
 using CardChoiceSpawnUniqueCardPatch;
 using PCE.Utils;
+using ModdingUtils.Utils;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -26,7 +27,8 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)] // fixes allowMultiple and blacklistedCategories
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
-    [BepInPlugin(ModId, ModName, "0.2.2.0")]
+    [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
+    [BepInPlugin(ModId, ModName, "0.2.2.1")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -84,19 +86,19 @@ namespace PCE
             CustomCard.BuildCard<SurvivalistIICard>();
             CustomCard.BuildCard<SurvivalistIIICard>();
             CustomCard.BuildCard<SurvivalistIVCard>();
-            CustomCard.BuildCard<SurvivalistVCard>(card => { SurvivalistVCard.self = card; Utils.Cards.instance.AddHiddenCard(SurvivalistVCard.self); });
+            CustomCard.BuildCard<SurvivalistVCard>(card => { SurvivalistVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(SurvivalistVCard.self); });
 
             CustomCard.BuildCard<PacifistICard>();
             CustomCard.BuildCard<PacifistIICard>();
             CustomCard.BuildCard<PacifistIIICard>();
             CustomCard.BuildCard<PacifistIVCard>();
-            CustomCard.BuildCard<PacifistVCard>(card => { PacifistVCard.self = card; Utils.Cards.instance.AddHiddenCard(PacifistVCard.self); });
+            CustomCard.BuildCard<PacifistVCard>(card => { PacifistVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(PacifistVCard.self); });
 
             CustomCard.BuildCard<WildcardICard>();
             CustomCard.BuildCard<WildcardIICard>();
             CustomCard.BuildCard<WildcardIIICard>();
             CustomCard.BuildCard<WildcardIVCard>();
-            CustomCard.BuildCard<WildcardVCard>(card => { WildcardVCard.self = card; Utils.Cards.instance.AddHiddenCard(WildcardVCard.self); });
+            CustomCard.BuildCard<WildcardVCard>(card => { WildcardVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(WildcardVCard.self); });
 
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
@@ -107,7 +109,7 @@ namespace PCE
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
 
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => this.ExtraPicks());
-            GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => Utils.CardBarUtils.instance.EndPickPhaseShow());
+            //GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => Utils.CardBarUtils.instance.EndPickPhaseShow());
 
         }
 
@@ -179,6 +181,7 @@ namespace PCE
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickStart);
                     CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
                     yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
+                    yield return new WaitForSecondsRealtime(0.1f);
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
                     yield return new WaitForSecondsRealtime(0.1f);
                 }

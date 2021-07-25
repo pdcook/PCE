@@ -40,8 +40,8 @@ namespace PCE.MonoBehaviours
 
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V])
             {
-                Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
-                Unbound.Instance.StartCoroutine(Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
+                Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
 
@@ -149,8 +149,8 @@ namespace PCE.MonoBehaviours
 
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V])
             {
-                Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
-                Unbound.Instance.StartCoroutine(Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
+                Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
 
@@ -209,7 +209,7 @@ namespace PCE.MonoBehaviours
         {
             foreach (WildcardType wildcardType in Enum.GetValues(typeof(WildcardType)))
             {
-                this.wildcards[wildcardType] = (Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[wildcardType]) > 0);
+                this.wildcards[wildcardType] = (ModdingUtils.Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[wildcardType]) > 0);
             }
         }
 
@@ -257,7 +257,7 @@ namespace PCE.MonoBehaviours
             Color.RGBToHSV(this.color, out float h, out float s, out float v);
 
             this.player = this.gameObject.GetComponent<Player>();
-            GameObject[] cardSquareObjs = Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
+            GameObject[] cardSquareObjs = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
             List<UnityEngine.UI.ProceduralImage.ProceduralImage> cardSquares = new List<UnityEngine.UI.ProceduralImage.ProceduralImage>() { };
             foreach (GameObject obj in cardSquareObjs)
             {
