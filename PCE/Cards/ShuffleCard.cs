@@ -11,6 +11,7 @@ using System.Linq;
 using PCE.Extensions;
 using System.Collections;
 using UnboundLib.Networking;
+using ModdingUtils.Extensions;
 
 namespace PCE.Cards
 {
@@ -18,8 +19,7 @@ namespace PCE.Cards
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            //cardInfo.allowMultiple = false;
-            //cardInfo.categories = new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") };
+            ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).canBeReassigned = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
