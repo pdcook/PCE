@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
+using ModdingUtils.Extensions;
 
 namespace PCE.Extensions
 {
-    // ADD FIELDS TO BLOCK
+    // ADD FIELDS TO CARDINFO
     [Serializable]
     public class CardInfoAdditionalData
     {
-        public bool canBeReassigned;
         public bool isRandom;
 
         public CardInfoAdditionalData()
         {
-            canBeReassigned = true;
             isRandom = false;
         }
     }
@@ -24,16 +23,16 @@ namespace PCE.Extensions
         public static readonly ConditionalWeakTable<CardInfo, CardInfoAdditionalData> data =
             new ConditionalWeakTable<CardInfo, CardInfoAdditionalData>();
 
-        public static CardInfoAdditionalData GetAdditionalData(this CardInfo block)
+        public static CardInfoAdditionalData GetAdditionalData(this CardInfo cardInfo)
         {
-            return data.GetOrCreateValue(block);
+            return data.GetOrCreateValue(cardInfo);
         }
 
-        public static void AddData(this CardInfo block, CardInfoAdditionalData value)
+        public static void AddData(this CardInfo cardInfo, CardInfoAdditionalData value)
         {
             try
             {
-                data.Add(block, value);
+                data.Add(cardInfo, value);
             }
             catch (Exception) { }
         }

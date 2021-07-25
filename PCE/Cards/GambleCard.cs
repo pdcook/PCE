@@ -8,7 +8,7 @@ using System.Reflection;
 using HarmonyLib;
 using Photon.Pun;
 using System.Linq;
-using PCE.Extensions;
+using ModdingUtils.Extensions;
 using CardChoiceSpawnUniqueCardPatch;
 using PCE.Utils;
 

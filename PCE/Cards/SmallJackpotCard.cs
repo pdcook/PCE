@@ -8,7 +8,7 @@ using Photon.Pun;
 using HarmonyLib;
 using System.Reflection;
 using System.Linq;
-using PCE.Extensions;
+using ModdingUtils.Extensions;
 
 namespace PCE.Cards
 {

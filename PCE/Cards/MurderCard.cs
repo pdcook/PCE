@@ -4,6 +4,7 @@ using System.Text;
 using UnboundLib.Cards;
 using UnboundLib;
 using PCE.Extensions;
+using ModdingUtils.Extensions;
 using UnityEngine;
 using System.Reflection;
 
@@ -17,7 +18,7 @@ namespace PCE.Cards
         */
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            cardInfo.GetAdditionalData().canBeReassigned = false;
+            ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).canBeReassigned = false;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
