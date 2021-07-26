@@ -13,6 +13,7 @@ using System.Collections;
 using UnboundLib.Networking;
 using TMPro;
 using ModdingUtils.Utils;
+using UnityEngine.UI;
 
 namespace PCE.Cards
 {
@@ -161,6 +162,8 @@ namespace PCE.Cards
                 return res;
 
             }
+            private float startTime = -1f;
+            private readonly float artDelay = 0.1f;
 
             private TextMeshProUGUI description;
             private TextMeshProUGUI cardName;
@@ -182,7 +185,7 @@ namespace PCE.Cards
                 // find bottom right edge object
                 RectTransform[] allChildrenRecursive2 = this.gameObject.GetComponentsInChildren<RectTransform>();
                 GameObject BottomLeftCorner = allChildrenRecursive2.Where(obj => obj.gameObject.name == "EdgePart (1)").FirstOrDefault().gameObject;
-                GameObject modNameObj = UnityEngine.GameObject.Instantiate(new GameObject("ExtraCardText", typeof(TextMeshProUGUI)), BottomLeftCorner.transform.position, BottomLeftCorner.transform.rotation, BottomLeftCorner.transform);
+                GameObject modNameObj = UnityEngine.GameObject.Instantiate(new GameObject("ExtraCardText", typeof(TextMeshProUGUI), typeof(DestroyOnUnparent)), BottomLeftCorner.transform.position, BottomLeftCorner.transform.rotation, BottomLeftCorner.transform);
                 TextMeshProUGUI modText = modNameObj.gameObject.GetComponent<TextMeshProUGUI>();
                 modText.text = "ZZComic";
                 modText.enableWordWrapping = false;
@@ -213,8 +216,6 @@ namespace PCE.Cards
                     this.ResetTriangleTimer(i);
                     this.GetNewFlashDuration(i);
                 }
-
-
             }
             private void Update()
             {
@@ -222,6 +223,29 @@ namespace PCE.Cards
                 this.cardName.text = "<mspace=0.5em>" + ObfuscateString("RANDOM") + "</mspace>";
 
                 this.UpdateAllTriangles();
+                if (Time.time > this.startTime + this.artDelay)
+                {
+                    this.startTime = Time.time;
+                    this.UpdateArt();
+                }
+            }
+            private void UpdateArt()
+            {
+                Image[] images = this.gameObject.GetComponentsInChildren<Image>();
+                GameObject art = null;
+                foreach (Image image in images)
+                {
+                    if (image.gameObject.name.Contains("Art"))
+                    {
+                        art = image.gameObject;
+                        break;
+                    }
+                }
+                // replace art
+                if (art.gameObject.transform.GetChild(0) != null && art.gameObject.transform.GetChild(0).name != "BlockFront") { UnityEngine.GameObject.Destroy(art.gameObject.transform.GetChild(0).gameObject); }
+                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, art.transform);
+                newart.transform.localScale = new Vector3(1f, 1f, 1f);
+                newart.transform.SetAsFirstSibling();
             }
             private void UpdateAllTriangles()
             {
@@ -266,7 +290,7 @@ namespace PCE.Cards
         private Player player;
         private static System.Random random = new System.Random();
         internal List<int> indeces = new List<int>() { };
-        private readonly float dH = 0.001f;
+        private float dH = 0.001f;
         private float sign = 1f;
 
         internal string twoLetterCode
@@ -293,7 +317,7 @@ namespace PCE.Cards
                 {
                     this.sign *= -1f;
                 }
-                Color newColor = Color.HSVToRGB(UnityEngine.Mathf.Clamp(h + this.sign * this.dH, 0f, 1f), s, v);
+                Color newColor = Color.HSVToRGB(UnityEngine.Mathf.Clamp(h + this.sign * this.dH * (idx+1) / 3f, 0f, 1f), s, v);
                 newColor.a = cardSquare.color.a;
                 cardSquare.color = newColor;
             }
