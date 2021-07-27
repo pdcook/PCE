@@ -162,8 +162,27 @@ namespace PCE.Cards
                 return res;
 
             }
-            private float startTime = -1f;
-            private readonly float artDelay = 0.1f;
+            //chance that this effect will be applied on each call to update
+            private readonly float ROTATE_CARD_CHANCE = 5f;
+
+            //chance that each effect will be applied after each image swap
+            private readonly float GREYSCALE_CARD_CHANCE = 15f;
+            private readonly float ROTATE_IMAGE_CHANCE = 30f;
+
+            private float artStartTime = -1f;
+            private float artEffectStartTime = -1f;
+            private float rotStartTime = -1f;
+            private float scaleStartTime = -1f;
+            private readonly float artDelay = 0.05f;
+            private readonly float artEffectsDelay = 0.025f;
+            private readonly float rotDelay = 0.05f;
+            private readonly float scaleDelay = 0.025f;
+
+            private readonly int maxArts = 5;
+
+            private List<GameObject> art = new List<GameObject>() { };
+            private GameObject artParent;
+            private int artNum = 0;
 
             private TextMeshProUGUI description;
             private TextMeshProUGUI cardName;
@@ -172,8 +191,25 @@ namespace PCE.Cards
             private List<float> triangleFlashDurations = new List<float>() { 1f, 1f, 1f, 1f };
             private readonly List<float> flashMinMax = new List<float>() { 0.2f, 2f };
             private List<bool> flashUp = new List<bool>() { false, false, false, false };
+            private void Awake()
+            {
+                for (int i = 0; i < this.maxArts; i++)
+                {
+                    art.Add(null);
+                }
+            }
             private void Start()
             {
+                Image[] images = this.gameObject.GetComponentsInChildren<Image>();
+                foreach (Image image in images)
+                {
+                    if (image.gameObject.name.Contains("Art"))
+                    {
+                        this.artParent = image.gameObject;
+                        break;
+                    }
+                }
+
                 TextMeshProUGUI[] allChildrenRecursive = this.gameObject.GetComponentsInChildren<TextMeshProUGUI>();
                 GameObject effectText = allChildrenRecursive.Where(obj => obj.gameObject.name == "EffectText").FirstOrDefault().gameObject;
                 GameObject titleText = allChildrenRecursive.Where(obj => obj.gameObject.name == "Text_Name").FirstOrDefault().gameObject;
@@ -223,30 +259,72 @@ namespace PCE.Cards
                 this.cardName.text = "<mspace=0.5em>" + ObfuscateString("RANDOM") + "</mspace>";
 
                 this.UpdateAllTriangles();
-                if (Time.time > this.startTime + this.artDelay)
+                if (Time.time > this.artStartTime + this.artDelay)
                 {
-                    this.startTime = Time.time;
+                    this.artStartTime = Time.time;
                     this.UpdateArt();
+                }
+                if (Time.time > this.artEffectStartTime + this.artEffectsDelay)
+                {
+                    this.artEffectStartTime = Time.time;
+                    this.UpdateArtEffects();
+                }
+                if (Time.time > this.rotStartTime + this.rotDelay)
+                {
+                    this.rotStartTime = Time.time;
+                    this.UpdateCardRotation();
+                }
+                if (Time.time > this.scaleStartTime + this.scaleDelay)
+                {
+                    this.scaleStartTime = Time.time;
+                    this.UpdateScaling();
                 }
             }
             private void UpdateArt()
             {
-                Image[] images = this.gameObject.GetComponentsInChildren<Image>();
-                GameObject art = null;
-                foreach (Image image in images)
-                {
-                    if (image.gameObject.name.Contains("Art"))
-                    {
-                        art = image.gameObject;
-                        break;
-                    }
-                }
+
                 // replace art
-                if (art.gameObject.transform.GetChild(0) != null && art.gameObject.transform.GetChild(0).name != "BlockFront") { UnityEngine.GameObject.Destroy(art.gameObject.transform.GetChild(0).gameObject); }
-                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, art.transform);
+                if (this.artParent.gameObject.transform.GetChild(artNum) != null && this.artParent.gameObject.transform.GetChild(artNum).name != "BlockFront") { UnityEngine.GameObject.Destroy(this.artParent.gameObject.transform.GetChild(artNum).gameObject); }
+                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, this.artParent.transform);
                 newart.transform.localScale = new Vector3(1f, 1f, 1f);
                 newart.transform.SetAsFirstSibling();
+                this.art[artNum] = newart;
+                this.artNum++;
+
+                if (this.artNum >= this.maxArts)
+                {
+                    this.artNum = 0;
+                }
+
+                float time = Time.time;
             }
+            private void UpdateArtEffects()
+            {
+                int artToChange1 = random.Next(0, this.art.Count);
+                int artToChange2 = random.Next(0, this.art.Count);
+
+                if (UnityEngine.Random.Range(0f, 100f) < GREYSCALE_CARD_CHANCE) greyscaleImage(art[artToChange1]);
+                if (UnityEngine.Random.Range(0f, 100f) < ROTATE_IMAGE_CHANCE) rotateImage(art[artToChange2]);
+            }
+
+            private void UpdateCardRotation()
+            {
+                resetRotation(this.gameObject);
+                if (UnityEngine.Random.Range(0f, 100f) < ROTATE_CARD_CHANCE)
+                {
+                    rotateCard(this.gameObject);
+                }
+            }
+
+            private void UpdateScaling()
+            {
+                int artToChange = random.Next(0, this.art.Count);
+
+                if (art[artToChange] == null) { return; }
+
+                art[artToChange].transform.localScale = new Vector3(UnityEngine.Random.Range(0.25f, 2f), UnityEngine.Random.Range(0.25f, 2f), 1f);
+            }
+
             private void UpdateAllTriangles()
             {
                 float time = Time.time;
@@ -281,6 +359,43 @@ namespace PCE.Cards
             private void ResetTriangleTimer(int idx)
             {
                 this.triangleTimers[idx] = Time.time;
+            }
+
+            private void greyscaleImage(GameObject cardArt)
+            {
+                if (cardArt == null)
+                {
+                    return;
+                }
+                Image[] imageComponents = cardArt.GetComponentsInChildren<Image>();
+                foreach (Image image in imageComponents)
+                {
+                    Color currentColor = image.color;
+                    float grey = (currentColor.r + currentColor.g + currentColor.b) / 3f;
+                    Color greyColor = new Color(grey, grey, grey, currentColor.a);
+                    image.color = greyColor;
+                }
+            }
+
+            private void rotateImage(GameObject cardArt)
+            {
+                if (cardArt == null)
+                {
+                    return;
+                }
+                cardArt.transform.Rotate(0f, 0f, UnityEngine.Random.Range(-180f, 180f));
+            }
+            private float currentCardRotation;
+            private void rotateCard(GameObject cardArt)
+            {
+                currentCardRotation = UnityEngine.Random.Range(-180f, 180f);
+                this.gameObject.transform.Rotate(0f, 0f, currentCardRotation);
+            }
+
+            private void resetRotation(GameObject cardArt)
+            {
+                this.gameObject.transform.Rotate(0f, 0f, -currentCardRotation);
+                currentCardRotation = 0f;
             }
         }
     }
