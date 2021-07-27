@@ -293,6 +293,29 @@ namespace PCE.Cards
         private float dH = 0.001f;
         private float sign = 1f;
 
+        internal void UpdateIndecesOnRemove(CardInfo card, int idx)
+        {
+            List<int> newIndeces = new List<int>() { };
+            foreach (int index in indeces)
+            {
+                if (index > idx)
+                {
+                    newIndeces.Add(index - 1);
+                }
+                else if (index == idx)
+                {
+                    // remove from list
+                }    
+                else
+                {
+                    newIndeces.Add(index);
+                }
+            }
+
+            indeces = newIndeces;
+
+        }
+
         internal string twoLetterCode
         {
             get
@@ -306,12 +329,24 @@ namespace PCE.Cards
         void Start()
         {
             this.player = this.gameObject.GetComponent<Player>();
+
+
+            ModdingUtils.Utils.Cards.instance.AddOnRemoveCallback(this.UpdateIndecesOnRemove);
+
         }
         void Update()
         {
+            UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare;
             foreach (int idx in indeces)
             {
-                UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquare(player, idx).transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>();
+                try
+                {
+                    cardSquare = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquare(player, idx).transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>();
+                }
+                catch
+                {
+                    return;
+                }
                 Color.RGBToHSV(cardSquare.color, out float h, out float s, out float v);
                 if (h + this.sign * this.dH > 1f || h + this.sign * this.dH < 0f)
                 {
@@ -322,8 +357,5 @@ namespace PCE.Cards
                 cardSquare.color = newColor;
             }
         }
-
-
     }
-
 }
