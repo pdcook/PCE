@@ -1,6 +1,6 @@
 {
     "name": "PCE",
-    "version_number": "2.2.2",
+    "version_number": "2.2.3",
     "website_url": "https://github.com/pdcook/PCE",
     "description": "Adds a number of new cards to the game",
     "dependencies": [
@@ -10,7 +10,7 @@
 	"Pykess-PlayerJumpPatch-0.0.2",
     "Pykess-LegRaycastersPatch-0.0.0",
     "Pykess-GunUnblockablePatch-0.0.0",
-        "willis81808-UnboundLib-2.3.0",
+        "willis81808-UnboundLib-2.4.0",
 	"willis81808-MMHook-1.0.0",
 	"BepInEx-BepInExPack_ROUNDS-5.4.1100"
     ]

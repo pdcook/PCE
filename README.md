@@ -22,6 +22,15 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.2.3
+-------------
+
+- Shuffle now triggers immediately after a player picks it
+- Shuffle should work with PickTwoCards mod now
+- Offloaded a lot of utilities to ModdingUtils mod
+- Updated dependency for Unbound
+- Fixed desync of the cards that are shown automatically from Jackpot/Gamble cards
+
 #### v0.2.2.2
 -------------
 
