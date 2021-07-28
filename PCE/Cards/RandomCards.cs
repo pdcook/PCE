@@ -191,6 +191,10 @@ namespace PCE.Cards
             private List<float> triangleFlashDurations = new List<float>() { 1f, 1f, 1f, 1f };
             private readonly List<float> flashMinMax = new List<float>() { 0.2f, 2f };
             private List<bool> flashUp = new List<bool>() { false, false, false, false };
+
+            private List<CardInfo> activeCards;
+            private List<CardInfo> inactiveCards;
+            private CardInfo[] allCards;
             private void Awake()
             {
                 for (int i = 0; i < this.maxArts; i++)
@@ -285,7 +289,10 @@ namespace PCE.Cards
 
                 // replace art
                 if (this.artParent.gameObject.transform.GetChild(artNum) != null && this.artParent.gameObject.transform.GetChild(artNum).name != "BlockFront") { UnityEngine.GameObject.Destroy(this.artParent.gameObject.transform.GetChild(artNum).gameObject); }
-                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, this.artParent.transform);
+                this.activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+                this.inactiveCards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+                this.allCards = activeCards.Concat(this.inactiveCards).ToArray();
+                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(this.allCards, null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, this.artParent.transform);
                 newart.transform.localScale = new Vector3(1f, 1f, 1f);
                 newart.transform.SetAsFirstSibling();
                 this.art[artNum] = newart;
