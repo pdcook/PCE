@@ -17,6 +17,7 @@ using CardChoiceSpawnUniqueCardPatch;
 using PCE.Utils;
 using ModdingUtils.Utils;
 using ModdingUtils.Extensions;
+using UnboundLib.Networking;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -29,7 +30,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.2.1")]
+    [BepInPlugin(ModId, ModName, "0.2.3.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -200,6 +201,11 @@ namespace PCE
 
         private IEnumerator RandomCard()
         {
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_DisablePlayers), new object[] { });
+            }
+            
             foreach (Player player in PlayerManager.instance.players.ToArray())
             {
                 if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
@@ -238,8 +244,29 @@ namespace PCE
                     yield return ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player, newCards.ToArray());
                 }
             }
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_EnablePlayers), new object[] { });
+            }
             yield break;
         }
+        [UnboundRPC]
+        private static void RPCA_DisablePlayers()
+        {
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = false; }
+            }
+        }
+        [UnboundRPC]
+        private static void RPCA_EnablePlayers()
+        {
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = true; }
+            }
+        }
+
 
         private IEnumerator ClearRandomCards()
         {
