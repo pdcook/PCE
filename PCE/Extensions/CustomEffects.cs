@@ -98,5 +98,10 @@ namespace PCE.Extensions
             foreach (HitSurfaceEffect hitSurfaceEffect in hitSurfaceEffects) { if (hitSurfaceEffect != null) { hitSurfaceEffect.Destroy(); } }
 
         }
+        public static void DestroyAllRandomCardEffects(GameObject gameObject)
+        {
+            RandomCardEffect[] randomCardEffects = gameObject.GetComponents<RandomCardEffect>();
+            foreach (RandomCardEffect randomCardEffect in randomCardEffects) { if (randomCardEffect != null) { UnityEngine.GameObject.Destroy(randomCardEffect); } }
+        }
     }
 }

@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using CardChoiceSpawnUniqueCardPatch;
 using PCE.Utils;
 using ModdingUtils.Utils;
+using ModdingUtils.Extensions;
+using UnboundLib.Networking;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -28,7 +30,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.2.3")]
+    [BepInPlugin(ModId, ModName, "0.2.3.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -101,6 +103,11 @@ namespace PCE
             CustomCard.BuildCard<WildcardVCard>(card => { WildcardVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(WildcardVCard.self); });
 
 
+            CustomCard.BuildCard<RandomCommonCard>(Cards.RandomCard.callback);
+            CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
+            CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
+
+
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetTimers()); // I sure hope this doesn't have unintended side effects...
@@ -109,8 +116,11 @@ namespace PCE
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
 
             GameModeManager.AddHook(GameModeHooks.HookPlayerPickEnd, (gm) => this.ExtraPicks());
-            //GameModeManager.AddHook(GameModeHooks.HookPickEnd, (gm) => Utils.CardBarUtils.instance.EndPickPhaseShow());
 
+            GameModeManager.AddHook(GameModeHooks.HookPointStart, (gm) => this.RandomCard());
+
+            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ClearRandomCards());
+            GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => this.ClearRandomCards());
         }
 
         private IEnumerator CommitMurders()
@@ -188,6 +198,86 @@ namespace PCE
             }
             yield break;
         }
+
+        private IEnumerator RandomCard()
+        {
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_DisablePlayers), new object[] { });
+            }
+            
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
+                {
+                    List<int> indeces = new List<int>(player.GetComponent<RandomCardEffect>().indeces);
+                    List<int> invalidInd = new List<int>() { };
+                    List<string> twoLetterCodes = new List<string>() { };
+                    List<CardInfo> newCards = new List<CardInfo>() { };
+                    foreach (int idx in indeces)
+                    {
+                        string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
+                        CardInfo card = ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+                        if (card == null)
+                        {
+                            // if there is no valid card, then try drawing from the list of all cards (inactive + active) but still make sure it is compatible
+                            CardInfo[] allCards = ((List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).Concat((List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
+                            card = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+
+                            if (card == null)
+                            {
+                                // if there is STILL no valid card, then this index is invalid
+                                invalidInd.Add(idx);
+                                continue;
+                            }
+                        }
+                        twoLetterCodes.Add(twoLetterCode);
+                        newCards.Add(card);
+                    }
+                    indeces = indeces.Except(invalidInd).ToList();
+                    if (indeces.Count == 0)
+                    {
+                        continue;
+                    }
+                    yield return ModdingUtils.Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
+                    yield return new WaitForSecondsRealtime(0.2f);
+                    yield return ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player, newCards.ToArray());
+                }
+            }
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_EnablePlayers), new object[] { });
+            }
+            yield break;
+        }
+        [UnboundRPC]
+        private static void RPCA_DisablePlayers()
+        {
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = false; }
+            }
+        }
+        [UnboundRPC]
+        private static void RPCA_EnablePlayers()
+        {
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = true; }
+            }
+        }
+
+
+        private IEnumerator ClearRandomCards()
+        {
+            foreach (Player player in PlayerManager.instance.players)
+            {
+                CustomEffects.DestroyAllRandomCardEffects(player.gameObject);
+            }
+            yield break;
+        }
+
+
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 
         private const string ModName = "Pykess's Card Expansion (PCE)";

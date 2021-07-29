@@ -1,10 +1,10 @@
 {
     "name": "PCE",
-    "version_number": "2.2.3",
+    "version_number": "2.3.0",
     "website_url": "https://github.com/pdcook/PCE",
     "description": "Adds a number of new cards to the game",
     "dependencies": [
-        "Pykess-ModdingUtils-0.0.0",
+        "Pykess-ModdingUtils-0.0.2",
         "Pykess-TemporaryStatsPatch-0.0.0",
         "Pykess-CardChoiceSpawnUniqueCardPatch-0.1.0",
 	"Pykess-PlayerJumpPatch-0.0.2",
