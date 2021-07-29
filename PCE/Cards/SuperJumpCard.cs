@@ -21,6 +21,8 @@ namespace PCE.Cards
             SuperJumpEffect effect = player.gameObject.GetOrAddComponent<SuperJumpEffect>();
 
             effect.AddToTimeMultiplier(1f);
+            effect.AddToBlocks(2);
+            effect.AddToJumpMultiplier(2f);
 
         }
         public override void OnRemoveCard()
@@ -33,7 +35,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Crouch to charge a super jump";
+            return "Crouch to charge a super jump.\nDon't worry about any pesky height limits.";
         }
 
         protected override GameObject GetCardArt()
@@ -57,6 +59,13 @@ namespace PCE.Cards
                 amount = "+35%",
                 simepleAmount = CardInfoStat.SimpleAmount.Some
                 },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Apex Blocks",
+                amount = "+2",
+                simepleAmount = CardInfoStat.SimpleAmount.Some
+                }
             };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()

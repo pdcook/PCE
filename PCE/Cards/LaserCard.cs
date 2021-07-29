@@ -85,7 +85,6 @@ namespace PCE.Cards
             gun.objectsToSpawn = objectsToSpawn.ToArray();
 
             gun.reloadTime += 0.5f;
-            gun.attackSpeed *= 2f;
         }
         public override void OnRemoveCard()
         {
@@ -119,13 +118,6 @@ namespace PCE.Cards
                 stat = "Reload Time",
                 amount = "+50%",
                 simepleAmount = CardInfoStat.SimpleAmount.aLotOf
-                },
-                new CardInfoStat
-                {
-                    positive = false,
-                    stat = "Attack Speed",
-                    amount = "-50%",
-                    simepleAmount = CardInfoStat.SimpleAmount.lower
                 }
             };
         }
@@ -388,7 +380,7 @@ namespace PCE.Cards
 
         public float duration;
         private readonly float[] minmaxwidth = new float[]{0.1f,0.5f};
-        private readonly float baseDamageMultiplier = 1.5f;
+        private readonly float baseDamageMultiplier = 2.5f;
 
         private LineRenderer trail;
         private readonly int MAX = 100000;

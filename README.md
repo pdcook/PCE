@@ -26,6 +26,8 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 -------------
 
 - **Collab with ZZComic:** Added three new cards, one for each rarity
+- Significantly buffed Laser's damage, removed attack speed debuff
+- Reworked Super Jump - players can now use a super jump to jump past the top of the screen. Players also automatically block at the apex of a super jump.
 
 #### v0.2.2.3
 -------------

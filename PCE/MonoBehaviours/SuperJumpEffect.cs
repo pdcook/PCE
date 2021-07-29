@@ -15,9 +15,10 @@ namespace PCE.MonoBehaviours
         private float multiplier = 1f;
         private float timeMultiplier = 0f;
         private readonly float chargeTime = 2.5f;
-        private readonly float maxMultiplier = 5f;
+        private float maxMultiplier = 3f;
         private readonly float minChargeTime = 0.5f;
         private float startTime = -1f;
+        private int numberOfBlocks = 0;
         public override void OnAwake()
         {
             base.SetLivesToEffect(int.MaxValue);
@@ -49,6 +50,11 @@ namespace PCE.MonoBehaviours
             if (this.active && base.data.isGrounded && !base.data.playerActions.Down.IsPressed && this.HeldTime()>=this.minChargeTime)
             {
                 base.data.jump.Jump(true, this.multiplier);
+                if (this.PercCharged() >= 0.5f)
+                {
+                    this.StartCoroutine(this.BlockAtApex());
+                }
+                this.StartCoroutine(this.DisableTopOutOfBounds());
                 base.data.currentJumps++;
                 this.multiplier = 1f;
                 this.active = false;
@@ -93,10 +99,18 @@ namespace PCE.MonoBehaviours
         {
             this.startTime = Time.time;
         }
+        public void AddToJumpMultiplier(float add)
+        {
+            this.maxMultiplier += add;
+        }
         public void AddToTimeMultiplier(float add)
         {
             this.timeMultiplier += add;
             this.timeMultiplier = UnityEngine.Mathf.Clamp(this.timeMultiplier, 1f, this.chargeTime);
+        }
+        public void AddToBlocks(int add)
+        {
+            this.numberOfBlocks += add;
         }
         private float PercCharged()
         {
@@ -110,6 +124,88 @@ namespace PCE.MonoBehaviours
         {
             return (Time.time - this.startTime);
         }
+        private System.Collections.IEnumerator DisableTopOutOfBounds()
+        {
+            int k = 0;
+            while (base.data.isGrounded && k < 10)
+            {
+                k++;
+                yield return null;
+            }
+            while (!base.data.isGrounded)
+            {
+                if (base.player.data.playerActions.Jump.WasPressed || base.player.data.playerActions.Jump.IsPressed)
+                {
+                    break;
+                }
+
+                Vector3 vector = MainCam.instance.transform.GetComponent<Camera>().WorldToScreenPoint(new Vector3(data.transform.position.x, data.transform.position.y, 0f));
+
+                vector.x /= (float)Screen.width;
+                vector.y /= (float)Screen.height;
+
+                vector = new Vector3(Mathf.Clamp01(vector.x), Mathf.Clamp01(vector.y), 0f);
+
+                if (vector.x <= 0f || vector.x >= 1f || vector.y <= 0f)
+                {
+                    base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
+                }
+                else
+                {
+                    base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
+                }
+
+                yield return null;
+            }
+            base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
+            yield break;
+        }
+
+        private readonly int maxFramesToWait = 200;
+        private System.Collections.IEnumerator BlockAtApex()
+        {
+            bool upOnLastFrame = true;
+
+            int k = 0;
+            while (base.data.isGrounded && k < 10)
+            {
+                k++;
+                yield return null;
+            }
+            int i = 0;
+            int j = 0;
+            while (!base.data.isGrounded && i < this.maxFramesToWait && j < this.numberOfBlocks)
+            {
+
+                if (((Vector2)Traverse.Create(base.data.playerVel).Field("velocity").GetValue()).y > 0f)
+                {
+                    upOnLastFrame = true;
+                }
+                // block at apex
+                else if (j > 0 || (upOnLastFrame && ((Vector2)Traverse.Create(base.data.playerVel).Field("velocity").GetValue()).y <= 0f))
+                {
+                    upOnLastFrame = false;
+                    j++;
+                    // force the player to block (for free)
+                    base.block.CallDoBlock(true, true, BlockTrigger.BlockTriggerType.Default);
+                    yield return new WaitForSecondsRealtime(0.5f/(float)this.numberOfBlocks);
+                }
+                else if (((Vector2)Traverse.Create(base.data.playerVel).Field("velocity").GetValue()).y <= 0f)
+                {
+                    upOnLastFrame = false;
+                }
+                yield return null;
+                i++;
+            }
+
+            yield break;
+
+        }
+    }
+
+    internal class SuperJumpBlockEffect : Block
+    {
+
     }
 
 }
