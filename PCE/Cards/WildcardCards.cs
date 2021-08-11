@@ -48,7 +48,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Wildcard_I");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -107,7 +107,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Wildcard_II");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -166,7 +166,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Wildcard_III");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -225,7 +225,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Wildcard_IV");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -284,7 +284,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Wildcard_V");
         }
 
         protected override CardInfo.Rarity GetRarity()

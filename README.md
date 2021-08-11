@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.3.2
+-------------
+
+- Added art for WildCards
+
 #### v0.2.3.1
 -------------
 
