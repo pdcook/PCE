@@ -45,7 +45,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Pacifist_I");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -105,7 +105,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Pacifist_II");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -165,7 +165,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Pacifist_III");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -225,7 +225,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Pacifist_IV");
         }
 
         protected override CardInfo.Rarity GetRarity()
@@ -286,7 +286,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Pacifist_V");
         }
 
         protected override CardInfo.Rarity GetRarity()

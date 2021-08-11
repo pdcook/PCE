@@ -10,6 +10,8 @@ using Photon.Pun;
 using System.Linq;
 using PCE.Extensions;
 using PCE.Utils;
+using System.Collections.ObjectModel;
+using UnboundLib.Utils;
 
 namespace PCE.MonoBehaviours
 {
@@ -298,8 +300,8 @@ namespace PCE.MonoBehaviours
             effect.gunStatModifier.projectileColor = Color.magenta;
 
             // get the screenEdge (with screenEdgeBounce component) from the TargetBounce card
-            List<CardInfo> activecards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-            List<CardInfo> inactivecards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
+            List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
             List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
 
             CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];

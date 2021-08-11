@@ -53,11 +53,11 @@ namespace PCE.MonoBehaviours
 
             if (!this.pacifists[PacifistType.V])
             {
-                this.timeToMax = this.defaultTimeToMax;
+                this.timeToMax = this.defaultTimeToMax / (float)base.numEnemyPlayers;
             }
             else
             {
-                this.timeToMax = this.defaultTimeToMax / 2f;
+                this.timeToMax = this.defaultTimeToMax / (2f*(float)base.numEnemyPlayers);
             }
 
             foreach (PacifistType pacifistType in Enum.GetValues(typeof(PacifistType)))

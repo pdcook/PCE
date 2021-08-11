@@ -22,5 +22,17 @@ namespace PCE.Extensions
         {
             return (PlayerStatus.PlayerAlive(player) && PlayerStatus.PlayerSimulated(player));
         }
+        public static int GetNumberOfEnemyPlayers(Player player)
+        {
+            int num = 0;
+            foreach (Player other_player in PlayerManager.instance.players)
+            {
+                if (other_player.teamID != player.teamID)
+                {
+                    num++;
+                }
+            }
+            return num;
+        }
     }
 }

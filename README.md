@@ -22,6 +22,21 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.3.1
+-------------
+
+- New Art
+    - All Pacifist Cards
+    - Pac-Bullets
+    - Shuffle
+- Balance changes
+    - Retreat and Last Stand now activate at 50% max HP
+- Bugfixes
+    - Glitched cards no longer freeze players
+- Code stuffs
+    - Updated for compatibility with Unbound v2.5.0
+
+
 #### v0.2.3.0
 -------------
 

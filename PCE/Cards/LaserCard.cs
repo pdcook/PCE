@@ -10,6 +10,8 @@ using System.Reflection;
 using Photon.Pun;
 using Photon;
 using PCE.Utils;
+using System.Collections.ObjectModel;
+using UnboundLib.Utils;
 
 namespace PCE.Cards
 {
@@ -286,8 +288,8 @@ namespace PCE.Cards
             newGun.gravity = 0f;
 
             // get the bullet trail material from the targetbounce card
-            List<CardInfo> activecards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-            List<CardInfo> inactivecards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
+            List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
             List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
             CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
@@ -468,8 +470,8 @@ namespace PCE.Cards
 
             this.sync = true;
 
-            List<CardInfo> activecards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-            List<CardInfo> inactivecards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
+            List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
             List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
             CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
             Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();

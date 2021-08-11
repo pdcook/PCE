@@ -13,11 +13,13 @@ using PCE.MonoBehaviours;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CardChoiceSpawnUniqueCardPatch;
 using PCE.Utils;
 using ModdingUtils.Utils;
 using ModdingUtils.Extensions;
 using UnboundLib.Networking;
+using UnboundLib.Utils;
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -30,7 +32,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.3.0")]
+    [BepInPlugin(ModId, ModName, "0.2.3.1")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -201,10 +203,12 @@ namespace PCE
 
         private IEnumerator RandomCard()
         {
-            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
-            {
-                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_DisablePlayers), new object[] { });
-            }
+            //if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            //{
+            //    NetworkingManager.RPC(typeof(PCE), nameof(RPCA_DisablePlayers), new object[] { });
+            //}
+
+            Dictionary<Player, List<CardInfo>> cardsToShow = new Dictionary<Player, List<CardInfo>>();
             
             foreach (Player player in PlayerManager.instance.players.ToArray())
             {
@@ -221,7 +225,7 @@ namespace PCE
                         if (card == null)
                         {
                             // if there is no valid card, then try drawing from the list of all cards (inactive + active) but still make sure it is compatible
-                            CardInfo[] allCards = ((List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).Concat((List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
+                            CardInfo[] allCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList().Concat((List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
                             card = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
 
                             if (card == null)
@@ -235,19 +239,30 @@ namespace PCE
                         newCards.Add(card);
                     }
                     indeces = indeces.Except(invalidInd).ToList();
+                    cardsToShow[player] = newCards;
                     if (indeces.Count == 0)
                     {
                         continue;
                     }
                     yield return ModdingUtils.Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
-                    yield return new WaitForSecondsRealtime(0.2f);
-                    yield return ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player, newCards.ToArray());
                 }
             }
-            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            yield return new WaitForSecondsRealtime(0.2f);
+            float numCardsToShow = 0f;
+            foreach (Player player in cardsToShow.Keys)
             {
-                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_EnablePlayers), new object[] { });
+                numCardsToShow += cardsToShow[player].Count;
             }
+            numCardsToShow = UnityEngine.Mathf.Clamp(numCardsToShow, 2f, float.MaxValue);
+            foreach (Player player in cardsToShow.Keys)
+            {
+                if (cardsToShow[player].Count == 0) { continue; }
+                yield return ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player, cardsToShow[player].ToArray(), 2f/numCardsToShow);
+            }
+            //if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            //{
+            //    NetworkingManager.RPC(typeof(PCE), nameof(RPCA_EnablePlayers), new object[] { });
+            //}
             yield break;
         }
         [UnboundRPC]

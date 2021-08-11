@@ -114,7 +114,11 @@ namespace PCE.MonoBehaviours
             this.CheckCards();
             if (this.wildcards[WildcardType.V])
             {
-                newWaitDuration /= 2f;
+                newWaitDuration /= (2f* (float)base.numEnemyPlayers);
+            }
+            else
+            {
+                newWaitDuration /= (float)base.numEnemyPlayers;
             }
 
             if (PhotonNetwork.OfflineMode)

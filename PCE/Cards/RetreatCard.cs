@@ -21,7 +21,7 @@ namespace PCE.Cards
             effect.blockModifier.additionalBlocks_add = 1;
             effect.blockModifier.cdMultiplier_mult = 0.5f;
             effect.characterStatModifiersModifier.movementSpeed_mult = 1.5f;
-            effect.SetPercThresholdMax(0.2f);
+            effect.SetPercThresholdMax(0.5f);
             effect.SetColor(Color.blue);
         }
         public override void OnRemoveCard()
@@ -34,7 +34,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Get boosted defense stats when below 20% of your max HP.\nWhen active:";
+            return "Get boosted defense stats when below 50% of your max HP.\nWhen active:";
         }
         protected override GameObject GetCardArt()
         {

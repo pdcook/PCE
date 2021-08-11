@@ -35,6 +35,25 @@ namespace PCE.MonoBehaviours
         private bool modifiersActive = false;
         private bool wasActiveLastFrame = true;
 
+        internal int numEnemyPlayers
+        {
+            get
+            {
+                if (this.player == null) { return -1; }
+                int num = PlayerStatus.GetNumberOfEnemyPlayers(this.player);
+                if (num > 0)
+                {
+                    return num;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            set
+            { }
+        }
+
         public void Awake()
         {
             this.player = gameObject.GetComponent<Player>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using UnboundLib;
 using UnboundLib.Cards;
@@ -14,6 +15,7 @@ using UnboundLib.Networking;
 using TMPro;
 using ModdingUtils.Utils;
 using UnityEngine.UI;
+using UnboundLib.Utils;
 
 namespace PCE.Cards
 {
@@ -99,7 +101,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "...";
+            return "??? ? ????????? ?????? ???? ???? ???????";
         }
 
         protected override CardInfoStat[] GetStats()
@@ -289,8 +291,8 @@ namespace PCE.Cards
 
                 // replace art
                 if (this.artParent.gameObject.transform.GetChild(artNum) != null && this.artParent.gameObject.transform.GetChild(artNum).name != "BlockFront") { UnityEngine.GameObject.Destroy(this.artParent.gameObject.transform.GetChild(artNum).gameObject); }
-                this.activeCards = (List<CardInfo>)typeof(Unbound).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-                this.inactiveCards = (List<CardInfo>)typeof(Unbound).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+                this.activeCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
+                this.inactiveCards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
                 this.allCards = activeCards.Concat(this.inactiveCards).ToArray();
                 GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(this.allCards, null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, this.artParent.transform);
                 newart.transform.localScale = new Vector3(1f, 1f, 1f);

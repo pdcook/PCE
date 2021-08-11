@@ -40,7 +40,7 @@ namespace PCE.Cards
 
         protected override GameObject GetCardArt()
         {
-            return null;
+            return PCE.ArtAssets.LoadAsset<GameObject>("C_Shuffle");
         }
 
         protected override CardInfo.Rarity GetRarity()

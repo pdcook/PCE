@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2356850818
+CRC: 1256364278
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: eb8a503b36a77dcbc28022f23e05af9d
+    Hash: d60d662b801162cd6974d668186e586a
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c7b05412e14aaa6a1d36686ce75cc12a
+    Hash: b32eb4c7ce1fdd682a6286505bc33897
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -18,6 +18,8 @@ ClassTypes:
 - Class: 28
   Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 49
   Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
@@ -53,115 +55,730 @@ ClassTypes:
   Script: {instanceID: 0}
 Assets:
 - Assets/Prefabs/Images/lasertriangleinverted.png
+- Assets/Prefabs/Images/PCE/sprites/Mouth1.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0016_Blink_01.png
+- Assets/Prefabs/Images/PCE/sprites/Smile1.png
+- Assets/Prefabs/PacifistHelmetSwayII.anim
+- Assets/Prefabs/Images/PCE/GlareCard/AnimationNotes.md
 - Assets/Prefabs/Images/LaserScatter.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/white-layer1.png
 - Assets/Prefabs/Images/Circle_Quarter2.png
+- Assets/Prefabs/Images/PCE/sprites/A_Mole1.png
 - Assets/Prefabs/Images/reel3.anim
 - Assets/Prefabs/Images/BigLaserScatter.png
+- Assets/Prefabs/Images/PCE/FlipCard/layer6.png
 - Assets/Prefabs/C_Jackpot.prefab
+- Assets/Prefabs/Images/PCE/sprites/Shield1.png
+- Assets/Prefabs/Images/PCE/sprites/E_2_Sad.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer2.png
+- Assets/Prefabs/AnimationClip/PacBulletsGunArm.anim
 - Assets/Prefabs/Images/bulletpack3.anim
 - Assets/Prefabs/C_Laser.prefab
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer6.png
+- Assets/Prefabs/AnimationClip/PacBulletsGhost.anim
+- Assets/Prefabs/Images/PCE/PacifistCards/layer9.png
+- Assets/Prefabs/Images/PCE/sprites/Bun_02.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_Empower_2.png
+- Assets/Prefabs/Images/PCE/sprites/Hare_Ear1.png
+- Assets/Prefabs/Images/PCE/sprites/E_20_Concern.png
+- Assets/Prefabs/Images/PCE/sprites/Face1.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer12.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer11.png
+- Assets/Prefabs/Images/PCE/sprites/Longmustache_01.png
+- 'Assets/Prefabs/Images/PCE/sprites/Gun1 #98384.png'
+- Assets/Prefabs/Images/PCE/WildcardCards/layer12.png
+- Assets/Prefabs/PacifistHelmetSwayIV.anim
+- Assets/Prefabs/Images/PCE/sprites/face_1.png
 - Assets/Prefabs/Images/bullets.controller
+- Assets/Prefabs/Images/PCE/sprites/A_SmallHeart1.png
+- Assets/Prefabs/Images/PCE/sprites/Death_01.png
+- Assets/Prefabs/Images/PCE/JackpotCards/7.png
+- Assets/Prefabs/Images/PCE/GlareCard/layer1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Arm1 #97917.png'
+- Assets/Prefabs/Numerals.controller
+- Assets/Prefabs/Images/PCE/sprites/Icons_Decay_2.png
+- Assets/Prefabs/Images/PCE/JackpotCards/Originals/slot-machine-casino.png
+- Assets/Prefabs/Images/PCE/sprites/E_28_Circles3.png
 - Assets/Prefabs/Images/bulletpack1.controller
+- Assets/Prefabs/Images/PCE/sprites/Rosette_02.png
+- Assets/Prefabs/AnimationClip/PacBullet.controller
+- Assets/Prefabs/Images/PCE/FlipCard/layer5.png
+- Assets/Prefabs/Images/PCE/sprites/streamline-icon-interface-award-crown@256x256.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_Sad.png
+- Assets/Prefabs/Images/PCE/sprites/Echo_1.png
+- Assets/Prefabs/Images/PCE/LaserCard/white-layer3.png
+- 'Assets/Prefabs/Images/PCE/sprites/Gun1 #98134.png'
+- Assets/Prefabs/AnimationClip/Shuffle.anim
+- Assets/Prefabs/Images/PCE/PacifistCards/PikPng.com_blood-puddle-png_200819.png
+- Assets/Prefabs/Images/PCE/sprites/drop009.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face_1 #98051.png'
+- Assets/Prefabs/Images/PCE/sprites/E_26_Circles.png
+- Assets/Prefabs/Images/PCE/GroundedCard/layer4.png
+- Assets/Prefabs/Images/PCE/sprites/E_3_Happy.png
 - Assets/Prefabs/Images/invertedscatter.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0014_Happy_01.png
+- Assets/Prefabs/Images/PCE/sprites/Punk_01.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_Trickshot_2.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #98186.png'
+- Assets/Prefabs/III.controller
 - Assets/Prefabs/Images/bullet40.anim
+- 'Assets/Prefabs/Images/PCE/sprites/Bg_Pattern2 #98261.png'
+- Assets/Prefabs/Images/PCE/sprites/drop004.png
+- Assets/Prefabs/Images/PCE/sprites/Gun1.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer2.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0007_Wink_02.png
 - Assets/Prefabs/C_Murder.prefab
+- Assets/Prefabs/Images/PCE/FlipCard/layer2.png
+- Assets/Prefabs/Images/PCE/sprites/Bitemarks4.png
+- Assets/Prefabs/Images/PCE/sprites/EMP_Teeth1.png
+- Assets/Prefabs/NumeralsII.anim
+- Assets/Prefabs/Images/PCE/sprites/Grid6.png
+- Assets/Prefabs/Images/PCE/sprites/Biglips_01.png
+- Assets/Prefabs/Images/PCE/sprites/drop011.png
+- Assets/Prefabs/Images/PCE/PacifistCards/PikPng.com_bloody-hand-png_854758.png
+- Assets/Prefabs/AnimationClip/Shuffle.controller
+- Assets/Prefabs/Images/PCE/sprites/drop005.png
+- Assets/Prefabs/Images/PCE/TractorBeamCard/layer15.png
+- Assets/Prefabs/Images/PCE/sprites/Minion_Smile1.png
+- Assets/Prefabs/Images/PCE/JackpotCards/BCKP/strawberry.png
 - Assets/Prefabs/Images/LaserIn.png
+- Assets/Prefabs/Images/PCE/sprites/E_3_Sad2.png
+- Assets/Prefabs/Images/PCE/sprites/Line_Changed1.png
+- Assets/Prefabs/Images/PCE/sprites/King_01.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer8.png
+- Assets/Prefabs/Images/PCE/sprites/Face_spots1.png
+- Assets/Prefabs/Images/PCE/sprites/E_19_WonkWonk.png
+- 'Assets/Prefabs/Images/PCE/sprites/Tears1 #98388.png'
+- Assets/Prefabs/Images/PCE/WildcardCards/joker-hat-894472.png
+- Assets/Prefabs/Images/PCE/sprites/Smile_01.png
+- Assets/Prefabs/Images/PCE/sprites/W_Smile1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Gun_1 #98359.png'
+- Assets/Prefabs/Images/PCE/sprites/Rambo_Hat_01.png
+- Assets/Prefabs/Images/PCE/sprites/Checkmark.png
 - Assets/Prefabs/Images/mouthtop.controller
+- Assets/Prefabs/Images/PCE/sprites/EMP_BG_Blinking1.png
 - Assets/Prefabs/Images/bulletpack2.anim
+- Assets/Prefabs/Images/PCE/sprites/HearthScream_01.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer7.png
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet_1 #98397.png'
+- Assets/Prefabs/Images/PCE/sprites/E_16_Lashes.png
+- Assets/Prefabs/Images/PCE/sprites/Cheeks1.png
 - Assets/Prefabs/Images/bullet10blur.controller
+- Assets/Prefabs/Images/PCE/sprites/A_Angry1.png
+- Assets/Prefabs/Images/PCE/sprites/A_Shy_3.png
+- Assets/Prefabs/Images/PCE/sprites/Longmouth_01.png
+- Assets/Prefabs/Images/PCE/sprites/Triangle2.png
+- Assets/Prefabs/Images/PCE/sprites/Bitemarks2.png
+- Assets/Prefabs/Images/PCE/sprites/Peruk_02.png
+- Assets/Prefabs/Images/PCE/sprites/TeethSmile_02.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_Fastball_2.png
 - Assets/Prefabs/Images/Circle_Quarter1.png
+- Assets/Prefabs/Images/PCE/sprites/TongueAaah_02.png
+- 'Assets/Prefabs/Images/PCE/sprites/Smoke1 #97937.png'
+- Assets/Prefabs/Images/PCE/TractorBeamCard/layer1.png
+- Assets/Prefabs/Images/PCE/sprites/Peruk_01.png
+- Assets/Prefabs/Images/PCE/sprites/E_2_SmileClosed.png
 - Assets/Prefabs/Images/LaserCard.png
+- Assets/Prefabs/I 1.controller
+- Assets/Prefabs/Images/PCE/sprites/Knob.png
+- Assets/Prefabs/Images/PCE/sprites/Exclamation1.png
+- Assets/Prefabs/Images/PCE/sprites/Shattered_Heart1.png
 - Assets/Prefabs/Sample Card.prefab
+- Assets/Prefabs/Images/PCE/LaserCard/white-layer4.png
+- Assets/Prefabs/Images/PCE/LaserCard/LaserPoint.png
+- Assets/Prefabs/Images/PCE/sprites/Face_2.png
 - Assets/Prefabs/AnimationClip/Anim_BgDots1.anim
 - Assets/Prefabs/Images/bullets.anim
+- Assets/Prefabs/Images/PCE/sprites/Hare_Ear2.png
+- Assets/Prefabs/Images/PCE/sprites/Stone2.png
+- Assets/Prefabs/Images/PCE/sprites/Toxic_Cloude1.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0015_Sleepy_01.png
 - Assets/Prefabs/Images/mouthtop.anim
 - Assets/Prefabs/Images/bullet50.anim
+- Assets/Prefabs/Images/PCE/sprites/Bigeyes_02.png
+- Assets/Prefabs/PacifistNumerals.anim
 - Assets/Prefabs/Images/eye.png
 - Assets/Prefabs/Images/bullet50percblur.png
+- Assets/Prefabs/Images/PCE/sprites/Smile_Crooked01.png
 - Assets/Prefabs/Images/invertedbigscatter.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0010_AngryEyebrow_01.png
+- Assets/Prefabs/Images/PCE/LaserCard/Triangle.png
+- Assets/Prefabs/AnimationClip/PacField.anim
+- Assets/Prefabs/Images/PCE/sprites/Body_2.png
+- Assets/Prefabs/Images/PCE/sprites/Body_Back1.png
 - Assets/Prefabs/Images/lasertriangleinverted.controller
 - Assets/Prefabs/Images/mouthbottom.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer3.png
 - Assets/Prefabs/Images/laserpoint.anim
 - Assets/Prefabs/Images/reels mask 1.controller
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer10.png
 - Assets/Prefabs/Images/bullet40blur.controller
+- Assets/Prefabs/Images/PCE/sprites/Icons_Thruster_2.png
+- Assets/Prefabs/Images/PCE/sprites/UnitySplash-cube.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_NeutralSmall.png
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer16.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer13.png
+- Assets/Prefabs/Images/PCE/sprites/SpriteCircle.png
 - Assets/Prefabs/Images/mouthbottom.anim
+- Assets/Prefabs/Images/PCE/sprites/Arms1.png
+- Assets/Prefabs/Images/PCE/sprites/Catears_02.png
+- Assets/Prefabs/Images/PCE/sprites/Tears1.png
 - Assets/Prefabs/Images/mouthbottom2.png
+- Assets/Prefabs/Images/PCE/sprites/Mustacho_01.png
+- Assets/Prefabs/C_Pacifist_III.prefab
+- Assets/Prefabs/Images/PCE/sprites/M_4_Grimace.png
+- Assets/Prefabs/Images/PCE/sprites/Vampyr_open_01.png
 - Assets/Prefabs/Images/bulletpack3.controller
+- Assets/Prefabs/Images/PCE/sprites/Icons_Spray_2.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer11.png
 - Assets/Prefabs/Images/bullet40percblur.png
 - Assets/Prefabs/Images/slots.controller
+- Assets/Prefabs/Images/PCE/TractorBeamCard/white-layer16.png
+- Assets/Prefabs/Images/PCE/sprites/Leg_1.png
 - Assets/Prefabs/Images/icon_big.png
+- Assets/Prefabs/V.controller
 - Assets/Prefabs/C_QuickReload.prefab
+- Assets/Prefabs/Images/PCE/sprites/Cyclop_03.png
+- Assets/Prefabs/Images/PCE/sprites/E_21_Small.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer1.png
+- Assets/Prefabs/Images/PCE/sprites/E_25_Dissapointed.png
+- Assets/Prefabs/Images/PCE/sprites/Minion_Body1.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer9.png
 - Assets/Prefabs/Images/invertedlaserin.controller
+- Assets/Prefabs/Images/PCE/sprites/drop007.png
+- Assets/Prefabs/Images/PCE/JackpotCards/Originals/3.png
+- Assets/Prefabs/Images/PCE/sprites/LandfallLogo.png
 - Assets/Prefabs/Images/Triangle.png
 - Assets/Prefabs/Images/mouth.png
+- Assets/Prefabs/Images/PCE/sprites/T_Mouse0Thin.png
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet_Bottom1 #98282.png'
+- Assets/Prefabs/C_Pacifist_IV.prefab
+- 'Assets/Prefabs/Images/PCE/sprites/TriangleSpriteHalf #109563.png'
+- Assets/Prefabs/Images/PCE/sprites/Lifestealer_Ring1.png
 - Assets/Prefabs/Images/bullet50blur.controller
+- Assets/Prefabs/Images/PCE/PacifistCards/layer14.png
+- Assets/Prefabs/Images/PCE/sprites/BombsAway1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer15.png
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98001.png'
+- Assets/Prefabs/Images/PCE/sprites/DazzleBullet2.png
+- Assets/Prefabs/Images/PCE/sprites/Grass6.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer2.png
+- Assets/Prefabs/Images/PCE/GroundedCard/layer5.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer4.png
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98286.png'
+- 'Assets/Prefabs/Images/PCE/sprites/Eyes1 #98189.png'
+- Assets/Prefabs/Images/PCE/sprites/Hare_Body.png
 - Assets/Prefabs/C_Laser 1.controller
+- Assets/Prefabs/Images/PCE/sprites/E_24_SlimEyes.png
+- Assets/Prefabs/Images/PCE/LaserCard/layer2.png
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/layer11.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/layer2.png
 - Assets/Prefabs/Images/reels mask.controller
+- Assets/Prefabs/Images/PCE/sprites/Minion_Eyebrow1.png
 - Assets/Prefabs/Images/bullet.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer4.png
+- Assets/Prefabs/Images/PCE/sprites/Rope2.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer10.png
+- Assets/Prefabs/Images/PCE/sprites/E_20_Bigeye2.png
+- Assets/Prefabs/C_Pacifist_I.prefab
+- Assets/Prefabs/Images/PCE/sprites/Shield_Charge1.png
+- Assets/Prefabs/II.controller
+- Assets/Prefabs/Images/PCE/SuperballCard/layer2.png
+- Assets/Prefabs/Images/PCE/sprites/E_4_Cross.png
+- Assets/Prefabs/Images/PCE/sprites/play.png
+- Assets/Prefabs/Images/PCE/sprites/Tophat_02.png
+- Assets/Prefabs/I.controller
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0002_JohnLennon_02.png
 - Assets/Prefabs/Images/invertedtriangle.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer10.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/layer1.png
+- Assets/Prefabs/Images/PCE/sprites/A_Stripes1.png
+- Assets/Prefabs/Images/PCE/sprites/E_11_Nose.png
+- Assets/Prefabs/Images/PCE/sprites/A_Shy_1.png
+- Assets/Prefabs/IV_I_anim.anim
+- Assets/Prefabs/Images/PCE/sprites/Angri1.png
+- Assets/Prefabs/Images/PCE/sprites/ColonThree_02.png
+- Assets/Prefabs/Images/PCE/sprites/Birthday_02.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer7.png
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer3.png
+- 'Assets/Prefabs/Images/PCE/sprites/BG_Pattern2 #98258.png'
+- Assets/Prefabs/IIIanim.anim
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer5.png
+- Assets/Prefabs/Images/PCE/FlipCard/layer7.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer4.png
+- Assets/Prefabs/Images/PCE/sprites/Biglips_02.png
+- Assets/Prefabs/Images/PCE/PacifistCards/PikPng.com_blood-puddle-png_200964.png
+- Assets/Prefabs/Images/PCE/sprites/TriangleSpriteHalf.png
+- Assets/Prefabs/Images/PCE/sprites/SneebleHat_03.png
+- Assets/Prefabs/C_Pacifist_II.prefab
+- Assets/Prefabs/Images/PCE/sprites/Bullet1.png
 - Assets/Prefabs/Images/eye.controller
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer4.png
+- Assets/Prefabs/Images/PCE/sprites/drop001.png
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98029.png'
+- Assets/Prefabs/Images/PCE/PacifistCards/AnimationNotes.md
+- Assets/Prefabs/Images/PCE/GroundedCard/layer7.png
+- Assets/Prefabs/Images/PCE/TractorBeamCard/white-layer15.png
+- Assets/Prefabs/Images/PCE/sprites/Emoji_eyes1.png
+- Assets/Prefabs/Images/PCE/sprites/SneebleHat_01.png
+- Assets/Prefabs/Images/PCE/sprites/Devilish_01.png
+- Assets/Prefabs/Images/PCE/sprites/Stripe1.png
+- Assets/Prefabs/Images/PCE/sprites/Gun_Top1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer13.png
+- Assets/Prefabs/Images/PCE/LaserCard/layer1.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer7.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer17.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer6.png
+- Assets/Prefabs/Images/PCE/sprites/Clown_Nose1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer1.png
+- Assets/Prefabs/Images/PCE/sprites/Balls1.png
+- Assets/Prefabs/AnimationClip/BG.controller
 - Assets/Prefabs/Images/Triangle2.png
 - Assets/Prefabs/Images/bullet.anim
 - Assets/Prefabs/C_SmallJackpot.prefab
 - Assets/Prefabs/crosshair.prefab
+- Assets/Prefabs/Images/PCE/OldJetpackCard/AnimationNotes.md
+- Assets/Prefabs/Images/PCE/sprites/Bullet_top1.png
+- Assets/Prefabs/Images/PCE/GroundedCard/layer6.png
 - Assets/Prefabs/Images/7.png
+- 'Assets/Prefabs/Images/PCE/sprites/Triangle1 #109624.png'
+- Assets/Prefabs/Images/PCE/PacifistCards/layer13.png
+- 'Assets/Prefabs/Images/PCE/sprites/Mouth2 #98157.png'
+- Assets/Prefabs/Images/PCE/WildcardCards/layer6.png
+- Assets/Prefabs/NumeralsIII.anim
+- Assets/Prefabs/Images/PCE/sprites/Turtle_Arm1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet_Rifle1 #98208.png'
+- Assets/Prefabs/Images/PCE/sprites/M_2_Open.png
+- Assets/Prefabs/Images/PCE/sprites/Eyelash_smile_01.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_Frown.png
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/layer3.png
+- Assets/Prefabs/Images/PCE/sprites/Smoosh_01.png
+- Assets/Prefabs/Images/PCE/JackpotCards/Originals/maps-and-flags-casino.png
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet_Bottom1 #98402.png'
+- Assets/Prefabs/Images/PCE/sprites/Black_hole1.png
+- Assets/Prefabs/Images/PCE/sprites/Onetooth_02.png
+- Assets/Prefabs/Images/PCE/sprites/Babyteeth_02.png
+- Assets/Prefabs/Images/PCE/sprites/E_12_ThreeEyes.png
+- Assets/Prefabs/Images/PCE/JackpotCards/Originals/gambler-casino.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer7.png
+- Assets/Prefabs/Images/PCE/sprites/E_16_Happy.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_TargetBounce_2.png
+- Assets/Prefabs/Images/PCE/sprites/E_3_Wink.png
+- Assets/Prefabs/Images/PCE/sprites/King_02.png
+- Assets/Prefabs/Images/PCE/sprites/Wall_Cracks1.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer8.png
+- Assets/Prefabs/Images/PCE/sprites/Heart1.png
+- Assets/Prefabs/Images/PCE/sprites/Eyelash_wink_02.png
 - Assets/Prefabs/Images/bullet30blur.controller
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer8.png
+- Assets/Prefabs/Images/PCE/sprites/2Teeths_02.png
+- Assets/Prefabs/AnimationClip/PacBulletsBG.anim
+- Assets/Prefabs/Images/PCE/SuperballCard/layer3.png
+- Assets/Prefabs/Images/PCE/JackpotCards/strawberry.png
+- Assets/Prefabs/Images/PCE/sprites/Circle.png
+- Assets/Prefabs/Images/PCE/sprites/Minion_Eyebrow3.png
+- Assets/Prefabs/Images/PCE/sprites/TongueAaah_01.png
+- Assets/Prefabs/Images/PCE/sprites/Wood1.png
+- Assets/Prefabs/Helmet.controller
+- Assets/Prefabs/Images/PCE/sprites/Leaf1.png
+- Assets/Prefabs/Images/PCE/sprites/Legs1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #98084.png'
+- Assets/Prefabs/Images/PCE/sprites/Eyewhites1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer17.png
+- Assets/Prefabs/Images/PCE/sprites/A_Sweat.png
+- Assets/Prefabs/Helmet 2.controller
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98095.png'
+- Assets/Prefabs/Images/PCE/sprites/M_Agape_1.png
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer5.png
 - Assets/Prefabs/AnimatorController/BG_Dots.controller
+- Assets/Prefabs/Images/PCE/sprites/BigSMile_01.png
+- Assets/Prefabs/Helmet 1.controller
+- Assets/Prefabs/Images/PCE/sprites/Shield_Charge2.png
 - Assets/Prefabs/Images/reel2.controller
+- Assets/Prefabs/Images/PCE/LaserCard/LaserIn.png
+- Assets/Prefabs/Images/PCE/sprites/E_5_Sunglassess.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer2.png
+- Assets/Prefabs/Images/PCE/sprites/SharpSmile_02.png
 - Assets/Prefabs/Images/mouth.anim
+- Assets/Prefabs/Images/PCE/sprites/ColonThree_01.png
+- Assets/Prefabs/Images/PCE/sprites/E_1_Neutral2.png
+- Assets/Prefabs/Images/PCE/sprites/E_Space_2.png
 - Assets/Prefabs/C_GhostGun.prefab
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet_1 #97946.png'
+- Assets/Prefabs/Images/PCE/LaserCard/layer3.png
+- Assets/Prefabs/Images/PCE/sprites/drop006.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer3.png
+- Assets/Prefabs/Images/PCE/sprites/Snow1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer13.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_Angry.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer10.png
+- Assets/Prefabs/Images/PCE/sprites/Star1.png
+- Assets/Prefabs/Images/PCE/sprites/Animal_01.png
+- Assets/Prefabs/Images/PCE/PacifistCards/path1616-6.png
+- Assets/Prefabs/Images/PCE/sprites/Openbigmouth_01.png
+- Assets/Prefabs/Images/PCE/sprites/A_CatEars.png
+- Assets/Prefabs/Images/PCE/sprites/Masked_02.png
+- Assets/Prefabs/Images/PCE/LaserCard/LaserScatter.png
+- Assets/Prefabs/Images/PCE/sprites/Gun_2.png
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer2.png
+- Assets/Prefabs/Images/PCE/sprites/TeethSmile_01.png
 - Assets/Prefabs/Images/strawberry.png
+- Assets/Prefabs/Images/PCE/sprites/Flower1.png
+- Assets/Prefabs/Images/PCE/sprites/Sushi_02.png
+- Assets/Prefabs/Images/PCE/sprites/Napoleon_01.png
+- Assets/Prefabs/Images/PCE/sprites/Mad_angry_02.png
+- Assets/Prefabs/Images/PCE/sprites/Triangle1.png
 - Assets/Prefabs/Images/reel3.controller
+- Assets/Prefabs/PacifistHelmetSwayIII.anim
+- Assets/Prefabs/Images/PCE/TractorBeamCard/layer16.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer9.png
+- Assets/Prefabs/Images/PCE/sprites/Orc_02.png
+- Assets/Prefabs/Images/PCE/sprites/T_Mouse1Thin.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/white-layer4.png
+- Assets/Prefabs/AnimationClip/BG 1.controller
+- Assets/Prefabs/Images/PCE/sprites/ZzZz1.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer6.png
+- Assets/Prefabs/Images/PCE/TractorBeamCard/white-layer17.png
+- Assets/Prefabs/Images/PCE/GroundedCard/layer2.png
 - Assets/Prefabs/C_PCEPlaceholder.prefab
+- Assets/Prefabs/Images/PCE/sprites/Mayhem1.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer7.png
+- Assets/Prefabs/Images/PCE/SuperballCard/white-layer1.png
+- Assets/Prefabs/NumeralV.anim
+- Assets/Prefabs/AnimationClip/PacBullet.anim
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Teeth1 #98150.png'
+- Assets/Prefabs/Images/PCE/sprites/Nervous_02.png
+- Assets/Prefabs/Images/PCE/FlipCard/layer4.png
+- Assets/Prefabs/Images/PCE/GroundedCard/layer1.png
 - Assets/Prefabs/AnimationClip/Anim_Circle1.anim
+- Assets/Prefabs/Images/PCE/sprites/drop010.png
+- Assets/Prefabs/PacifistHelmetSwayV.anim
+- Assets/Prefabs/Images/PCE/sprites/A_Star1.png
+- Assets/Prefabs/Images/PCE/sprites/Grass4.png
+- Assets/Prefabs/Images/PCE/sprites/Onetooth_01.png
+- Assets/Prefabs/Images/PCE/sprites/E_14_EyebrowRise.png
 - Assets/Prefabs/Images/invertedlaserpoint.controller
 - Assets/Prefabs/AnimatorController/Art_Body.controller
+- Assets/Prefabs/Images/PCE/sprites/Triangle.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #98107.png'
+- Assets/Prefabs/Numerals 1.controller
+- Assets/Prefabs/Images/PCE/sprites/E_20_Bigeyes.png
+- Assets/Prefabs/Images/PCE/sprites/Rosette_01.png
+- Assets/Prefabs/Images/PCE/sprites/E_15_Angri.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer1.png
+- Assets/Prefabs/AnimationClip/Gun.controller
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/white-layer2.png
+- Assets/Prefabs/Images/PCE/sprites/E_Space_4.png
+- Assets/Prefabs/Images/PCE/sprites/SharpSmile_01.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer5.png
 - Assets/Prefabs/Images/DotsDetail_2.png
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer4.png
+- Assets/Prefabs/Images/PCE/sprites/Openbigmouth_02.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0003_JohnLennon_01.png
+- Assets/Prefabs/Images/PCE/sprites/Arrow1.png
+- Assets/Prefabs/Images/PCE/sprites/Smile_Circle1.png
+- Assets/Prefabs/Images/PCE/sprites/Target_Circle1.png
 - Assets/Prefabs/AnimationClip/Anim_Bg1.anim
+- Assets/Prefabs/Images/PCE/TractorBeamCard/layer17.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer6.png
+- Assets/Prefabs/Images/PCE/sprites/Bitemarks3.png
+- Assets/Prefabs/Images/PCE/sprites/Grid5.png
+- Assets/Prefabs/Images/PCE/sprites/A_Ghost1.png
+- Assets/Prefabs/Images/PCE/JackpotCards/bar.png
 - Assets/Prefabs/Images/reel2.anim
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer1.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer3.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_QuickShot_2.png
+- Assets/Prefabs/Images/PCE/sprites/Red_Mouth1.png
+- Assets/Prefabs/Images/PCE/JackpotCards/BCKP/bar.png
+- Assets/Prefabs/Images/PCE/sprites/Eyes1.png
+- Assets/Prefabs/Images/PCE/sprites/A_Eye1.png
+- Assets/Prefabs/Images/PCE/sprites/A_Partyhat_1.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer11.png
+- Assets/Prefabs/Images/PCE/sprites/Mouth2.png
+- Assets/Prefabs/Images/PCE/JackpotCards/spade.png
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/layer1.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_Smile2.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0012_WideropenEyes_02.png
+- Assets/Prefabs/C_Shuffle.prefab
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0000_Swag_02.png
+- Assets/Prefabs/Images/PCE/GlareCard/white-layer2.png
+- Assets/Prefabs/Numerals 2.controller
+- Assets/Prefabs/Helmet 4.controller
+- Assets/Prefabs/Images/PCE/sprites/Bounce_1.png
+- Assets/Prefabs/Images/PCE/sprites/Bg_texture1.png
+- Assets/Prefabs/Images/PCE/sprites/Eye1.png
+- Assets/Prefabs/Images/PCE/sprites/Pasta_04.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer7.png
+- Assets/Prefabs/Images/PCE/sprites/Horns_01.png
+- Assets/Prefabs/Images/PCE/LaserCard/layer4.png
 - Assets/Prefabs/Images/squiggle.png
+- Assets/Prefabs/Images/PCE/LaserCard/white-layer5.png
+- Assets/Prefabs/PacifistBG.anim
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer9.png
+- Assets/Prefabs/Images/PCE/sprites/TongueAaah_03.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/white-layer2.png
+- Assets/Prefabs/Images/PCE/sprites/Mouthbreathing_02.png
+- Assets/Prefabs/Images/PCE/sprites/Stone1.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer5.png
+- Assets/Prefabs/Images/PCE/sprites/M_4_2_Grimace2.png
 - Assets/Prefabs/Images/lasertriangle.png.png
 - Assets/Prefabs/Images/rectangle.png
+- Assets/Prefabs/Images/PCE/sprites/drop008.png
+- Assets/Prefabs/Images/PCE/sprites/drop002.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #98207.png'
+- Assets/Prefabs/Images/PCE/sprites/EMP_Orb1.png
+- Assets/Prefabs/Images/PCE/sprites/Ring1.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0013_WideopenEyes_01.png
+- Assets/Prefabs/Images/PCE/sprites/Cyclop_04.png
+- Assets/Prefabs/Images/PCE/sprites/Unimpressed_animal_01.png
+- Assets/Prefabs/Images/PCE/sprites/Arm1.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer8.png
+- Assets/Prefabs/Images/PCE/sprites/Grin_02.png
+- Assets/Prefabs/Images/PCE/JackpotCards/cherry.png
+- Assets/Prefabs/Images/PCE/sprites/A_Sweat_2.png
+- Assets/Prefabs/Images/PCE/sprites/Sprout_01.png
+- Assets/Prefabs/Images/PCE/sprites/FrostSlam_Body1.png
+- Assets/Prefabs/Images/PCE/sprites/M_Smile_1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet1 #97914.png'
+- Assets/Prefabs/Images/PCE/sprites/Gloria_Front1.png
+- Assets/Prefabs/Images/PCE/LaserCard/white-layer1.png
 - Assets/Prefabs/Images/bullet10percblur.png
+- Assets/Prefabs/Images/PCE/sprites/Gun_1.png
+- Assets/Prefabs/C_Pacifist_V.prefab
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/white-layer3.png
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98391.png'
+- Assets/Prefabs/Images/PCE/sprites/Smile_Nervous01.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_Remote_2.png
+- Assets/Prefabs/Images/PCE/sprites/Paper_Left1.png
+- Assets/Prefabs/Images/PCE/sprites/Icons_WindUp_4.png
 - Assets/Prefabs/Images/bullet30.anim
+- Assets/Prefabs/Images/PCE/sprites/Fire_1.png
+- Assets/Prefabs/Images/PCE/TractorBeamCard/layer18.png
+- Assets/Prefabs/AnimationClip/PacField.controller
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer3.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0008_Wink_01.png
+- Assets/Prefabs/Images/PCE/sprites/Square.png
 - Assets/Prefabs/Images/eye.anim
+- Assets/Prefabs/Images/PCE/sprites/A_KissHeart.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer1.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer8.png
+- Assets/Prefabs/Images/PCE/sprites/Teeth1.png
+- Assets/Prefabs/Images/PCE/sprites/Rope1.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer4.png
+- Assets/Prefabs/Images/PCE/sprites/streamline-icon-direction-button-arrows@640x640.png
+- Assets/Prefabs/Images/PCE/sprites/drop003.png
 - Assets/Prefabs/Images/dollarsign.png
 - Assets/Prefabs/Images/Triangle1.png
+- Assets/Prefabs/Images/PCE/sprites/TinySmile_01.png
+- Assets/Prefabs/Images/PCE/sprites/Grid4.png
+- Assets/Prefabs/Images/PCE/sprites/Cross.png
 - Assets/Prefabs/Images/laserin.anim
+- Assets/Prefabs/Images/PCE/sprites/E_23_eight.png
+- Assets/Prefabs/Images/PCE/LaserCard/layer5.png
+- Assets/Prefabs/Images/PCE/sprites/E_5_Hearts.png
+- Assets/Prefabs/Images/PCE/sprites/Minion_Teeth1.png
 - Assets/Prefabs/Images/eye1.anim
+- Assets/Prefabs/Images/PCE/sprites/E_Space_3.png
+- Assets/Prefabs/Images/PCE/sprites/A_Sweat1.png
+- Assets/Prefabs/Images/PCE/sprites/Bg_Pattern2.png
 - Assets/Prefabs/Images/mouth.controller
+- Assets/Prefabs/Images/PCE/JackpotCards/Originals/2.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer4.png
+- Assets/Prefabs/Images/PCE/sprites/E_29_Eyebrow.png
+- Assets/Prefabs/Images/PCE/JackpotCards/BCKP/cherry.png
 - Assets/Prefabs/Images/reels.anim
+- Assets/Prefabs/Images/PCE/sprites/A_Wrinkles2.png
+- Assets/Prefabs/Images/PCE/SuperballCard/white-layer3.png
+- Assets/Prefabs/Images/PCE/TractorBeamCard/white-layer18.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer14.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer4.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Orb1 #98047.png'
+- Assets/Prefabs/Images/PCE/sprites/EMP_Face1.png
+- Assets/Prefabs/Images/PCE/sprites/Bullet_Fire1.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer12.png
+- Assets/Prefabs/AnimationClip/Ghost.controller
+- Assets/Prefabs/Images/PCE/LaserCard/white-layer2.png
+- Assets/Prefabs/Images/PCE/sprites/Minion_1.png
 - Assets/Prefabs/Images/TriangleSpriteHalf.png
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer6.png
 - Assets/Prefabs/Images/bar.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face_1 #98335.png'
+- Assets/Prefabs/Images/PCE/sprites/E_15_MoreAngri.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer12.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/white-layer3.png
+- Assets/Prefabs/Images/PCE/sprites/Face_3.png
+- Assets/Prefabs/Images/PCE/sprites/Eye_Dot.png
+- Assets/Prefabs/V 1.controller
+- Assets/Prefabs/Images/PCE/sprites/Minion_Eyebrow2.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/layer3.png
+- Assets/Prefabs/Images/PCE/sprites/E_27_Circles2.png
 - Assets/Prefabs/Images/mouthbottom.controller
+- Assets/Prefabs/Images/PCE/sprites/M_2_SadSmall.png
+- Assets/Prefabs/Images/PCE/SuperballCard/white-layer2.png
+- Assets/Prefabs/Images/PCE/sprites/E_3_Angry.png
 - Assets/Prefabs/Images/invertedlaserin.png
 - Assets/Prefabs/Images/LaserPoint.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer9.png
 - Assets/Prefabs/Images/Square.png
 - Assets/Prefabs/Images/triangle.anim
+- Assets/Prefabs/Images/PCE/LaserCard/BigLaserScatter.png
 - Assets/Prefabs/Images/bigscatter.anim
+- Assets/Prefabs/Images/PCE/ShuffleCard/layer4.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/white-layer5.png
 - Assets/Prefabs/Images/bullet20blur.controller
+- Assets/Prefabs/Images/PCE/sprites/TongueSmile_01.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer3.png
+- Assets/Prefabs/Images/PCE/sprites/_0000s_0009_AngryEyebrow_02.png
+- Assets/Prefabs/Images/PCE/sprites/E_1_Neutral.png
+- Assets/Prefabs/Images/PCE/sprites/UISprite.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer3.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer4.png
+- Assets/Prefabs/Images/PCE/sprites/EMP_Tears1.png
+- Assets/Prefabs/Images/PCE/sprites/Stone4.png
 - Assets/Prefabs/Images/reel1.controller
 - Assets/Prefabs/Images/ghostgunBG.anim
+- Assets/Prefabs/Images/PCE/JackpotCards/white-layer1.png
+- Assets/Prefabs/Images/PCE/GroundedCard/layer3.png
+- 'Assets/Prefabs/Images/PCE/sprites/Gun1 #98016.png'
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer9.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer6.png
+- Assets/Prefabs/Images/PCE/sprites/Mouthbreathing_01.png
+- Assets/Prefabs/Images/PCE/sprites/Line_tongue1.png
+- Assets/Prefabs/Images/PCE/TractorBeamCard/white-layer1.png
+- Assets/Prefabs/Images/PCE/LaserCard/LaserCard.png
+- Assets/Prefabs/Images/PCE/ShuffleCard/AnimationNotes.md
 - Assets/Prefabs/C_Laser.anim
+- Assets/Prefabs/Images/PCE/sprites/Cyclop_02.png
 - Assets/Prefabs/Images/mouthtop.png
 - Assets/Prefabs/Images/reel1.anim
+- Assets/Prefabs/Images/PCE/sprites/A_Wrinkles1.png
 - Assets/Prefabs/Images/cherry.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer5.png
+- Assets/Prefabs/Images/PCE/sprites/Star2.png
+- Assets/Prefabs/PacifistHelmetSway.anim
+- Assets/Prefabs/Images/PCE/sprites/SneebleHat_02.png
+- Assets/Prefabs/Images/PCE/sprites/LineSmile1.png
+- Assets/Prefabs/Images/PCE/sprites/TwithChatBubble2.png
+- Assets/Prefabs/Images/PCE/sprites/Money_01.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer2.png
 - Assets/Prefabs/C_Laser.controller
+- Assets/Prefabs/Images/PCE/sprites/Birthday_03.png
+- Assets/Prefabs/Images/PCE/sprites/M_Ooh_1.png
+- Assets/Prefabs/Images/PCE/sprites/Bun_01.png
 - Assets/Prefabs/Images/CardBG.png
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet_Top1 #98129.png'
+- Assets/Prefabs/Images/PCE/sprites/CardBG.png
+- Assets/Prefabs/Images/PCE/sprites/Orc_01.png
+- Assets/Prefabs/Images/PCE/sprites/Gloria_Back1.png
 - Assets/Prefabs/Images/bulletpack2.controller
+- Assets/Prefabs/Images/PCE/FlipCard/white-layer7.png
+- Assets/Prefabs/Images/PCE/sprites/E_Angry_1.png
+- Assets/Prefabs/Images/PCE/sprites/Grid3.png
 - Assets/Prefabs/Images/spade.png
 - Assets/Prefabs/Images/bullet.controller
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer15.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #98079.png'
+- Assets/Prefabs/Images/PCE/sprites/M_1_Smile.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_Wide.png
+- Assets/Prefabs/Images/PCE/FlipCard/layer3.png
 - Assets/Prefabs/Images/Grid3.png
+- Assets/Prefabs/Images/PCE/sprites/Vampyr_open_02.png
+- Assets/Prefabs/Helmet 3.controller
+- 'Assets/Prefabs/Images/PCE/sprites/Bullet1 #97911.png'
+- Assets/Prefabs/Images/PCE/sprites/Gloria_01.png
+- Assets/Prefabs/Images/PCE/sprites/Napoleon_02.png
+- Assets/Prefabs/Images/PCE/sprites/A_Cursing_1.png
+- Assets/Prefabs/IV_V_anim.anim
+- Assets/Prefabs/Images/PCE/sprites/Body_small1.png
 - Assets/Prefabs/AnimatorController/BG (2) 1.controller
+- Assets/Prefabs/Images/PCE/sprites/M_4_Kiss.png
+- Assets/Prefabs/Images/PCE/JackpotCards/BCKP/7.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_SemiWide.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer16.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer3.png
 - Assets/Prefabs/Images/invertedlasercard.png
+- Assets/Prefabs/C_PacBullets.prefab
+- Assets/Prefabs/Images/PCE/sprites/CircleHollow5.png
+- Assets/Prefabs/Images/PCE/sprites/zZzZ_01.png
+- Assets/Prefabs/Images/PCE/JackpotCards/BCKP/spade.png
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer8.png
 - Assets/Prefabs/Images/bullet30percblur.png
+- Assets/Prefabs/Images/PCE/sprites/Iris1.png
+- 'Assets/Prefabs/Images/PCE/sprites/EMP_Orb1 #98009.png'
+- Assets/Prefabs/Images/PCE/sprites/Unimpressed_01.png
+- Assets/Prefabs/Images/PCE/GroundedCard/white-layer7.png
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/layer2.png
+- Assets/Prefabs/Images/PCE/sprites/Wall_1.png
+- Assets/Prefabs/Images/PCE/sprites/Rabbit_02.png
+- Assets/Prefabs/NumeralAnimator.anim
 - Assets/Prefabs/Images/bullet20percblur.png
+- Assets/Prefabs/Images/PCE/sprites/Face_4.png
+- Assets/Prefabs/Images/PCE/sprites/Beard_01.png
+- Assets/Prefabs/Images/PCE/sprites/Drop01.png
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98424.png'
+- 'Assets/Prefabs/Images/PCE/sprites/BG_Pattern1 #98045.png'
+- Assets/Prefabs/Images/PCE/PacBulletsCard/layer4.png
+- Assets/Prefabs/Images/PCE/sprites/Background.png
+- Assets/Prefabs/Images/PCE/sprites/Mad_angry_01.png
+- Assets/Prefabs/Images/PCE/sprites/E_10_grumpy.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer1.png
+- Assets/Prefabs/Images/PCE/WildcardCards/white-layer5.png
 - Assets/Prefabs/Images/bullet20.anim
+- Assets/Prefabs/Images/PCE/FlipCard/layer1.png
 - Assets/Prefabs/Images/eye (1).controller
+- Assets/Prefabs/Images/PCE/sprites/Nervous_01.png
+- Assets/Prefabs/AnimationClip/ShuffleBG.anim
+- Assets/Prefabs/Images/PCE/sprites/BallGrid.png
+- Assets/Prefabs/Images/PCE/sprites/Babyteeth_01.png
+- Assets/Prefabs/Images/PCE/GlareCard/white-layer1.png
+- Assets/Prefabs/Images/PCE/sprites/Grass2.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer3.png
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/white-layer11.png
 - Assets/Prefabs/Images/invertedlaserpoint.png
+- Assets/Prefabs/Images/PCE/sprites/Emoji_Body1.png
 - Assets/Prefabs/Images/bullet10.anim
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/white-layer4.png
+- 'Assets/Prefabs/Images/PCE/sprites/Eyes1 #98445.png'
+- Assets/Prefabs/Images/PCE/OldJetpackCard/white-layer3.png
+- Assets/Prefabs/Images/PCE/sprites/M_2_Neutral.png
+- Assets/Prefabs/Images/PCE/sprites/Bullet_Bottom1.png
+- Assets/Prefabs/Images/PCE/sprites/Grass5.png
+- Assets/Prefabs/Images/PCE/PacifistCards/PinClipart.com_slash-clipart_4478074.png
 - Assets/Prefabs/Images/bulletpack1.anim
+- Assets/Prefabs/Images/PCE/GlareCard/layer2.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #97968.png'
+- Assets/Prefabs/BG.controller
 - Assets/Prefabs/Images/reels.controller
+- 'Assets/Prefabs/Images/PCE/sprites/Mouth1 #98330.png'
+- Assets/Prefabs/Images/PCE/sprites/E_3_CloseHard.png
+- Assets/Prefabs/Images/PCE/JackpotCards/layer1.png
+- Assets/Prefabs/Images/PCE/sprites/Phantom.png
+- Assets/Prefabs/Images/PCE/sprites/Grin_01.png
+- Assets/Prefabs/Images/PCE/sprites/Turtle_Arm2.png
+- Assets/Prefabs/Images/PCE/PacifistCards/layer11.png
+- Assets/Prefabs/Images/PCE/sprites/FrostSlam_Eyes1.png
+- Assets/Prefabs/Images/PCE/sprites/Eyes_1.png
+- Assets/Prefabs/Images/PCE/SuperballCard/layer1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Face1 #98356.png'
+- Assets/Prefabs/Images/PCE/sprites/procedural_ui_image_default_sprite.png
+- Assets/Prefabs/Images/PCE/sprites/E_8_BarsBrowLow.png
+- Assets/Prefabs/Images/PCE/WildcardCards/layer5.png
+- Assets/Prefabs/Images/PCE/sprites/Bullet_1.png
+- 'Assets/Prefabs/Images/PCE/sprites/Body1 #98352.png'
+- Assets/Prefabs/Images/PCE/sprites/Stone3.png
+- Assets/Prefabs/IIanim.anim
+- Assets/Prefabs/Images/PCE/sprites/UIMask.png
 - Assets/Prefabs/Images/Bg_Pattern2.png
+- Assets/Prefabs/Images/PCE/OldJetpackCard/layer1.png
+- Assets/Prefabs/Images/PCE/PacifistCards/white-layer6.png
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/white-layer1.png
+- Assets/Prefabs/Images/PCE/sprites/2Teeths_01.png
 - Assets/Prefabs/Images/BG.controller
+- Assets/Prefabs/Images/PCE/FriendlyBulletsCard/layer4.png
+- Assets/Prefabs/Images/PCE/sprites/M_4_Toung.png
+- Assets/Prefabs/Images/PCE/sprites/E_1_Neutral3.png
 Dependencies: []

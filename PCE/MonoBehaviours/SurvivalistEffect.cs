@@ -54,11 +54,11 @@ namespace PCE.MonoBehaviours
 
             if (!this.survivalists[SurvivalistType.V])
             {
-                this.timeToMax = this.defaultTimeToMax;
+                this.timeToMax = this.defaultTimeToMax / (float)base.numEnemyPlayers;
             }
             else
             {
-                this.timeToMax = this.defaultTimeToMax / 2f;
+                this.timeToMax = this.defaultTimeToMax / (2f* (float)base.numEnemyPlayers);
             }
 
             foreach (SurvivalistType survivalistType in Enum.GetValues(typeof(SurvivalistType)))
