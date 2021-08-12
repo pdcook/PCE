@@ -417,8 +417,13 @@ namespace PCE.Cards
         private float dH = 0.001f;
         private float sign = 1f;
 
-        internal void UpdateIndecesOnRemove(CardInfo card, int idx)
+        internal void UpdateIndecesOnRemove(Player player, CardInfo card, int idx)
         {
+            if (player.playerID != this.player.playerID)
+            {
+                return;
+            }
+
             List<int> newIndeces = new List<int>() { };
             foreach (int index in indeces)
             {

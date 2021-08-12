@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.3.3
+-------------
+
+- Fixed glitched cards not working with RWF
+
 #### v0.2.3.2
 -------------
 

@@ -32,7 +32,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.3.2")]
+    [BepInPlugin(ModId, ModName, "0.2.3.3")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -203,6 +203,21 @@ namespace PCE
 
         private IEnumerator RandomCard()
         {
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { true });
+            }
+            yield return new WaitForSecondsRealtime(0.5f);
+            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
+            {
+                float start = Time.time;
+                while (PCE.randomInProgress && Time.time <= start + 2.5f)
+                {
+                    yield return null;
+                }
+                yield return new WaitForSecondsRealtime(0.1f);
+                yield break;
+            }
             //if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
             //{
             //    NetworkingManager.RPC(typeof(PCE), nameof(RPCA_DisablePlayers), new object[] { });
@@ -212,6 +227,7 @@ namespace PCE
             
             foreach (Player player in PlayerManager.instance.players.ToArray())
             {
+
                 if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
                 {
                     List<int> indeces = new List<int>(player.GetComponent<RandomCardEffect>().indeces);
@@ -263,7 +279,17 @@ namespace PCE
             //{
             //    NetworkingManager.RPC(typeof(PCE), nameof(RPCA_EnablePlayers), new object[] { });
             //}
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { false });
+            }
+            yield return new WaitForSecondsRealtime(0.1f);
             yield break;
+        }
+        [UnboundRPC]
+        private static void RPCA_RandomInProgress(bool prog)
+        {
+            PCE.randomInProgress = prog;
         }
         [UnboundRPC]
         private static void RPCA_DisablePlayers()
@@ -292,6 +318,7 @@ namespace PCE
             yield break;
         }
 
+        private static bool randomInProgress = false;
 
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 
