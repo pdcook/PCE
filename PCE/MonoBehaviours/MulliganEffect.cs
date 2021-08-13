@@ -14,37 +14,29 @@ namespace PCE.MonoBehaviours
         public override void OnStart()
         {
             base.SetLivesToEffect(int.MaxValue);
-            base.characterStatModifiers.GetAdditionalData().mulligan = true;
         }
-        public override void OnOnEnable()
+        public void UseMulligan()
         {
-            base.characterStatModifiers.GetAdditionalData().mulligan = true;
-        }
-        public override void OnUpdate()
-        {
-            // if the player has 1f health left, remove the mulligan and stop DoT effects
-            if (base.characterStatModifiers.GetAdditionalData().mulligan && base.data.health == 1f)
+            // if there are no mulligans left, just return
+            if (base.characterStatModifiers.GetAdditionalData().remainingMulligans <= 0)
             {
-                // force the player to block (for free)
-                base.block.CallDoBlock(true, true, BlockTrigger.BlockTriggerType.Default);
+                return;
+            }
 
-                ((DamageOverTime)Traverse.Create(base.health).Field("dot").GetValue()).StopAllCoroutines();
-                base.characterStatModifiers.GetAdditionalData().mulligan = false;
-                this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
-                this.colorFlash.SetNumberOfFlashes(1);
-                this.colorFlash.SetDuration(0.25f);
-                this.colorFlash.SetDelayBetweenFlashes(0.25f);
-                this.colorFlash.SetColorMax(Color.white);
-                this.colorFlash.SetColorMin(Color.white);
-            }
-            else if (base.data.dead)
-            {
-                base.characterStatModifiers.GetAdditionalData().mulligan = true;
-            }
-        }
-        public override void OnOnDisable()
-        {
-            base.characterStatModifiers.GetAdditionalData().mulligan = true;
+            // force the player to block (for free)
+            base.block.CallDoBlock(true, true, BlockTrigger.BlockTriggerType.Default);
+
+            // stop DoT effects
+            ((DamageOverTime)Traverse.Create(base.health).Field("dot").GetValue()).StopAllCoroutines();
+            this.colorFlash = base.player.gameObject.GetOrAddComponent<ColorFlash>();
+            this.colorFlash.SetNumberOfFlashes(1);
+            this.colorFlash.SetDuration(0.25f);
+            this.colorFlash.SetDelayBetweenFlashes(0.25f);
+            this.colorFlash.SetColorMax(Color.white);
+            this.colorFlash.SetColorMin(Color.white);
+
+            // use up a single mulligan
+            base.characterStatModifiers.GetAdditionalData().remainingMulligans--;
         }
         public override void OnOnDestroy()
         {

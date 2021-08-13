@@ -22,6 +22,15 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.3.4
+-------------
+
+- Changes to existing cards
+    - Mulligan can now stack! And is now compatible with Beetle from CR
+    - Laser's size has been drastically increased
+    - Laser shots now go precisely where the cursor is aimed
+    - Straight Shot bullets now go precisely where the cursor is aimed
+
 #### v0.2.3.3
 -------------
 
@@ -411,7 +420,7 @@ Blocking reverses nearby player's controls
 
 ---
 
-### Old Jetpact
+### Old Jetpack
 _Common_
 
 Sputter around in the air for a bit by continually firing an old jetpack
@@ -479,14 +488,21 @@ Touching any other player turns them to solid gold
 ### Last Stand
 *Common*
 
-Gain increase attack stats when below 10% of your max HP
+Gain increased attack stats when below 50% of your max HP
+
+---
+
+### Retreat
+*Common*
+
+Gain increased defense stats when below 50% of your max HP
 
 ---
 
 ### Mulligan
 **Uncommon**
 
-Always survive your first fatal blow
+Always survive a fatal blow
 
 ---
 

@@ -12,6 +12,7 @@ using Photon;
 using PCE.Utils;
 using System.Collections.ObjectModel;
 using UnboundLib.Utils;
+using PCE.Extensions;
 
 namespace PCE.Cards
 {
@@ -208,9 +209,20 @@ namespace PCE.Cards
 
             SpawnBulletsEffect effect = this.player.gameObject.AddComponent<SpawnBulletsEffect>();
             // set the position and direction to fire
-            effect.SetDirection(((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
+            // REMOVING COMPENSATION FOR BULLET SPEED
+            if (!this.player.data.stats.GetAdditionalData().removeSpeedCompensation)
+            {
+                effect.SetDirection(((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                  BindingFlags.NonPublic, null, this.gun, new object[] {0, 0, 0f})) * Vector3.forward);
+                                  BindingFlags.NonPublic, null, this.gun, new object[] { 0, 0, 0f })) * Vector3.forward - Vector3.up * 0.13f / Mathf.Clamp(this.gun.projectileSpeed, 1f, 100f));
+
+            }
+            else
+            {
+                effect.SetDirection(((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
+                   BindingFlags.Instance | BindingFlags.InvokeMethod |
+                  BindingFlags.NonPublic, null, this.gun, new object[] { 0, 0, 0f })) * Vector3.forward);
+            }
             effect.SetPosition(this.gun.transform.position);
             effect.SetNumBullets(1);
             effect.SetTimeBetweenShots(0f);
@@ -381,7 +393,7 @@ namespace PCE.Cards
         private int frames = 0;
 
         public float duration;
-        private readonly float[] minmaxwidth = new float[]{0.1f,0.5f};
+        private readonly float[] minmaxwidth = new float[]{0.25f,1f};
         private readonly float baseDamageMultiplier = 2.5f;
 
         private LineRenderer trail;

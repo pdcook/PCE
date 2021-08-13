@@ -5,6 +5,7 @@ using UnboundLib.Cards;
 using UnboundLib;
 using UnityEngine;
 using System.Linq;
+using PCE.Extensions;
 
 namespace PCE.Cards
 {
@@ -20,6 +21,8 @@ namespace PCE.Cards
             gun.projectileSpeed *= 0.85f;
             gunAmmo.reloadTimeMultiplier = 0.7f;
 
+            // remove projectile speed aiming compensation
+            characterStats.GetAdditionalData().removeSpeedCompensation = true;
 
         }
         public override void OnRemoveCard()

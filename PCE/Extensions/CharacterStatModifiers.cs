@@ -24,9 +24,10 @@ namespace PCE.Extensions
         public HitEffect[] HitEffects;
         public WasHitEffect[] WasHitEffects;
         public HitSurfaceEffect[] HitSurfaceEffects;
-        public bool mulligan;
+        public int remainingMulligans;
+        public int mulligans;
         public int shuffles;
-
+        public bool removeSpeedCompensation;
         public CharacterStatModifiersAdditionalData()
         {
             gravityMultiplierOnDoDamage = 1f;
@@ -37,8 +38,10 @@ namespace PCE.Extensions
             HitEffects = new HitEffect[] { };
             WasHitEffects = new WasHitEffect[] { };
             HitSurfaceEffects = new HitSurfaceEffect[] { };
-            mulligan = false;
+            remainingMulligans = 0;
+            mulligans = 0;
             shuffles = 0;
+            removeSpeedCompensation = false;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -89,8 +92,10 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().HitEffects = new HitEffect[] { };
             __instance.GetAdditionalData().WasHitEffects = new WasHitEffect[] { };
             __instance.GetAdditionalData().HitSurfaceEffects = new HitSurfaceEffect[] { };
-            __instance.GetAdditionalData().mulligan = false;
+            __instance.GetAdditionalData().remainingMulligans = 0;
+            __instance.GetAdditionalData().mulligans = 0;
             __instance.GetAdditionalData().shuffles = 0;
+            __instance.GetAdditionalData().removeSpeedCompensation = false;
 
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;

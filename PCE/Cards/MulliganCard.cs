@@ -17,13 +17,14 @@ namespace PCE.Cards
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
-            cardInfo.allowMultiple = false;
+            cardInfo.allowMultiple = true;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             data.maxHealth *= 0.85f;
 
             player.gameObject.GetOrAddComponent<MulliganEffect>();
+            characterStats.GetAdditionalData().mulligans++;
 
         }
         public override void OnRemoveCard()
@@ -36,7 +37,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Always survive your first fatal blow.";
+            return "Always survive a fatal blow.";
         }
 
         protected override GameObject GetCardArt()
@@ -53,6 +54,13 @@ namespace PCE.Cards
         {
             return new CardInfoStat[]
             {
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Mulligans",
+                amount = "+1",
+                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                },
                 new CardInfoStat
                 {
                 positive = false,

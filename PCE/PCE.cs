@@ -32,7 +32,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.3.3")]
+    [BepInPlugin(ModId, ModName, "0.2.3.4")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -210,12 +210,10 @@ namespace PCE
             yield return new WaitForSecondsRealtime(0.5f);
             if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
             {
-                float start = Time.time;
-                while (PCE.randomInProgress && Time.time <= start + 2.5f)
+                while (PCE.randomInProgress)
                 {
                     yield return null;
                 }
-                yield return new WaitForSecondsRealtime(0.1f);
                 yield break;
             }
             //if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
