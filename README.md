@@ -22,6 +22,17 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.4.0
+-------------
+
+- Added several new cards
+    - Masochist I/II/III/IV
+    - Piercing Bullets
+    - Punching Bullets
+- Balance changes
+    - Moon shoes now allows players to jump above the top of the screen
+    - Moon shoes now causes the player to automatically block (for free) at the apex of their first jump
+
 #### v0.2.3.4
 -------------
 
@@ -515,7 +526,7 @@ Crouch to charge a super jump
 
 ### **Survivalist I / II / III / IV**
 
-*Cannot be combined with any card from any other class (Pacifist or Wildcard)*
+*Cannot be combined with any card from any other class (Masochist, Pacifist, or Wildcard)*
 
 - I (*Common*) - Increased reload speed the longer you go without taking damage
 - II (**Uncommon**) - Decreased block cooldown the longer you go without taking damage
@@ -524,7 +535,7 @@ Crouch to charge a super jump
 
 ### **Pacifist I / II / III / IV**
 
-*Cannot be combined with any card from any other class (Survivalist or Wildcard)*
+*Cannot be combined with any card from any other class (Masochist, Survivalist, or Wildcard)*
 
 - I (*Common*) - Increased reload speed the longer you go without dealing damage
 - II (**Uncommon**) - Decreased block cooldown the longer you go without dealing damage
@@ -533,12 +544,21 @@ Crouch to charge a super jump
 
 ### **Wildcard I / II / III / IV**
 
-*Cannot be combined with any card from any other class (Survivalist or Pacifist)*
+*Cannot be combined with any card from any other class (Masochist, Survivalist, or Pacifist)*
 
 - I (*Common*) - Randomly Increased reload speed at random intervals
 - II (**Uncommon**) - Randomly Decreased block cooldown at random intervals
 - III (**Uncommon**) - Randomly Increased movement speed at random intervals
 - IV (***Rare***) - Randomly Increased damage at random intervals
+
+### **Masochist I / II / III / IV**
+
+*Cannot be combined with any card from any other class (Survivalist, Wildcard, or Pacifist)*
+
+- I (*Common*) - Increased reload speed the longer you go without blocking damage
+- II (**Uncommon**) - Decreased block cooldown the longer you go without blocking damage
+- III (**Uncommon**) - Increased movement speed the longer you go without blocking damage
+- IV (***Rare***) - Increased damage the longer you go without blocking damage
 
 ---
 
@@ -595,3 +615,17 @@ Draw five new cards to choose from
 _**Rare**_
 
 _**??? ? ????????? ?????? ???? ???? ??????**_
+
+---
+
+### Piercing Bullets
+*Common*
+
+Bullets partially pierce shields
+
+---
+
+### Punching Bullets
+**Uncommon**
+
+Bullet effects apply through shields

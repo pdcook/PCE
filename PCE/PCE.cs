@@ -32,7 +32,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.3.4")]
+    [BepInPlugin(ModId, ModName, "0.2.4.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -85,6 +85,8 @@ namespace PCE
             CustomCard.BuildCard<FireworksCard>();
             CustomCard.BuildCard<ShuffleCard>();
             CustomCard.BuildCard<PacBulletsCard>();
+            CustomCard.BuildCard<PiercingBulletsCard>();
+            CustomCard.BuildCard<PunchingBulletsCard>();
 
             CustomCard.BuildCard<SurvivalistICard>();
             CustomCard.BuildCard<SurvivalistIICard>();
@@ -104,10 +106,20 @@ namespace PCE
             CustomCard.BuildCard<WildcardIVCard>();
             CustomCard.BuildCard<WildcardVCard>(card => { WildcardVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(WildcardVCard.self); });
 
+            CustomCard.BuildCard<MasochistICard>();
+            CustomCard.BuildCard<MasochistIICard>();
+            CustomCard.BuildCard<MasochistIIICard>();
+            CustomCard.BuildCard<MasochistIVCard>();
+            CustomCard.BuildCard<MasochistVCard>(card => { MasochistVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(MasochistVCard.self); });
 
             CustomCard.BuildCard<RandomCommonCard>(Cards.RandomCard.callback);
             CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
             CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
+
+            CustomCard.BuildCard<SurvivalistBlacklistCard>(card => { SurvivalistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(SurvivalistBlacklistCard.self); });
+            CustomCard.BuildCard<PacifistBlacklistCard>(card => { PacifistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(PacifistBlacklistCard.self); });
+            CustomCard.BuildCard<WildcardBlacklistCard>(card => { WildcardBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(WildcardBlacklistCard.self); });
+            CustomCard.BuildCard<MasochistBlacklistCard>(card => { MasochistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(MasochistBlacklistCard.self); });
 
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());

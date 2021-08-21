@@ -12,12 +12,14 @@ namespace PCE.Extensions
     {
         public float discombobulateRange;
         public float discombobulateDuration;
+        public float timeOfLastSuccessfulBlock;
 
 
         public BlockAdditionalData()
         {
             discombobulateRange = 0f;
             discombobulateDuration = 0f;
+            timeOfLastSuccessfulBlock = -100f;
         }
     }
     public static class BlockExtension
@@ -48,6 +50,7 @@ namespace PCE.Extensions
 
             __instance.GetAdditionalData().discombobulateRange = 0f;
             __instance.GetAdditionalData().discombobulateDuration = 0f;
+            __instance.GetAdditionalData().timeOfLastSuccessfulBlock = -100f;
 
 
         }

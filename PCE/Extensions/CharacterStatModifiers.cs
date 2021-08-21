@@ -28,6 +28,8 @@ namespace PCE.Extensions
         public int mulligans;
         public int shuffles;
         public bool removeSpeedCompensation;
+        public float piercingPerc;
+        public bool punch;
         public CharacterStatModifiersAdditionalData()
         {
             gravityMultiplierOnDoDamage = 1f;
@@ -42,6 +44,8 @@ namespace PCE.Extensions
             mulligans = 0;
             shuffles = 0;
             removeSpeedCompensation = false;
+            piercingPerc = 0f;
+            punch = false;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -96,6 +100,8 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().mulligans = 0;
             __instance.GetAdditionalData().shuffles = 0;
             __instance.GetAdditionalData().removeSpeedCompensation = false;
+            __instance.GetAdditionalData().piercingPerc = 0f;
+            __instance.GetAdditionalData().punch = false;
 
             Gravity gravity = __instance.GetComponent<Gravity>();
             gravity.gravityForce = __instance.GetAdditionalData().defaultGravityForce;

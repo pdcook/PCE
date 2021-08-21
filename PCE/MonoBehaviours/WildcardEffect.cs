@@ -177,7 +177,7 @@ namespace PCE.MonoBehaviours
                             base.gunStatModifier.bulletDamageMultiplier_mult = this.multiplier;
                             break;
                         case WildcardType.V:
-                            base.gunStatModifier.projectileColor = this.maxChargeColor;
+                            base.gun.projectileColor = this.maxChargeColor;
                             break;
                         default:
                             break;

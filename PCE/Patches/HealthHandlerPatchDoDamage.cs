@@ -15,7 +15,7 @@ namespace PCE.Patches
     [HarmonyPatch(typeof(HealthHandler), "DoDamage")]
     class HealtHandlerPatchDoDamage
     {
-        // patch for Mulligan
+        // patch for Mulligan and Masochist
         private static void Prefix(HealthHandler __instance, Vector2 damage, Vector2 position, Color blinkColor, GameObject damagingWeapon, Player damagingPlayer, bool healthRemoval, ref bool lethal, bool ignoreBlock)
         {
 
@@ -33,6 +33,15 @@ namespace PCE.Patches
 			{
 				return;
 			}
+			if (data.block.IsBlocking() && !ignoreBlock)
+            {
+				// reset time since successful block
+
+				data.block.GetAdditionalData().timeOfLastSuccessfulBlock = Time.time;
+
+				return;
+            }
+
 			// if the damage is lethal and would've killed the player, check for mulligans
 			if (lethal && data.health < damage.magnitude && data.stats.GetAdditionalData().remainingMulligans > 0)
             {

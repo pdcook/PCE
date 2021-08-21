@@ -34,5 +34,29 @@ namespace PCE.Extensions
             }
             return num;
         }
+        public static List<Player> GetEnemyPlayers(Player player)
+        {
+            List<Player> res = new List<Player>() { };
+            foreach (Player other_player in PlayerManager.instance.players)
+            {
+                if (other_player.teamID != player.teamID)
+                {
+                    res.Add(other_player);
+                }
+            }
+            return res;
+        }
+        public static List<Player> GetOtherPlayers(Player player)
+        {
+            List<Player> res = new List<Player>() { };
+            foreach (Player other_player in PlayerManager.instance.players)
+            {
+                if (other_player.playerID != player.playerID)
+                {
+                    res.Add(other_player);
+                }
+            }
+            return res;
+        }
     }
 }

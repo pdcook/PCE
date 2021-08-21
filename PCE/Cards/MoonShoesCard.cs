@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using UnboundLib.Cards;
+using UnboundLib;
 using UnityEngine;
+using PCE.MonoBehaviours;
 
 namespace PCE.Cards
 {
@@ -18,6 +20,7 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             gravity.gravityForce /= 6f;
+            player.gameObject.GetOrAddComponent<MoonShoesEffect>();
         }
         public override void OnRemoveCard()
         {
@@ -52,6 +55,20 @@ namespace PCE.Cards
                 stat = "Gravity",
                 amount = "-83%",
                 simepleAmount = CardInfoStat.SimpleAmount.aLotLower
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Height Limit",
+                amount = "No",
+                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                },
+                new CardInfoStat
+                {
+                positive = true,
+                stat = "Apex Block",
+                amount = "1",
+                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
             };
         }

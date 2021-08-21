@@ -23,13 +23,14 @@ namespace PCE.Cards
         {
             cardInfo.allowMultiple = false;
             cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
             player.gameObject.GetOrAddComponent<SurvivalistEffect>();
 
+            SurvivalistBlacklistCard.DenyOthers(player);
         }
         public override void OnRemoveCard()
         {
@@ -83,13 +84,13 @@ namespace PCE.Cards
         {
             cardInfo.allowMultiple = false;
             cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
             player.gameObject.GetOrAddComponent<SurvivalistEffect>();
-
+            SurvivalistBlacklistCard.DenyOthers(player);
         }
         public override void OnRemoveCard()
         {
@@ -143,12 +144,13 @@ namespace PCE.Cards
         {
             cardInfo.allowMultiple = false;
             cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
             player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            SurvivalistBlacklistCard.DenyOthers(player);
 
         }
         public override void OnRemoveCard()
@@ -203,12 +205,13 @@ namespace PCE.Cards
         {
             cardInfo.allowMultiple = false;
             cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
             player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            SurvivalistBlacklistCard.DenyOthers(player);
 
         }
         public override void OnRemoveCard()
@@ -264,12 +267,13 @@ namespace PCE.Cards
         {
             cardInfo.allowMultiple = false;
             cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Traverse.Create(health).Field("lastDamaged").SetValue(Time.time);
             player.gameObject.GetOrAddComponent<SurvivalistEffect>();
+            SurvivalistBlacklistCard.DenyOthers(player);
 
         }
         public override void OnRemoveCard()
@@ -293,6 +297,66 @@ namespace PCE.Cards
         protected override CardInfo.Rarity GetRarity()
         {
             return CardInfo.Rarity.Rare;
+        }
+
+        protected override CardInfoStat[] GetStats()
+        {
+            return null;
+        }
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.DefensiveBlue;
+        }
+        public override bool GetEnabled()
+        {
+            return false;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
+    }
+    public class SurvivalistBlacklistCard : CustomCard
+    {
+        internal static CardInfo self = null;
+
+        internal static void DenyOthers(Player player)
+        {
+            foreach (Player otherPlayer in PlayerStatus.GetOtherPlayers(player).Where(other_player => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(other_player, SurvivalistBlacklistCard.self)))
+            {
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(otherPlayer, SurvivalistBlacklistCard.self);
+            }
+        }
+        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
+        {
+            cardInfo.allowMultiple = false;
+            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist") };
+            ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isVisible = false;
+        }
+        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
+        {
+        }
+        public override void OnRemoveCard()
+        {
+        }
+
+        protected override string GetTitle()
+        {
+            return "NoSurvivalist";
+        }
+        protected override string GetDescription()
+        {
+            return "";
+        }
+
+        protected override GameObject GetCardArt()
+        {
+            return null;
+        }
+
+        protected override CardInfo.Rarity GetRarity()
+        {
+            return CardInfo.Rarity.Common;
         }
 
         protected override CardInfoStat[] GetStats()
