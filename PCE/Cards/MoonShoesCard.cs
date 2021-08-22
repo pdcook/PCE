@@ -62,14 +62,7 @@ namespace PCE.Cards
                 stat = "Height Limit",
                 amount = "No",
                 simepleAmount = CardInfoStat.SimpleAmount.notAssigned
-                },
-                new CardInfoStat
-                {
-                positive = true,
-                stat = "Apex Block",
-                amount = "1",
-                simepleAmount = CardInfoStat.SimpleAmount.notAssigned
-                },
+                }
             };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()

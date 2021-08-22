@@ -11,9 +11,9 @@ namespace PCE.MonoBehaviours
     public class MoonShoesEffect : ReversibleEffect // using ReversibleEffect just to handle cleanup/resetting
     {
         private Coroutine ooBCoroutine = null;
-        private Coroutine blockCoroutine = null;
+        //private Coroutine blockCoroutine = null;
         private bool blockCoroutineRunning = false;
-        private bool groundedLastFrame = false;
+        //private bool groundedLastFrame = false;
 
         public override void OnAwake()
         {
@@ -33,28 +33,29 @@ namespace PCE.MonoBehaviours
         }
         public override void OnUpdate()
         {
+            /*
             if (this.groundedLastFrame && !base.data.isGrounded && !this.blockCoroutineRunning)
             {
                 this.blockCoroutine = this.StartCoroutine(this.BlockAtApex());
             }
-            else if (base.data.isGrounded && this.blockCoroutineRunning)
+            if (base.data.isGrounded && this.blockCoroutineRunning)
             {
                 this.blockCoroutineRunning = false;
                 this.StopCoroutine(this.blockCoroutine);
             }
 
-            this.groundedLastFrame = base.data.isGrounded;
+            this.groundedLastFrame = base.data.isGrounded;*/
 
         }
         public override void OnOnDisable()
         {
             if (this.ooBCoroutine != null) { this.StopCoroutine(this.ooBCoroutine); }
-            if (this.blockCoroutine != null) { this.blockCoroutineRunning = false;  this.StopCoroutine(this.blockCoroutine); }
+            //if (this.blockCoroutine != null) { this.blockCoroutineRunning = false;  this.StopCoroutine(this.blockCoroutine); }
         }
         public override void OnOnDestroy()
         {
             if (this.ooBCoroutine != null) { this.StopCoroutine(this.ooBCoroutine); }
-            if (this.blockCoroutine != null) { this.blockCoroutineRunning = false; this.StopCoroutine(this.blockCoroutine); }
+            //if (this.blockCoroutine != null) { this.blockCoroutineRunning = false; this.StopCoroutine(this.blockCoroutine); }
         }
 
         private System.Collections.IEnumerator DisableTopOutOfBounds()
@@ -82,7 +83,7 @@ namespace PCE.MonoBehaviours
             }
             yield break;
         }
-
+        /*
         private readonly int maxFramesToWait = 200;
         private System.Collections.IEnumerator BlockAtApex()
         {
@@ -124,6 +125,6 @@ namespace PCE.MonoBehaviours
             this.blockCoroutineRunning = false;
             yield break;
 
-        }
+        }*/
     }
 }
