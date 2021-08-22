@@ -332,6 +332,7 @@ namespace PCE.Cards
             cardInfo.allowMultiple = false;
             cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
             ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isVisible = false;
+            Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isClassBlacklistCard = true;
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {

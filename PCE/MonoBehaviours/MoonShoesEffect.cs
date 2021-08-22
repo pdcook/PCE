@@ -11,9 +11,6 @@ namespace PCE.MonoBehaviours
     public class MoonShoesEffect : ReversibleEffect // using ReversibleEffect just to handle cleanup/resetting
     {
         private Coroutine ooBCoroutine = null;
-        //private Coroutine blockCoroutine = null;
-        private bool blockCoroutineRunning = false;
-        //private bool groundedLastFrame = false;
 
         public override void OnAwake()
         {
@@ -50,11 +47,13 @@ namespace PCE.MonoBehaviours
         public override void OnOnDisable()
         {
             if (this.ooBCoroutine != null) { this.StopCoroutine(this.ooBCoroutine); }
+            base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
             //if (this.blockCoroutine != null) { this.blockCoroutineRunning = false;  this.StopCoroutine(this.blockCoroutine); }
         }
         public override void OnOnDestroy()
         {
             if (this.ooBCoroutine != null) { this.StopCoroutine(this.ooBCoroutine); }
+            base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
             //if (this.blockCoroutine != null) { this.blockCoroutineRunning = false; this.StopCoroutine(this.blockCoroutine); }
         }
 

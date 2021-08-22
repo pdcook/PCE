@@ -12,10 +12,12 @@ namespace PCE.Extensions
     public class CardInfoAdditionalData
     {
         public bool isRandom;
+        public bool isClassBlacklistCard;
 
         public CardInfoAdditionalData()
         {
             isRandom = false;
+            isClassBlacklistCard = false;
         }
     }
     public static class CardInfoExtension

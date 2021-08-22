@@ -22,6 +22,14 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.4.2
+-------------
+
+- Fixed bug with Moon shoes out of bounds effect persisting
+- Changed how Super Jump's out of bounds effect worked
+- Fixed minor bug with Pacifist/Masochist/Survivalist/Wildcard
+- Fixed bug where Low Ground would not trigger if the player started below another player during the RFW FFA countdown
+
 #### v0.2.4.1
 -------------
 

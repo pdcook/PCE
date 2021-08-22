@@ -14,7 +14,7 @@ using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CardChoiceSpawnUniqueCardPatch;
+using CardChoiceSpawnUniqueCardPatch.CustomCategories;
 using PCE.Utils;
 using ModdingUtils.Utils;
 using ModdingUtils.Extensions;
@@ -32,7 +32,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.4.1")]
+    [BepInPlugin(ModId, ModName, "0.2.4.2")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -121,6 +121,8 @@ namespace PCE
             CustomCard.BuildCard<WildcardBlacklistCard>(card => { WildcardBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(WildcardBlacklistCard.self); });
             CustomCard.BuildCard<MasochistBlacklistCard>(card => { MasochistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(MasochistBlacklistCard.self); });
 
+            // callback for blacklist cards
+            ModdingUtils.Utils.Cards.instance.AddOnRemoveCallback(ClassBlacklistCallback);
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
@@ -135,6 +137,62 @@ namespace PCE
 
             GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ClearRandomCards());
             GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => this.ClearRandomCards());
+        }
+
+        private void ClassBlacklistCallback(Player player, CardInfo removedCard, int idx)
+        {
+
+            if (Extensions.CardInfoExtension.GetAdditionalData(removedCard).isClassBlacklistCard)
+            {
+                return;
+            }
+            if (!removedCard.categories.Intersect(new CardCategory[] {CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard"), CustomCardCategories.instance.CardCategory("Masochist")}).Any())
+            {
+                return;
+            }
+
+            CardCategory removedClass = removedCard.categories.Intersect(new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard"), CustomCardCategories.instance.CardCategory("Masochist") }).First();
+
+            Unbound.Instance.ExecuteAfterSeconds(0.11f, () =>
+            {
+                // if there are any remaining in that category, just return
+                foreach (CardInfo card in player.data.currentCards)
+                {
+                    if (card.categories.Contains(removedClass))
+                    {
+                        return;
+                    }
+                }
+                CardInfo blacklistCardToRemove = null;
+                
+                if (removedClass == CustomCardCategories.instance.CardCategory("Pacifist"))
+                {
+                    blacklistCardToRemove = PacifistBlacklistCard.self;
+                }
+                else if (removedClass == CustomCardCategories.instance.CardCategory("Survivalist"))
+                {
+                    blacklistCardToRemove = SurvivalistBlacklistCard.self;
+                }
+                else if (removedClass == CustomCardCategories.instance.CardCategory("Wildcard"))
+                {
+                    blacklistCardToRemove = WildcardBlacklistCard.self;
+                }
+                else if (removedClass == CustomCardCategories.instance.CardCategory("Masochist"))
+                {
+                    blacklistCardToRemove = MasochistBlacklistCard.self;
+                }
+                else
+                {
+                    return;
+                }
+
+                // otherwise, the last of the category was removed and all related blacklist cards should be removed from all other players
+                foreach (Player otherPlayer in PlayerManager.instance.players)
+                {
+                    ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(otherPlayer, blacklistCardToRemove);
+                }    
+
+            });
         }
 
         private IEnumerator CommitMurders()
@@ -174,6 +232,10 @@ namespace PCE
             for (int j = 0; j < players.Length; j++)
             {
                 CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
+                foreach (InConeEffect effect in players[j].GetComponents<InConeEffect>())
+                {
+                    effect.RemoveAllEffects();
+                }
             }
             foreach (GameObject gameObject in FindObjectsOfType(typeof(GameObject)) as GameObject[])
             {

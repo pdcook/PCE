@@ -91,9 +91,11 @@ namespace PCE.MonoBehaviours
         {
             // if the player is dead, this is no longer active
             this.active = false;
+            base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
         }
         public override void OnOnDestroy()
         {
+            base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
         }
         private void ResetTimer()
         {
@@ -134,10 +136,10 @@ namespace PCE.MonoBehaviours
             }
             while (!base.data.isGrounded)
             {
-                if (base.player.data.playerActions.Jump.WasPressed || base.player.data.playerActions.Jump.IsPressed)
-                {
-                    break;
-                }
+                //if (base.player.data.playerActions.Jump.WasPressed || base.player.data.playerActions.Jump.IsPressed)
+                //{
+                //    break;
+                //}
 
                 Vector3 vector = MainCam.instance.transform.GetComponent<Camera>().WorldToScreenPoint(new Vector3(data.transform.position.x, data.transform.position.y, 0f));
 
