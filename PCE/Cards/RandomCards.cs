@@ -473,11 +473,12 @@ namespace PCE.Cards
         void Update()
         {
             UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare;
+            indeces = indeces.Distinct().ToList(); // remove any duplicates
             foreach (int idx in indeces)
             {
                 try
                 {
-                    cardSquare = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquare(player, idx).transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>();
+                    cardSquare = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquare(player, idx-1).transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>();
                 }
                 catch
                 {

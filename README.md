@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.4.3
+-------------
+
+- Fixed compatibility issue with glitched cards
+
 #### v0.2.4.2
 -------------
 
