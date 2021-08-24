@@ -39,7 +39,7 @@ namespace PCE.Cards
             else
             {
                 // otherwise, let the onbattlestart hook handle it
-                characterStats.GetAdditionalData().murder += 1;
+                Extensions.CharacterStatModifiersExtension.GetAdditionalData(characterStats).murder += 1;
             }
 
         }

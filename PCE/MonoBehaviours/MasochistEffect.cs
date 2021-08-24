@@ -14,7 +14,7 @@ namespace PCE.MonoBehaviours
 {
     public class MasochistEffect : CounterReversibleEffect
     {
-        private Dictionary<MasochistType, bool> survivalists = new Dictionary<MasochistType, bool>();
+        private Dictionary<MasochistType, bool> masochists = new Dictionary<MasochistType, bool>();
 
         private readonly float max_mult = 3f;
         private readonly float defaultTimeToMax = 20f;
@@ -42,17 +42,22 @@ namespace PCE.MonoBehaviours
 
         public override void UpdateEffects()
         {
-            // update which survivalist cards the player has
+            // update which masochist cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.survivalists[MasochistType.V])
+            if (this.HasCompleteSet() && !this.masochists[MasochistType.V])
             {
                 ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, MasochistVCard.self);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, MasochistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<MasochistColorEffect>());
             }
+            else if (!this.HasCompleteSet() && this.masochists[MasochistType.V])
+            {
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, MasochistVCard.self);
+                Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<MasochistColorEffect>()));
+            }
 
-            if (!this.survivalists[MasochistType.V])
+            if (!this.masochists[MasochistType.V])
             {
                 this.timeToMax = this.defaultTimeToMax / (float)base.numEnemyPlayers;
             }
@@ -61,11 +66,11 @@ namespace PCE.MonoBehaviours
                 this.timeToMax = this.defaultTimeToMax / (2f* (float)base.numEnemyPlayers);
             }
 
-            foreach (MasochistType survivalistType in Enum.GetValues(typeof(MasochistType)))
+            foreach (MasochistType masochistType in Enum.GetValues(typeof(MasochistType)))
             {
-                if (this.survivalists[survivalistType])
+                if (this.masochists[masochistType])
                 {
-                    switch (survivalistType)
+                    switch (masochistType)
                     {
                         case MasochistType.I:
                             this.gunAmmoStatModifier.reloadTimeMultiplier_mult = 1f / this.multiplier;
@@ -120,14 +125,14 @@ namespace PCE.MonoBehaviours
 
         private void CheckCards()
         {
-            foreach (MasochistType survivalistType in Enum.GetValues(typeof(MasochistType)))
+            foreach (MasochistType masochistType in Enum.GetValues(typeof(MasochistType)))
             {
-                this.survivalists[survivalistType] = (ModdingUtils.Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[survivalistType]) > 0);
+                this.masochists[masochistType] = (ModdingUtils.Utils.Cards.instance.CountPlayerCardsWithCondition(this.player, this.gun, this.gunAmmo, this.data, this.health, this.gravity, this.block, this.characterStatModifiers, (card, p, g, ga, d, h, gr, b, c) => card.name == this.cardNames[masochistType]) > 0);
             }
         }
         private bool HasCompleteSet()
         {
-            return (this.survivalists[MasochistType.I] && this.survivalists[MasochistType.II] && this.survivalists[MasochistType.III] && this.survivalists[MasochistType.IV]);
+            return (this.masochists[MasochistType.I] && this.masochists[MasochistType.II] && this.masochists[MasochistType.III] && this.masochists[MasochistType.IV]);
         }
 
         public enum MasochistType
@@ -152,7 +157,8 @@ namespace PCE.MonoBehaviours
     {
         private Player player;
         internal List<int> indeces = new List<int>() { };
-        private Color color = Color.blue;
+        private Color color = Color.red;
+        private Color? originalColor = null;
         void Start()
         {
             Color.RGBToHSV(this.color, out float h, out float s, out float v);
@@ -164,7 +170,12 @@ namespace PCE.MonoBehaviours
             {
                 cardSquares.Add(obj.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>());
             }
-
+            try
+            {
+                originalColor = new Color(cardSquares[0].color.r, cardSquares[0].color.g, cardSquares[0].color.b, cardSquares[0].color.a);
+            }
+            catch
+            { }
             foreach (UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare in cardSquares)
             {
                 Color.RGBToHSV(cardSquare.color, out float h_, out float s_, out float v_);
@@ -172,6 +183,22 @@ namespace PCE.MonoBehaviours
                 newColor.a = cardSquare.color.a;
 
                 cardSquare.color = newColor;
+            }
+        }
+        void OnDestroy()
+        {
+            GameObject[] cardSquareObjs = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
+            List<UnityEngine.UI.ProceduralImage.ProceduralImage> cardSquares = new List<UnityEngine.UI.ProceduralImage.ProceduralImage>() { };
+            foreach (GameObject obj in cardSquareObjs)
+            {
+                cardSquares.Add(obj.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>());
+            }
+            foreach (UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare in cardSquares)
+            {
+                if (originalColor != null)
+                {
+                    cardSquare.color = (Color)originalColor;
+                }
             }
         }
     }

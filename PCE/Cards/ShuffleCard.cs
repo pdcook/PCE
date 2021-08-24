@@ -23,7 +23,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            characterStats.GetAdditionalData().shuffles += 1;
+            Extensions.CharacterStatModifiersExtension.GetAdditionalData(characterStats).shuffles += 1;
         }
         public override void OnRemoveCard()
         {

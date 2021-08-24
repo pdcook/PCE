@@ -25,7 +25,7 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 #### v0.2.4.3
 -------------
 
-- Fixed compatibility issue with glitched cards
+- Completely overhauled classed cards code, gameplay should mostly be uneffected aside from bugs being fixed
 
 #### v0.2.4.2
 -------------

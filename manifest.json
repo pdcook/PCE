@@ -4,9 +4,9 @@
     "website_url": "https://github.com/pdcook/PCE",
     "description": "Adds a number of new cards to the game",
     "dependencies": [
-        "Pykess-ModdingUtils-0.0.5",
+        "Pykess-ModdingUtils-0.0.6",
         "Pykess-TemporaryStatsPatch-0.0.0",
-        "Pykess-CardChoiceSpawnUniqueCardPatch-0.1.1",
+        "Pykess-CardChoiceSpawnUniqueCardPatch-0.1.2",
 	"Pykess-PlayerJumpPatch-0.0.2",
     "Pykess-LegRaycastersPatch-0.0.0",
     "Pykess-GunUnblockablePatch-0.0.0",

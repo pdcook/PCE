@@ -116,14 +116,6 @@ namespace PCE
             CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
             CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
 
-            CustomCard.BuildCard<SurvivalistBlacklistCard>(card => { SurvivalistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(SurvivalistBlacklistCard.self); });
-            CustomCard.BuildCard<PacifistBlacklistCard>(card => { PacifistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(PacifistBlacklistCard.self); });
-            CustomCard.BuildCard<WildcardBlacklistCard>(card => { WildcardBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(WildcardBlacklistCard.self); });
-            CustomCard.BuildCard<MasochistBlacklistCard>(card => { MasochistBlacklistCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(MasochistBlacklistCard.self); });
-
-            // callback for blacklist cards
-            ModdingUtils.Utils.Cards.instance.AddOnRemoveCallback(ClassBlacklistCallback);
-
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetTimers()); // I sure hope this doesn't have unintended side effects...
@@ -139,71 +131,15 @@ namespace PCE
             GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => this.ClearRandomCards());
         }
 
-        private void ClassBlacklistCallback(Player player, CardInfo removedCard, int idx)
-        {
-
-            if (Extensions.CardInfoExtension.GetAdditionalData(removedCard).isClassBlacklistCard)
-            {
-                return;
-            }
-            if (!removedCard.categories.Intersect(new CardCategory[] {CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard"), CustomCardCategories.instance.CardCategory("Masochist")}).Any())
-            {
-                return;
-            }
-
-            CardCategory removedClass = removedCard.categories.Intersect(new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard"), CustomCardCategories.instance.CardCategory("Masochist") }).First();
-
-            Unbound.Instance.ExecuteAfterSeconds(0.11f, () =>
-            {
-                // if there are any remaining in that category, just return
-                foreach (CardInfo card in player.data.currentCards)
-                {
-                    if (card.categories.Contains(removedClass))
-                    {
-                        return;
-                    }
-                }
-                CardInfo blacklistCardToRemove = null;
-                
-                if (removedClass == CustomCardCategories.instance.CardCategory("Pacifist"))
-                {
-                    blacklistCardToRemove = PacifistBlacklistCard.self;
-                }
-                else if (removedClass == CustomCardCategories.instance.CardCategory("Survivalist"))
-                {
-                    blacklistCardToRemove = SurvivalistBlacklistCard.self;
-                }
-                else if (removedClass == CustomCardCategories.instance.CardCategory("Wildcard"))
-                {
-                    blacklistCardToRemove = WildcardBlacklistCard.self;
-                }
-                else if (removedClass == CustomCardCategories.instance.CardCategory("Masochist"))
-                {
-                    blacklistCardToRemove = MasochistBlacklistCard.self;
-                }
-                else
-                {
-                    return;
-                }
-
-                // otherwise, the last of the category was removed and all related blacklist cards should be removed from all other players
-                foreach (Player otherPlayer in PlayerManager.instance.players)
-                {
-                    ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(otherPlayer, blacklistCardToRemove);
-                }    
-
-            });
-        }
-
         private IEnumerator CommitMurders()
         {
             Player[] players = PlayerManager.instance.players.ToArray();
             for (int j = 0; j < players.Length; j++)
             {
                 // commit any pending murders
-                if (players[j].data.stats.GetAdditionalData().murder >= 1)
+                if (Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder >= 1)
                 {
-                    players[j].data.stats.GetAdditionalData().murder--;
+                    Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder--;
 
                     int i = 0;
                     Player oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
@@ -261,9 +197,9 @@ namespace PCE
         {
             foreach(Player player in PlayerManager.instance.players.ToArray())
             {
-                while (player.data.stats.GetAdditionalData().shuffles > 0)
+                while (Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).shuffles > 0)
                 {
-                    player.data.stats.GetAdditionalData().shuffles -= 1;
+                    Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).shuffles -= 1;
                     yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickStart);
                     CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
                     yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
@@ -379,7 +315,6 @@ namespace PCE
                 if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = true; }
             }
         }
-
 
         private IEnumerator ClearRandomCards()
         {

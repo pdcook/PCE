@@ -17,26 +17,46 @@ using ModdingUtils.Extensions;
 
 namespace PCE.Cards
 {
-    public class MasochistICard : CustomCard
+    public abstract class MasochistCardBase : CustomCard
     {
+        internal static CardCategory category = CustomCardCategories.instance.CardCategory("Masochist");
 
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.categories = new CardCategory[] { MasochistCardBase.category };
+            cardInfo.blacklistedCategories = new CardCategory[] { PacifistCardBase.category, SurvivalistCardBase.category, WildcardCardBase.category };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             block.GetAdditionalData().timeOfLastSuccessfulBlock = Time.time;
             player.gameObject.GetOrAddComponent<MasochistEffect>();
-            MasochistBlacklistCard.DenyOthers(player);
-
+            foreach (Player otherPlayer in PlayerStatus.GetOtherPlayers(player))
+            {
+                if (!ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(otherPlayer.data.stats).blacklistedCategories.Contains(MasochistCardBase.category))
+                {
+                    ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(otherPlayer.data.stats).blacklistedCategories.Add(MasochistCardBase.category);
+                }
+            }
         }
         public override void OnRemoveCard()
         {
+            foreach (Player player in PlayerManager.instance.players)
+            {
+                ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).blacklistedCategories.RemoveAll(cardcat => cardcat == MasochistCardBase.category);
+            }
         }
-
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.DestructiveRed;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
+    }
+    public class MasochistICard : MasochistCardBase
+    {
         protected override string GetTitle()
         {
             return "Masochist I";
@@ -69,34 +89,9 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class MasochistIICard : CustomCard
+    public class MasochistIICard : MasochistCardBase
     {
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            block.GetAdditionalData().timeOfLastSuccessfulBlock = Time.time;
-            player.gameObject.GetOrAddComponent<MasochistEffect>();
-            MasochistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
 
         protected override string GetTitle()
         {
@@ -130,34 +125,9 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class MasochistIIICard : CustomCard
+    public class MasochistIIICard : MasochistCardBase
     {
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            block.GetAdditionalData().timeOfLastSuccessfulBlock = Time.time;
-            player.gameObject.GetOrAddComponent<MasochistEffect>();
-            MasochistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
 
         protected override string GetTitle()
         {
@@ -191,35 +161,9 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class MasochistIVCard : CustomCard
+    public class MasochistIVCard : MasochistCardBase
     {
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            block.GetAdditionalData().timeOfLastSuccessfulBlock = Time.time;
-            player.gameObject.GetOrAddComponent<MasochistEffect>();
-            MasochistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
-
         protected override string GetTitle()
         {
             return "Masochist IV";
@@ -252,35 +196,10 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class MasochistVCard : CustomCard
+    public class MasochistVCard : MasochistCardBase
     {
         internal static CardInfo self = null;
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Pacifist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            block.GetAdditionalData().timeOfLastSuccessfulBlock = Time.time;
-            player.gameObject.GetOrAddComponent<MasochistEffect>();
-            MasochistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
 
         protected override string GetTitle()
         {
@@ -305,78 +224,11 @@ namespace PCE.Cards
         {
             return null;
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
-        }
+        
         public override bool GetEnabled()
         {
             return false;
         }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
-    }
-
-    public class MasochistBlacklistCard : CustomCard
-    {
-        internal static CardInfo self = null;
-        internal static void DenyOthers(Player player)
-        {
-            foreach (Player otherPlayer in PlayerStatus.GetOtherPlayers(player).Where(other_player => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(other_player, MasochistBlacklistCard.self)))
-            {
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(otherPlayer, MasochistBlacklistCard.self);
-            }
-        }
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Masochist") };
-            ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isVisible = false;
-            Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isClassBlacklistCard = true;
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-        }
-        public override void OnRemoveCard()
-        {
-        }
-
-        protected override string GetTitle()
-        {
-            return "NoMasochist";
-        }
-        protected override string GetDescription()
-        {
-            return "";
-        }
-
-        protected override GameObject GetCardArt()
-        {
-            return null;
-        }
-
-        protected override CardInfo.Rarity GetRarity()
-        {
-            return CardInfo.Rarity.Common;
-        }
-
-        protected override CardInfoStat[] GetStats()
-        {
-            return null;
-        }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.DestructiveRed;
-        }
-        public override bool GetEnabled()
-        {
-            return false;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
+        
     }
 }

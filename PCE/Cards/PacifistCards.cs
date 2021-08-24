@@ -15,26 +15,46 @@ using CardChoiceSpawnUniqueCardPatch.CustomCategories;
 
 namespace PCE.Cards
 {
-    public class PacifistICard : CustomCard
+    public abstract class PacifistCardBase : CustomCard
     {
-
+        internal static CardCategory category = CustomCardCategories.instance.CardCategory("Pacifist");
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
+            cardInfo.categories = new CardCategory[] { PacifistCardBase.category };
+            cardInfo.blacklistedCategories = new CardCategory[] { MasochistCardBase.category, SurvivalistCardBase.category, WildcardCardBase.category };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
             player.gameObject.GetOrAddComponent<PacifistEffect>();
-            PacifistBlacklistCard.DenyOthers(player);
-
+            foreach (Player otherPlayer in PlayerStatus.GetOtherPlayers(player))
+            {
+                if (!ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(otherPlayer.data.stats).blacklistedCategories.Contains(PacifistCardBase.category))
+                {
+                    ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(otherPlayer.data.stats).blacklistedCategories.Add(PacifistCardBase.category);
+                }
+            }
         }
         public override void OnRemoveCard()
         {
+            foreach (Player player in PlayerManager.instance.players)
+            {
+                ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).blacklistedCategories.RemoveAll(cardcat => cardcat == PacifistCardBase.category);
+            }
         }
 
+        protected override CardThemeColor.CardThemeColorType GetTheme()
+        {
+            return CardThemeColor.CardThemeColorType.NatureBrown;
+        }
+        public override string GetModName()
+        {
+            return "PCE";
+        }
+    }
+    public class PacifistICard : PacifistCardBase
+    {
         protected override string GetTitle()
         {
             return "Pacifist I";
@@ -67,34 +87,9 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class PacifistIICard : CustomCard
+    public class PacifistIICard : PacifistCardBase
     {
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
-            player.gameObject.GetOrAddComponent<PacifistEffect>();
-            PacifistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
 
         protected override string GetTitle()
         {
@@ -128,35 +123,9 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class PacifistIIICard : CustomCard
+    public class PacifistIIICard : PacifistCardBase
     {
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
-            player.gameObject.GetOrAddComponent<PacifistEffect>();
-            PacifistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
-
         protected override string GetTitle()
         {
             return "Pacifist III";
@@ -189,35 +158,9 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class PacifistIVCard : CustomCard
+    public class PacifistIVCard : PacifistCardBase
     {
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
-            player.gameObject.GetOrAddComponent<PacifistEffect>();
-            PacifistBlacklistCard.DenyOthers(player);
-
-        }
-        public override void OnRemoveCard()
-        {
-        }
-
         protected override string GetTitle()
         {
             return "Pacifist IV";
@@ -250,35 +193,11 @@ namespace PCE.Cards
                 }
             };
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
     }
-    public class PacifistVCard : CustomCard
+    public class PacifistVCard : PacifistCardBase
     {
 
         internal static CardInfo self = null;
-
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Survivalist"), CustomCardCategories.instance.CardCategory("Wildcard") };
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-            Traverse.Create(characterStats).Field("sinceDealtDamage").SetValue(0f);
-            player.gameObject.GetOrAddComponent<PacifistEffect>();
-            PacifistBlacklistCard.DenyOthers(player);
-        }
-        public override void OnRemoveCard()
-        {
-        }
 
         protected override string GetTitle()
         {
@@ -303,78 +222,9 @@ namespace PCE.Cards
         {
             return null;
         }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
-        }
         public override bool GetEnabled()
         {
             return false;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
-        }
-    }
-    public class PacifistBlacklistCard : CustomCard
-    {
-        internal static CardInfo self = null;
-
-        internal static void DenyOthers(Player player)
-        {
-            foreach (Player otherPlayer in PlayerStatus.GetOtherPlayers(player).Where(other_player => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(other_player, PacifistBlacklistCard.self)))
-            {
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(otherPlayer, PacifistBlacklistCard.self);
-            }
-        }
-        public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
-        {
-            cardInfo.allowMultiple = false;
-            cardInfo.blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("Pacifist") };
-            ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isVisible = false;
-            Extensions.CardInfoExtension.GetAdditionalData(cardInfo).isClassBlacklistCard = true;
-        }
-        public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
-        {
-        }
-        public override void OnRemoveCard()
-        {
-        }
-
-        protected override string GetTitle()
-        {
-            return "NoPacifist";
-        }
-        protected override string GetDescription()
-        {
-            return "";
-        }
-
-        protected override GameObject GetCardArt()
-        {
-            return null;
-        }
-
-        protected override CardInfo.Rarity GetRarity()
-        {
-            return CardInfo.Rarity.Common;
-        }
-
-        protected override CardInfoStat[] GetStats()
-        {
-            return null;
-        }
-        protected override CardThemeColor.CardThemeColorType GetTheme()
-        {
-            return CardThemeColor.CardThemeColorType.NatureBrown;
-        }
-        public override bool GetEnabled()
-        {
-            return false;
-        }
-        public override string GetModName()
-        {
-            return "PCE";
         }
     }
 }

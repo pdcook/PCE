@@ -44,6 +44,11 @@ namespace PCE.MonoBehaviours
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
+            else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V])
+            {
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self);
+                Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<WildcardColorEffect>()));
+            }
 
             if (this.wait == this.active)
             {
@@ -157,6 +162,11 @@ namespace PCE.MonoBehaviours
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
+            else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V])
+            {
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self);
+                Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<WildcardColorEffect>()));
+            }
 
             foreach (WildcardType wildcardType in Enum.GetValues(typeof(WildcardType)))
             {
@@ -256,6 +266,7 @@ namespace PCE.MonoBehaviours
         private Player player;
         internal List<int> indeces = new List<int>() { };
         private Color color = Color.magenta;
+        private Color? originalColor = null;
         void Start()
         {
             Color.RGBToHSV(this.color, out float h, out float s, out float v);
@@ -267,7 +278,12 @@ namespace PCE.MonoBehaviours
             {
                 cardSquares.Add(obj.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>());
             }
-
+            try
+            {
+                originalColor = new Color(cardSquares[0].color.r, cardSquares[0].color.g, cardSquares[0].color.b, cardSquares[0].color.a);
+            }
+            catch
+            { }
             foreach (UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare in cardSquares)
             {
                 Color.RGBToHSV(cardSquare.color, out float h_, out float s_, out float v_);
@@ -275,6 +291,22 @@ namespace PCE.MonoBehaviours
                 newColor.a = cardSquare.color.a;
 
                 cardSquare.color = newColor;
+            }
+        }
+        void OnDestroy()
+        {
+            GameObject[] cardSquareObjs = ModdingUtils.Utils.CardBarUtils.instance.GetCardBarSquares(this.player);
+            List<UnityEngine.UI.ProceduralImage.ProceduralImage> cardSquares = new List<UnityEngine.UI.ProceduralImage.ProceduralImage>() { };
+            foreach (GameObject obj in cardSquareObjs)
+            {
+                cardSquares.Add(obj.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.ProceduralImage.ProceduralImage>());
+            }
+            foreach (UnityEngine.UI.ProceduralImage.ProceduralImage cardSquare in cardSquares)
+            {
+                if (originalColor != null)
+                {
+                    cardSquare.color = (Color)originalColor;
+                }
             }
         }
     }
