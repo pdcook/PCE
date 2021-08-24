@@ -31,6 +31,7 @@ namespace PCE.MonoBehaviours
         private float timeToWait = 0f;
         private bool wait = true;
         private bool active = false;
+        private bool V = false;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
@@ -38,14 +39,16 @@ namespace PCE.MonoBehaviours
 
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V])
+            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.V)
             {
+                this.V = true;
                 ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
-            else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V])
+            else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V] && this.V)
             {
+                this.V = false;
                 ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<WildcardColorEffect>()));
             }
@@ -156,14 +159,16 @@ namespace PCE.MonoBehaviours
             // update which wildcard cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V])
+            if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.V)
             {
+                this.V = true;
                 ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
-            else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V])
+            else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V] && this.V)
             {
+                this.V = false;
                 ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<WildcardColorEffect>()));
             }

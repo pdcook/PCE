@@ -27,6 +27,7 @@ namespace PCE.MonoBehaviours
         private readonly float colorFlashThreshMaxFrac = 0.25f;
 
         private float multiplier;
+        private bool V = false;
 
         // time since last damage determines the effect multiplier
         public override CounterStatus UpdateCounter()
@@ -44,14 +45,16 @@ namespace PCE.MonoBehaviours
             // update which pacifist cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.pacifists[PacifistType.V])
+            if (this.HasCompleteSet() && !this.pacifists[PacifistType.V] && !this.V)
             {
+                this.V = true;
                 ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, PacifistVCard.self);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, PacifistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<PacifistColorEffect>());
             }
-            else if (!this.HasCompleteSet() && this.pacifists[PacifistType.V])
+            else if (!this.HasCompleteSet() && this.pacifists[PacifistType.V] && this.V)
             {
+                this.V = false;
                 ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, PacifistVCard.self);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<PacifistColorEffect>()));
             }

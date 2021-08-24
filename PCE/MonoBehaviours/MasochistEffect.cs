@@ -27,6 +27,7 @@ namespace PCE.MonoBehaviours
         private readonly float colorFlashThreshMaxFrac = 0.25f;
 
         private float multiplier;
+        private bool V = false;
 
         // time since last successful block determines the effect multiplier
         public override CounterStatus UpdateCounter()
@@ -45,14 +46,16 @@ namespace PCE.MonoBehaviours
             // update which masochist cards the player has
             this.CheckCards();
 
-            if (this.HasCompleteSet() && !this.masochists[MasochistType.V])
+            if (this.HasCompleteSet() && !this.masochists[MasochistType.V] && !this.V)
             {
+                this.V = true;
                 ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, MasochistVCard.self);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, MasochistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<MasochistColorEffect>());
             }
-            else if (!this.HasCompleteSet() && this.masochists[MasochistType.V])
+            else if (!this.HasCompleteSet() && this.masochists[MasochistType.V] && this.V)
             {
+                this.V = false;
                 ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, MasochistVCard.self);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<MasochistColorEffect>()));
             }
