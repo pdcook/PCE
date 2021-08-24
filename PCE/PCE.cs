@@ -271,7 +271,7 @@ namespace PCE
                     yield return ModdingUtils.Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
                 }
             }
-            yield return new WaitForSecondsRealtime(0.2f);
+            yield return new WaitForSecondsRealtime(0.5f);
             float numCardsToShow = 0f;
             foreach (Player player in cardsToShow.Keys)
             {
