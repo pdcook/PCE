@@ -12,6 +12,7 @@ using PCE.Extensions;
 using System.Collections;
 using UnboundLib.Networking;
 using ModdingUtils.Extensions;
+using CardChoiceSpawnUniqueCardPatch.CustomCategories;
 
 namespace PCE.Cards
 {
@@ -20,6 +21,7 @@ namespace PCE.Cards
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(cardInfo).canBeReassigned = false;
+            cardInfo.categories = new CardCategory[] { CustomCardCategories.instance.CardCategory("NoPreGamePick") };
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
