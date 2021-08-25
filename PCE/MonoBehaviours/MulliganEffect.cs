@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using HarmonyLib;
+using ModdingUtils.MonoBehaviours;
 using PCE.Extensions;
 using UnboundLib;
 

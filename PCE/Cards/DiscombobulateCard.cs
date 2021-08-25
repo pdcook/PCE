@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using PCE.Extensions;
 using PCE.MonoBehaviours;
 using UnboundLib;
@@ -8,7 +6,6 @@ using UnboundLib.Cards;
 using UnityEngine;
 using System.Reflection;
 using UnboundLib.Networking;
-using System.Linq;
 
 namespace PCE.Cards
 {

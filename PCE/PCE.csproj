@@ -14,79 +14,88 @@
 
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\core\BepInEx.Harmony.dll</HintPath>
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\core\BepInEx.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="CardChoiceSpawnUniqueCardPatch">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\plugins\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
+    </Reference>
+    <Reference Include="CardChoiceSpawnUniqueCardPatch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\Pykess-CardChoiceSpawnUniqueCardPatch\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
     </Reference>
     <Reference Include="InControl">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\InControl.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\InControl.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\plugins\MMHOOK_Assembly-CSharp.dll</HintPath>
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\MMHOOK_Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ModdingUtils">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\plugins\ModdingUtils.dll</HintPath>
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\ModdingUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="ModdingUtils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\Pykess-ModdingUtils\ModdingUtils.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\Photon3Unity3D.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="PhotonChat">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonChat.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonChat.dll</HintPath>
     </Reference>
     <Reference Include="PhotonRealtime">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonRealtime.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonRealtime.dll</HintPath>
     </Reference>
     <Reference Include="PhotonUnityNetworking">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonUnityNetworking.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonUnityNetworking.dll</HintPath>
     </Reference>
     <Reference Include="PhotonUnityNetworking.Demos">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonUnityNetworking.Demos.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonUnityNetworking.Demos.dll</HintPath>
     </Reference>
     <Reference Include="PhotonUnityNetworking.Utilities">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonUnityNetworking.Utilities.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonUnityNetworking.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="PhotonWebSocket">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonWebSocket.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\PhotonWebSocket.dll</HintPath>
     </Reference>
     <Reference Include="PlayerJumpPatch">
       <HintPath>..\..\PlayerJumpPatch\PlayerJumpPatch.dll</HintPath>
     </Reference>
-    <Reference Include="SonigonAudioEngine.Runtime">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\SonigonAudioEngine.Runtime.dll</HintPath>
+    <Reference Include="PlayerJumpPatch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\Pykess-PlayerJumpPatch\PlayerJumpPatch.dll</HintPath>
     </Reference>
-    <Reference Include="UnboundLib">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\BepInEx\plugins\UnboundLib.dll</HintPath>
+    <Reference Include="SonigonAudioEngine.Runtime">
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\SonigonAudioEngine.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="UnboundLib, Version=2.6.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>C:\Users\tddeb\AppData\Roaming\r2modmanPlus-local\ROUNDS\profiles\Default\BepInEx\plugins\willis81808-UnboundLib\UnboundLib.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\..\SteamLibrary\steamapps\common\ROUNDS\Rounds_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
 

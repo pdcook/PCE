@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnboundLib;
-using UnboundLib.Cards;
 using HarmonyLib;
-using System.Reflection;
-using PCE.MonoBehaviours;
-using PCE.Extensions;
+using ModdingUtils.Extensions;
+using ModdingUtils.MonoBehaviours;
 using PCE.Cards;
 
 namespace PCE.MonoBehaviours

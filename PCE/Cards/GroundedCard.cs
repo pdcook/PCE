@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ModdingUtils.Extensions;
+using ModdingUtils.RoundsEffects;
 using UnityEngine;
 using UnboundLib;
 using UnboundLib.Cards;
-using PCE.RoundsEffects;
-using PCE.Extensions;
 
 namespace PCE.Cards
 {
@@ -23,6 +20,7 @@ namespace PCE.Cards
         {
             characterStats.GetAdditionalData().gravityMultiplierOnDoDamage *= 3f;
             characterStats.GetAdditionalData().gravityDurationOnDoDamage = UnityEngine.Mathf.Clamp(characterStats.GetAdditionalData().gravityDurationOnDoDamage + 2f, 0f, 4f);
+
 
             player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
 

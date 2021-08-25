@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnboundLib.Cards;
+﻿using UnboundLib.Cards;
 using UnboundLib;
-using PCE.Extensions;
-using ModdingUtils.Extensions;
 using UnityEngine;
 using System.Reflection;
 
@@ -39,7 +34,7 @@ namespace PCE.Cards
             else
             {
                 // otherwise, let the onbattlestart hook handle it
-                Extensions.CharacterStatModifiersExtension.GetAdditionalData(characterStats).murder += 1;
+                ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(characterStats).murder += 1;
             }
 
         }
