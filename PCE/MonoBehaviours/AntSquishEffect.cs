@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using UnboundLib;
 using UnityEngine;
 using System.Linq;
 using HarmonyLib;

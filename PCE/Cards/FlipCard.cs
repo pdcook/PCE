@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using ModdingUtils.Extensions;
+using ModdingUtils.RoundsEffects;
 using UnboundLib.Cards;
 using UnityEngine;
-using PCE;
 using UnboundLib;
-using PCE.Extensions;
-using PCE.RoundsEffects;
 
 
 namespace PCE.Cards
@@ -31,6 +28,7 @@ namespace PCE.Cards
             characterStats.GetAdditionalData().gravityDurationOnDoDamage = UnityEngine.Mathf.Clamp(characterStats.GetAdditionalData().gravityDurationOnDoDamage + 1.5f, 0f, 4f);
 
             player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
+            
 
         }
         public override void OnRemoveCard()

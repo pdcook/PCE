@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ModdingUtils.MonoBehaviours;
 using UnboundLib.Cards;
-using UnboundLib;
 using UnityEngine;
-using PCE.MonoBehaviours;
 
 namespace PCE.Cards
 {

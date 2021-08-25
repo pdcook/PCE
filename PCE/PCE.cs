@@ -8,18 +8,14 @@ using Photon.Pun;
 using Jotunn.Utils;
 using UnboundLib.GameModes;
 using PCE.Cards;
-using PCE.Extensions;
-using PCE.MonoBehaviours;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CardChoiceSpawnUniqueCardPatch.CustomCategories;
-using PCE.Utils;
-using ModdingUtils.Utils;
-using ModdingUtils.Extensions;
 using UnboundLib.Networking;
 using UnboundLib.Utils;
+using CustomEffects = PCE.Extensions.CustomEffects;
+
 // requires Assembly-CSharp.dll
 // requires MMHOOK-Assembly-CSharp.dll
 
@@ -118,10 +114,8 @@ namespace PCE
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
-            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetTimers()); // I sure hope this doesn't have unintended side effects...
 
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetEffectsBetweenBattles());
-            GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetTimers());
 
             GameModeManager.AddHook(GameModeHooks.HookPlayerPickEnd, (gm) => this.ExtraPicks());
 
@@ -137,9 +131,9 @@ namespace PCE
             for (int j = 0; j < players.Length; j++)
             {
                 // commit any pending murders
-                if (Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder >= 1)
+                if (ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder >= 1)
                 {
-                    Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder--;
+                    ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder--;
 
                     int i = 0;
                     Player oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
@@ -164,31 +158,12 @@ namespace PCE
         }
         private IEnumerator ResetEffectsBetweenBattles()
         {
-            Player[] players = PlayerManager.instance.players.ToArray();
-            for (int j = 0; j < players.Length; j++)
-            {
-                CustomEffects.ClearAllReversibleEffects(players[j].gameObject);
-                foreach (InConeEffect effect in players[j].GetComponents<InConeEffect>())
-                {
-                    effect.RemoveAllEffects();
-                }
-            }
             foreach (GameObject gameObject in FindObjectsOfType(typeof(GameObject)) as GameObject[])
             {
                 if (gameObject.name == "LaserTrail(Clone)")
                 {
                     UnityEngine.GameObject.Destroy(gameObject);
                 }
-            }
-            yield break;
-        }
-
-        private IEnumerator ResetTimers()
-        {
-            Player[] players = PlayerManager.instance.players.ToArray();
-            for (int j = 0; j < players.Length; j++)
-            {
-                CustomEffects.ResetAllTimers(players[j].gameObject);
             }
             yield break;
         }

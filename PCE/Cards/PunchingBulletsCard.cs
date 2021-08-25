@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnboundLib.Cards;
-using UnboundLib;
+﻿using UnboundLib.Cards;
 using UnityEngine;
-using PCE.MonoBehaviours;
-using PCE.Utils;
-using PCE.Extensions;
 
 namespace PCE.Cards
 {
@@ -18,7 +11,7 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            characterStats.GetAdditionalData().punch = true;
+            ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(characterStats).punch = true;
         }
         public override void OnRemoveCard()
         {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using ModdingUtils.MonoBehaviours;
 using UnboundLib.Cards;
 using UnityEngine;
-using PCE;
-using UnboundLib;
-using PCE.Extensions;
-using PCE.RoundsEffects;
-using PCE.MonoBehaviours;
 
 
 namespace PCE.Cards
