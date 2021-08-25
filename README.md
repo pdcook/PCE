@@ -22,6 +22,12 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.4.4
+-------------
+
+- Fixed compatibility issue with Shuffle in the upcoming update to Competitive Rounds
+- BossSloth migrated several tools to ModdingUtils
+
 #### v0.2.4.3
 -------------
 
