@@ -22,6 +22,14 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.5.0
+-------------
+
+- New card: Pac-Player
+- Moon shoes' no-height-limit effect now lasts 5 seconds per moon shoes
+- Thank You Sir May I Have Another now grants +50% health
+- Demonic Possession's pop effect now goes through walls
+
 #### v0.2.4.4
 -------------
 
@@ -367,11 +375,11 @@ This mod adds a number of cards to the game. Below they are listed in no particu
 ### Laser
 ***Rare***
 
-Replaces your projectile gun with a laser instead. When fired, the entire laser charge must be used.
+Add a laser to your gun
 
 ---
 
-### Ghost Gun
+### Ghost Bullets
 ***Rare***
 
 Makes your bullets completely invisible and go through walls.
@@ -611,6 +619,13 @@ Bullets split into fragments on impact
 *Common*
 
 Bullets wrap around the edge of the screen
+
+---
+
+### Pac-Player
+**Uncommon**
+
+**You** wrap around the edge of the screen
 
 ---
 

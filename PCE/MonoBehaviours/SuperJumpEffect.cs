@@ -17,6 +17,8 @@ namespace PCE.MonoBehaviours
         private readonly float minChargeTime = 0.5f;
         private float startTime = -1f;
         private int numberOfBlocks = 0;
+
+        private readonly float outOfBoundsTime = 5f;
         public override void OnAwake()
         {
             base.SetLivesToEffect(int.MaxValue);
@@ -126,13 +128,14 @@ namespace PCE.MonoBehaviours
         }
         private System.Collections.IEnumerator DisableTopOutOfBounds()
         {
+            float startTime = Time.time;
             int k = 0;
             while (base.data.isGrounded && k < 10)
             {
                 k++;
                 yield return null;
             }
-            while (!base.data.isGrounded)
+            while (!base.data.isGrounded && Time.time < startTime + this.outOfBoundsTime)
             {
                 //if (base.player.data.playerActions.Jump.WasPressed || base.player.data.playerActions.Jump.IsPressed)
                 //{

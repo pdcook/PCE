@@ -2,6 +2,7 @@
 using UnboundLib;
 using Photon.Pun;
 using PCE.Extensions;
+using ModdingUtils.Extensions;
 
 namespace PCE.MonoBehaviours
 {
@@ -93,7 +94,7 @@ namespace PCE.MonoBehaviours
             if (this.parent == null) { return; }
             this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
             this.view = this.gameObject.GetComponent<PhotonView>();
-            this.numWraps = this.gun.GetAdditionalData().wraps;
+            this.numWraps = Extensions.GunExtension.GetAdditionalData(this.gun).wraps;
 
             this.mainCam = MainCam.instance.transform.GetComponent<Camera>();
         }

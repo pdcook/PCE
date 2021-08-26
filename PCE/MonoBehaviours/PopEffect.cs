@@ -131,6 +131,7 @@ namespace PCE.MonoBehaviours
         public void RPCA_Teleport(Vector3 pos)
         {
             this.PlayParts();
+            this.player.GetComponentInParent<PlayerCollision>().IgnoreWallForFrames(2);
             this.player.transform.position = pos;
             this.PlayParts();
         }

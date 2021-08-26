@@ -16,6 +16,8 @@ namespace PCE.Extensions
         public int shuffles;
         public bool removeSpeedCompensation;
         public float piercingPerc;
+        public int wraps;
+        public int remainingWraps;
         public CharacterStatModifiersAdditionalData()
         {
             thankyousirmayihaveanother = 0;
@@ -25,6 +27,8 @@ namespace PCE.Extensions
             shuffles = 0;
             removeSpeedCompensation = false;
             piercingPerc = 0f;
+            wraps = 0;
+            remainingWraps = 0;
         }
     }
     public static class CharacterStatModifiersExtension
@@ -60,6 +64,8 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().shuffles = 0;
             __instance.GetAdditionalData().removeSpeedCompensation = false;
             __instance.GetAdditionalData().piercingPerc = 0f;
+            __instance.GetAdditionalData().wraps = 0;
+            __instance.GetAdditionalData().remainingWraps = 0;
 
         }
     }

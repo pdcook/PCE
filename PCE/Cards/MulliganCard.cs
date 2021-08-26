@@ -20,6 +20,7 @@ namespace PCE.Cards
 
             player.gameObject.GetOrAddComponent<MulliganEffect>();
             characterStats.GetAdditionalData().mulligans++;
+            characterStats.GetAdditionalData().remainingMulligans = characterStats.GetAdditionalData().mulligans;
 
         }
         public override void OnRemoveCard()

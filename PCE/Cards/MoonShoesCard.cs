@@ -17,7 +17,8 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             gravity.gravityForce /= 6f;
-            player.gameObject.GetOrAddComponent<MoonShoesEffect>();
+            MoonShoesEffect effect = player.gameObject.GetOrAddComponent<MoonShoesEffect>();
+            effect.outOfBoundsTime += 5f;
         }
         public override void OnRemoveCard()
         {
@@ -56,8 +57,8 @@ namespace PCE.Cards
                 new CardInfoStat
                 {
                 positive = true,
-                stat = "Height Limit",
-                amount = "No",
+                stat = "No Height Limit",
+                amount = "+5s",
                 simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 }
             };

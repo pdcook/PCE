@@ -7,6 +7,7 @@ namespace PCE.MonoBehaviours
     public class MoonShoesEffect : ReversibleEffect // using ReversibleEffect just to handle cleanup/resetting
     {
         private Coroutine ooBCoroutine = null;
+        internal float outOfBoundsTime = 0f;
 
         public override void OnAwake()
         {
@@ -55,6 +56,8 @@ namespace PCE.MonoBehaviours
 
         private System.Collections.IEnumerator DisableTopOutOfBounds()
         {
+            float startTime = Time.time;
+
             while (true)
             {
 
@@ -65,12 +68,13 @@ namespace PCE.MonoBehaviours
 
                 vector = new Vector3(Mathf.Clamp01(vector.x), Mathf.Clamp01(vector.y), 0f);
 
-                if (vector.x <= 0f || vector.x >= 1f || vector.y <= 0f)
+                if (Time.time > startTime + outOfBoundsTime || vector.x <= 0f || vector.x >= 1f || vector.y <= 0f)
                 {
                     base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
                 }
-                else
+                if (!(vector.x <= 0f || vector.x >= 1f || vector.y <= 0f) && vector.y < 1f)
                 {
+                    startTime = Time.time;
                     base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
                 }
 

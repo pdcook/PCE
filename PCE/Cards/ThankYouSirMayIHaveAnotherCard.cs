@@ -22,6 +22,8 @@ namespace PCE.Cards
             characterStats.GetAdditionalData().thankyousirmayihaveanother += 1;
             player.gameObject.GetOrAddComponent<ThankYouSirMayIHaveAnotherWasDealtDamageEffect>();
 
+            data.maxHealth *= 1.5f;
+
         }
         public override void OnRemoveCard()
         {
@@ -48,7 +50,16 @@ namespace PCE.Cards
 
         protected override CardInfoStat[] GetStats()
         {
-            return null;
+            return new CardInfoStat[]
+            {
+                new CardInfoStat
+                {
+                    positive = true,
+                    stat = "HP",
+                    amount = "+50%",
+                    simepleAmount = CardInfoStat.SimpleAmount.aLotOf
+                }
+            };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
         {

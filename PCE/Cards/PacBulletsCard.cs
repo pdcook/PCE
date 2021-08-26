@@ -17,10 +17,10 @@ namespace PCE.Cards
         {
             if (gun.GetAdditionalData().wraps == 0)
             {
-                ObjectsToSpawn fireworkObj = new ObjectsToSpawn() { };
-                fireworkObj.AddToProjectile = new GameObject("PacBulletsSpawner", typeof(PacBulletSpawner));
+                ObjectsToSpawn pacbulletsobj = new ObjectsToSpawn() { };
+                pacbulletsobj.AddToProjectile = new GameObject("PacBulletsSpawner", typeof(PacBulletSpawner));
                 List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
-                objectsToSpawn.Add(fireworkObj);
+                objectsToSpawn.Add(pacbulletsobj);
                 gun.objectsToSpawn = objectsToSpawn.ToArray();
             }
             gun.GetAdditionalData().wraps += 3;
