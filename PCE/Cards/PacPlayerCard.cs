@@ -54,7 +54,7 @@ namespace PCE.Cards
                 new CardInfoStat
                 {
                     positive = true,
-                    stat = "Warp",
+                    stat = "Warps",
                     amount = "+2",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },

@@ -25,13 +25,6 @@ namespace PCE.MonoBehaviours
         }
         public override void OnOnEnable()
         {
-            if (base.characterStatModifiers.GetAdditionalData().remainingWraps > 0) 
-            { 
-                base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
-                this.active = true;
-                this.waitX = false;
-                this.waitY = false;
-            }
         }
         private void WarpX(Vector3 pos)
         {
@@ -79,15 +72,37 @@ namespace PCE.MonoBehaviours
         }
         public override void OnUpdate()
         {
+            if (!PlayerStatus.PlayerAliveAndSimulated(base.player) && base.characterStatModifiers.GetAdditionalData().wraps > 0 && !this.active)
+            {
+                Unbound.Instance.ExecuteAfterSeconds(0.5f, () =>
+                {
+                    base.characterStatModifiers.GetAdditionalData().remainingWraps = base.characterStatModifiers.GetAdditionalData().wraps;
+                    base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
+                    this.active = true;
+                    this.waitX = false;
+                    this.waitY = false;
+                });
+                return;
+            }
+
+            if (this.active && !PlayerStatus.PlayerAliveAndSimulated(base.player))
+            {
+                return;
+            }
+
             if (!this.active)
             {
                 return;
             }
-            else if (!(this.waitX || this.waitY) && this.active && base.characterStatModifiers.GetAdditionalData().remainingWraps <= 0)
+            else if (PlayerStatus.PlayerAliveAndSimulated(base.player) && !(this.waitX || this.waitY) && this.active && base.characterStatModifiers.GetAdditionalData().remainingWraps <= 0)
             {
                 Unbound.Instance.ExecuteAfterSeconds(0.1f, () => { base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true; });
                 this.active = false;
                 return;
+            }
+            else if (this.active && base.characterStatModifiers.GetAdditionalData().remainingWraps >0)
+            {
+                base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
             }
 
             Vector3 pos = MainCam.instance.transform.GetComponent<Camera>().WorldToScreenPoint(new Vector3(data.transform.position.x, data.transform.position.y, 0f));
