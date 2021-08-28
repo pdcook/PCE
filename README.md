@@ -22,6 +22,15 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v0.2.6.0
+-------------
+
+- New card: Comb
+- Balance changes;
+    - Murder now kills _all_ opponents
+- Bugfixes:
+    - Pac-Player now works in Sandbox
+
 #### v0.2.5.1
 -------------
 
@@ -423,7 +432,7 @@ Bullets temporarily increase the strength of victim's gravity.
 ### Murder
 ***Rare***
 
-Kill your opponent.
+Kill your opponents.
 
 ---
 
@@ -674,3 +683,10 @@ Bullets partially pierce shields
 **Uncommon**
 
 Bullet effects apply through shields
+
+---
+
+### Comb
+**Uncommon**
+
+Fire multiple bullets side-by-side

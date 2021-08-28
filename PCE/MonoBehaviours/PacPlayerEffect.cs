@@ -136,6 +136,17 @@ namespace PCE.MonoBehaviours
                 }
             }
         }
+        internal void ForceActivate()
+        {
+            Unbound.Instance.ExecuteAfterSeconds(0.5f, () =>
+            {
+                base.characterStatModifiers.GetAdditionalData().remainingWraps = base.characterStatModifiers.GetAdditionalData().wraps;
+                base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
+                this.active = true;
+                this.waitX = false;
+                this.waitY = false;
+            });
+        }
         [PunRPC]
         public void RPCA_Teleport(Vector3 pos)
         {

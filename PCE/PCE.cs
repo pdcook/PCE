@@ -28,7 +28,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.2.5.1")]
+    [BepInPlugin(ModId, ModName, "0.2.6.0")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -84,6 +84,7 @@ namespace PCE
             CustomCard.BuildCard<PacPlayerCard>();
             CustomCard.BuildCard<PiercingBulletsCard>();
             CustomCard.BuildCard<PunchingBulletsCard>();
+            CustomCard.BuildCard<CombCard>();
 
             CustomCard.BuildCard<SurvivalistICard>();
             CustomCard.BuildCard<SurvivalistIICard>();
@@ -136,23 +137,20 @@ namespace PCE
                 {
                     ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder--;
 
-                    int i = 0;
-                    Player oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
-
-                    // while the other player is on the same team as the current player
-                    while ((oppPlayer.teamID == players[j].teamID) && i < 1000)
+                    // kill ALL opposing players
+                    foreach (Player oppPlayer in PlayerManager.instance.players.Where(player => player.teamID != players[j].teamID))
                     {
-                        oppPlayer = PlayerManager.instance.players[MurderCard.rng.Next(0, PlayerManager.instance.players.Count)];
-                        i++;
-                    }
-                    Unbound.Instance.ExecuteAfterSeconds(2f, delegate
-                    {
-                        oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                        Unbound.Instance.ExecuteAfterSeconds(2f, delegate
                         {
+                            oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                            {
                                     new Vector2(0, 1)
-                        });
+                            });
 
-                    });
+                        });
+                    }
+
+
                 }
             }
             yield break;

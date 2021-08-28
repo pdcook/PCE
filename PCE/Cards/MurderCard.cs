@@ -2,14 +2,14 @@
 using UnboundLib;
 using UnityEngine;
 using System.Reflection;
+using System.Linq;
 
 namespace PCE.Cards
 {
     public class MurderCard : CustomCard
     {
-        public static System.Random rng = new System.Random();
         /*
-        *  A rare card which kills the opposing player immediately at the start of the next round
+        *  A rare card which kills ALL opposing players immediately at the start of the next round
         */
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
@@ -20,16 +20,18 @@ namespace PCE.Cards
 
             if (GM_Test.instance != null && GM_Test.instance.gameObject.activeInHierarchy)
             {
-                // are we in sandbox mode? if so, just kill the other player
-                Player oppPlayer = PlayerManager.instance.GetOtherPlayer(player);
-                Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                // are we in sandbox mode? if so, just kill the other players
+                foreach (Player oppPlayer in PlayerManager.instance.players.Where(oP => oP.teamID != player.teamID))
                 {
-                    typeof(HealthHandler).InvokeMember("RPCA_Die",
-                                BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
-                                new object[] { new Vector2(0, 1) });
+                    Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                    {
+                        typeof(HealthHandler).InvokeMember("RPCA_Die",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, oppPlayer.data.healthHandler,
+                                    new object[] { new Vector2(0, 1) });
 
-                });
+                    });
+                }
             }
             else
             {
@@ -48,7 +50,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Kill your opponent";
+            return "Kill your opponents";
         }
 
         protected override GameObject GetCardArt()

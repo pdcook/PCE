@@ -23,6 +23,11 @@ namespace PCE.Cards
 
             player.gameObject.GetOrAddComponent<PacPlayerEffect>();
 
+            // are we in sandbox mode? if so, force enable the effect
+            if (GM_Test.instance != null && GM_Test.instance.gameObject.activeInHierarchy)
+            {
+                player.gameObject.GetOrAddComponent<PacPlayerEffect>().ForceActivate();
+            }
         }
         public override void OnRemoveCard()
         {
