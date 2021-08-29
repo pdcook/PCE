@@ -9,65 +9,14 @@ using PCE.Utils;
 using System.Collections.ObjectModel;
 using UnboundLib.Utils;
 using PCE.Extensions;
-
+using HarmonyLib;
+using System.Runtime.CompilerServices;
+using System;
+using InControl;
+using ModdingUtils.MonoBehaviours;
+using UnboundLib;
 namespace PCE.Cards
 {
-    public class LaserAssets
-    {
-        private static GameObject _laserGun = null;
-
-        internal static GameObject laserGun
-        {
-            get
-            {
-                if (LaserAssets._laserGun != null) { return LaserAssets._laserGun; }
-                else
-                {
-                    LaserAssets._laserGun = new GameObject("LaserGun", typeof(LaserGun), typeof(PhotonView));
-                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserGun);
-
-                    return LaserAssets._laserGun;
-                }
-            }
-            set { }
-        }
-
-        private static GameObject _laserTrailSpawner = null;
-
-        internal static GameObject laserTrailSpawner
-        {
-            get
-            {
-                if (LaserAssets._laserTrailSpawner != null) { return LaserAssets._laserTrailSpawner; }
-                else
-                {
-                    LaserAssets._laserTrailSpawner = new GameObject("LaserTrailSpawner", typeof(LaserTrailSpawner));
-                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserTrailSpawner);
-
-                    return LaserAssets._laserTrailSpawner;
-                }
-            }
-            set { }
-        }
-
-        private static GameObject _laserTrail = null;
-
-        internal static GameObject laserTrail
-        {
-            get
-            {
-                if (LaserAssets._laserTrail != null) { return LaserAssets._laserTrail; }
-                else
-                {
-                    LaserAssets._laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer), typeof(NetworkedTrailRenderer));
-                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserTrail);
-
-                    return LaserAssets._laserTrail;
-                }
-            }
-            set { }
-        }
-    }
     public class LaserCard : CustomCard
     {
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
@@ -76,14 +25,19 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
-            ObjectsToSpawn laserGun = new ObjectsToSpawn { };
-            laserGun.AddToProjectile = new GameObject("LaserGunSpawner", typeof(LaserGunSpawner));
-            objectsToSpawn.Add(laserGun);
-            
-            gun.objectsToSpawn = objectsToSpawn.ToArray();
-
+            gun.GetAdditionalData().laserGun = UnityEngine.GameObject.Instantiate(LaserAssets.laserGunSpawner, gun.gameObject.transform);
+            gun.GetAdditionalData().canBeLaser = true;
             gun.reloadTime += 0.5f;
+
+            LaserEffect laserEffect = player.gameObject.GetOrAddComponent<LaserEffect>();
+            laserEffect.SetLivesToEffect(int.MaxValue);
+            laserEffect.gunStatModifier.attackSpeed_add = 2f - gun.attackSpeed;
+            laserEffect.gunStatModifier.bursts_mult = 0;
+            laserEffect.gunStatModifier.evenSpread_mult = 0f;
+            laserEffect.gunStatModifier.multiplySpread_mult = 0f;
+            laserEffect.gunStatModifier.numberOfProjectiles_mult = 0;
+            laserEffect.gunStatModifier.timeBetweenBullets_add = 100f;
+            laserEffect.applyImmediately = false;
         }
         public override void OnRemoveCard()
         {
@@ -95,7 +49,8 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "<b>L</b>ight <b>A</b>mplification by <b>S</b>timulated <b>E</b>mission of <b>R</b>adiation";
+            //return "<b>L</b>ight <b>A</b>mplification by <b>S</b>timulated <b>E</b>mission of <b>R</b>adiation";
+            return "Switch to a Laser cannon by pressing Middle Mouse or D-Pad Down";
         }
         protected override GameObject GetCardArt()
         {
@@ -129,6 +84,203 @@ namespace PCE.Cards
             return "PCE";
         }
     }
+    class LaserEffect : ReversibleEffect
+    {
+        public override void OnOnDisable()
+        {
+            base.ClearModifiers(false);
+        }
+    }
+    // postfix PlayerActions constructor to add controls for the crosshair distance
+    [HarmonyPatch(typeof(PlayerActions))]
+    [HarmonyPatch(MethodType.Constructor)]
+    [HarmonyPatch(new Type[] { })]
+    class PlayerActionsPatchPlayerActions
+    {
+        private static void Postfix(PlayerActions __instance)
+        {
+            __instance.GetAdditionalData().switchWeapon = (PlayerAction)typeof(PlayerActions).InvokeMember("CreatePlayerAction",
+                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                    BindingFlags.NonPublic, null, __instance, new object[] { "Switch Weapon" });
+
+        }
+    }
+    // postfix PlayerActions to add controls for switching weapons
+    [HarmonyPatch(typeof(PlayerActions), "CreateWithControllerBindings")]
+    class PlayerActionsPatchCreateWithControllerBindings
+    {
+        private static void Postfix(ref PlayerActions __result)
+        {
+            __result.GetAdditionalData().switchWeapon.AddDefaultBinding(InputControlType.DPadDown);
+        }
+    }    
+    // postfix PlayerActions to add controls for switching weapons
+    [HarmonyPatch(typeof(PlayerActions), "CreateWithKeyboardBindings")]
+    class PlayerActionsPatchCreateWithKeyboardBindings
+    {
+        private static void Postfix(ref PlayerActions __result)
+        {
+            __result.GetAdditionalData().switchWeapon.AddDefaultBinding(Mouse.MiddleButton);
+        }
+    }
+    // prefix/postfix ApplyStats to disable/enable lasergun if its currently active
+    [HarmonyPatch(typeof(ApplyCardStats), "ApplyStats")]
+    class ApplyCardStatsPatchApplyStats
+    {
+        private static void Prefix(ApplyCardStats __instance, out bool __state)
+        {
+            __state = false;
+            Gun gun = ((Player)Traverse.Create(__instance).Field("playerToUpgrade").GetValue()).GetComponent<Holding>().holdable.GetComponent<Gun>();
+            if (gun.GetAdditionalData().isLaser)
+            {
+                gun.GetAdditionalData().isLaser = false;
+                gun.player.GetComponent<LaserEffect>().ClearModifiers(false);
+                __state = true;
+            }
+        }
+        private static void Postfix(ApplyCardStats __instance, bool __state)
+        {
+            if (__state)
+            {
+                Gun gun = ((Player)Traverse.Create(__instance).Field("playerToUpgrade").GetValue()).GetComponent<Holding>().holdable.GetComponent<Gun>();
+                gun.GetAdditionalData().isLaser = true;
+                gun.player.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_add = 2f - __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().attackSpeed;
+                gun.player.GetComponent<LaserEffect>().ApplyModifiers();
+            }
+        }
+    }
+    // postfix GeneralInput to add controls for switching weapons
+    [HarmonyPatch(typeof(GeneralInput), "Update")]
+    class GeneralInputPatchUpdate
+    {
+        private static void Postfix(GeneralInput __instance)
+        {
+            try
+            {
+                if (__instance.GetComponent<CharacterData>().playerActions.GetAdditionalData().switchWeapon.WasPressed && __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().canBeLaser)
+                {
+                    __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser = !__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser;
+                
+                    if (__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser)
+                    {
+                        __instance.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_add = 2f - __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().attackSpeed;
+                        __instance.GetComponent<LaserEffect>().ApplyModifiers();
+                    }
+                    if (!__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser)
+                    {
+                        __instance.GetComponent<LaserEffect>().ClearModifiers(false);
+                    }
+
+                }
+            }
+            catch { }
+        }
+    }
+    // prefix Gun.Attack to skip if firing a laser
+    [HarmonyPatch(typeof(Gun), "Attack")]
+    class GunPatchAttack
+    {
+        private static bool Prefix(Gun __instance, ref bool __result, bool forceAttack)
+        {
+
+            if (__instance.GetAdditionalData().isLaser && __instance.GetAdditionalData().laserGun != null)
+            {
+                float usedCooldown = (float)typeof(Gun).GetProperty("usedCooldown", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+
+                if (__instance.sinceAttack < usedCooldown && !forceAttack)
+                {
+                    __result = false;
+                    return false;
+                }
+                if (__instance.isReloading && !forceAttack)
+                {
+                    __result = false;
+                    return false;
+                }
+                __instance.sinceAttack = 0f;
+                
+                // fire laser
+                __instance.GetAdditionalData().laserGun.GetComponent<LaserGunSpawner>().SpawnLaser();
+
+                __instance.player.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_add = 2f - __instance.attackSpeed;
+                __instance.player.GetComponent<LaserEffect>().ApplyModifiers();
+
+                // no recoil
+                //Rigidbody2D rig = (Rigidbody2D)Traverse.Create(__instance).Field("rig").GetValue();
+                //rig.AddForce(10f * rig.mass * __instance.recoil * Mathf.Clamp(usedCooldown, 0f, 1f) * - __instance.transform.up, ForceMode2D.Impulse);
+                
+                // use ammo
+                ((GunAmmo)Traverse.Create(__instance).Field("gunAmmo").GetValue()).Shoot(__instance.GetAdditionalData().laserGun);
+
+                // audio/visual effects
+                GamefeelManager.GameFeel(__instance.transform.up * __instance.shake * 2f);
+                //__instance.soundGun.PlayShot(1);
+
+                __result = true;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    public class LaserAssets
+    {
+        private static GameObject _laserGunSpawner;
+        internal static GameObject laserGunSpawner
+        {
+            get
+            {
+                if (LaserAssets._laserGunSpawner != null) { return LaserAssets._laserGunSpawner; }
+                else
+                {
+                    LaserAssets._laserGunSpawner = new GameObject("LaserGunSpawner", typeof(LaserGunSpawner));
+                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserGunSpawner);
+
+                    return LaserAssets._laserGunSpawner;
+                }
+            }
+            set { }
+        }
+
+        private static GameObject _laserTrail = null;
+
+        internal static GameObject laserTrail
+        {
+            get
+            {
+                if (LaserAssets._laserTrail != null) { return LaserAssets._laserTrail; }
+                else
+                {
+                    LaserAssets._laserTrail = new GameObject("LaserTrail", typeof(LaserHurtbox), typeof(PhotonView), typeof(LineRenderer));
+                    UnityEngine.GameObject.DontDestroyOnLoad(LaserAssets._laserTrail);
+
+                    return LaserAssets._laserTrail;
+                }
+            }
+            set { }
+        }
+        private static Material _material = null;
+        internal static Material material
+        {
+            get
+            {
+                if (LaserAssets._material != null) { return _material; }
+
+                List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
+                List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+                List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
+                CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
+                Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
+                ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
+                LaserAssets._material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
+
+                return LaserAssets._material;
+            }
+            set { }
+        }
+    }
     public class LaserGunSpawner : MonoBehaviour
     {
         private static bool Initialized = false;
@@ -139,7 +291,6 @@ namespace PCE.Cards
         {
             if (!Initialized)
             {
-                PhotonNetwork.PrefabPool.RegisterPrefab(LaserAssets.laserGun.name, LaserAssets.laserGun);
                 PhotonNetwork.PrefabPool.RegisterPrefab(LaserAssets.laserTrail.name, LaserAssets.laserTrail);
             }
         }
@@ -152,167 +303,18 @@ namespace PCE.Cards
                 return;
             }
 
-            if (!PhotonNetwork.OfflineMode && !this.gameObject.transform.parent.GetComponent<ProjectileHit>().ownPlayer.data.view.IsMine) return;
-
+            if (!PhotonNetwork.OfflineMode && !this.gameObject.transform.parent.GetComponent<Gun>().player.data.view.IsMine) return;
+        }
+        internal void SpawnLaser()
+        {
 
             PhotonNetwork.Instantiate(
-                LaserAssets.laserGun.name,
+                LaserAssets.laserTrail.name,
                 transform.position,
                 transform.rotation,
                 0,
-                new object[] { this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID }
+                new object[] { this.gameObject.transform.parent.GetComponent<Gun>().player.data.view.ViewID }
             );
-        }
-    }
-
-    public class LaserGunGun : Gun
-    {
-
-    }
-    public class LaserGun : MonoBehaviour, IPunInstantiateMagicCallback
-    {
-
-        private readonly float duration = 20f;
-
-        private ProjectileHit projectile;
-        private Gun gun;
-        private Gun newGun;
-        private Player player;
-        public void OnPhotonInstantiate(Photon.Pun.PhotonMessageInfo info)
-        {
-            object[] instantiationData = info.photonView.InstantiationData;
-
-            GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
-
-            this.gameObject.transform.SetParent(parent.transform);
-
-            this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
-            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-
-            this.gameObject.AddComponent<DestroyOnUnparent>();
-
-        }
-        void Start()
-        {
-
-            // get the projectile, player, and gun this is attached to
-            this.projectile = this.gameObject.transform.parent.GetComponent<ProjectileHit>();
-            this.player = this.projectile.ownPlayer;
-            this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-
-            // create a new gun for the spawnbulletseffect
-            this.newGun = this.player.gameObject.AddComponent<LaserGunGun>();
-
-            SpawnBulletsEffect effect = this.player.gameObject.AddComponent<SpawnBulletsEffect>();
-            // set the position and direction to fire
-            // REMOVING COMPENSATION FOR BULLET SPEED
-            if (!this.player.data.stats.GetAdditionalData().removeSpeedCompensation)
-            {
-                effect.SetDirection(((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
-                                   BindingFlags.Instance | BindingFlags.InvokeMethod |
-                                  BindingFlags.NonPublic, null, this.gun, new object[] { 0, 0, 0f })) * Vector3.forward - Vector3.up * 0.13f / Mathf.Clamp(this.gun.projectileSpeed, 1f, 100f));
-
-            }
-            else
-            {
-                effect.SetDirection(((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
-                   BindingFlags.Instance | BindingFlags.InvokeMethod |
-                  BindingFlags.NonPublic, null, this.gun, new object[] { 0, 0, 0f })) * Vector3.forward);
-            }
-            effect.SetPosition(this.gun.transform.position);
-            effect.SetNumBullets(1);
-            effect.SetTimeBetweenShots(0f);
-            effect.SetInitialDelay(0.05f);
-
-            // copy private gun stats over and reset all public stats
-            SpawnBulletsEffect.CopyGunStats(this.gun, newGun);
-
-            newGun.isReloading = false;
-            newGun.damage = 1f;
-            newGun.reloadTime = 1f;
-            newGun.reloadTimeAdd = 0f;
-            newGun.recoilMuiltiplier = 1f;
-            newGun.knockback = 1f;
-            newGun.attackSpeed = 0.3f;
-            newGun.projectileSpeed = 1f;
-            newGun.projectielSimulatonSpeed = 1f;
-            newGun.gravity = 1f;
-            newGun.damageAfterDistanceMultiplier = 1f;
-            newGun.bulletDamageMultiplier = 1f;
-            newGun.multiplySpread = 1f;
-            newGun.shakeM = 1f;
-            newGun.ammo = 0;
-            newGun.ammoReg = 0f;
-            newGun.size = 0f;
-            newGun.overheatMultiplier = 0f;
-            newGun.timeToReachFullMovementMultiplier = 0f;
-            newGun.numberOfProjectiles = 1;
-            newGun.bursts = 0;
-            newGun.reflects = 0;
-            newGun.smartBounce = 0;
-            newGun.bulletPortal = 0;
-            newGun.randomBounces = 0;
-            newGun.timeBetweenBullets = 0f;
-            newGun.projectileSize = 0f;
-            newGun.speedMOnBounce = 1f;
-            newGun.dmgMOnBounce = 1f;
-            newGun.drag = 0f;
-            newGun.dragMinSpeed = 1f;
-            newGun.spread = 0f;
-            newGun.evenSpread = 0f;
-            newGun.percentageDamage = 0f;
-            newGun.cos = 0f;
-            newGun.slow = 0f;
-            newGun.chargeNumberOfProjectilesTo = 0f;
-            newGun.destroyBulletAfter = 0f;
-            newGun.forceSpecificAttackSpeed = 0f;
-            newGun.lockGunToDefault = false;
-            newGun.unblockable = false;
-            newGun.ignoreWalls = false;
-            newGun.currentCharge = 0f;
-            newGun.useCharge = false;
-            newGun.waveMovement = false;
-            newGun.teleport = false;
-            newGun.spawnSkelletonSquare = false;
-            newGun.explodeNearEnemyRange = 0f;
-            newGun.explodeNearEnemyDamage = 0f;
-            newGun.hitMovementMultiplier = 1f;
-            newGun.isProjectileGun = false;
-            newGun.defaultCooldown = 1f;
-            newGun.attackSpeedMultiplier = 1f;
-
-            newGun.damage = 0f;
-            newGun.damageAfterDistanceMultiplier = 1f;
-            newGun.reflects = int.MaxValue;
-            newGun.bulletDamageMultiplier = 1f;
-            newGun.projectileSpeed = 10f;
-            newGun.projectielSimulatonSpeed = 1f;
-            newGun.projectileSize = 1f;
-            newGun.projectileColor = Color.clear;
-            newGun.spread = 0f;
-            newGun.destroyBulletAfter = this.duration;
-            newGun.numberOfProjectiles = 1;
-            newGun.ignoreWalls = false;
-            newGun.gravity = 0f;
-
-            // get the bullet trail material from the targetbounce card
-            List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
-            List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-            List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
-            CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
-            Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
-            ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
-            Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
-            
-            // make the lasertrail objectToSpawn
-            ObjectsToSpawn laserTrail = new ObjectsToSpawn { };
-            laserTrail.AddToProjectile = LaserAssets.laserTrailSpawner;
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { laserTrail, PreventRecursion.stopRecursionObjectToSpawn };
-
-            // set the gun of the spawnbulletseffect
-            effect.SetGun(newGun);
-
-
         }
     }
     // destroy object once its no longer a child
@@ -321,37 +323,6 @@ namespace PCE.Cards
         void LateUpdate()
         {
             if (this.gameObject.transform.parent == null) { Destroy(this.gameObject); }
-        }
-    }
-
-    public class LaserTrailSpawner : MonoBehaviour
-    {
-        private static bool Initialized = false;
-
-
-        void Awake()
-        {
-        }
-
-        void Start()
-        {
-            if (!Initialized)
-            {
-                Initialized = true;
-                return;
-            }
-
-            Destroy(gameObject, 1f);
-
-            if (!PhotonNetwork.OfflineMode && !this.transform.parent.GetComponent<PhotonView>().IsMine) return;
-
-            PhotonNetwork.Instantiate(
-                LaserAssets.laserTrail.name,
-                transform.position,
-                transform.rotation,
-                0,
-                new object[] {this.gameObject.transform.parent.GetComponent<PhotonView>().ViewID}
-            );
         }
     }
 
@@ -379,18 +350,21 @@ namespace PCE.Cards
             return new Vector3(v2.x, v2.y, 0);
         }
     }
+    [RequireComponent(typeof(PhotonView))]
     class LaserHurtbox : MonoBehaviour, IPunInstantiateMagicCallback
     {
+        private readonly float timeToTrack = 2f;
+
         private float startTime;
         private float damageMultiplier;
         public float baseDamage;
 
-        private readonly int frameInterval = 15;
-        private int frames = 0;
+        private readonly float duration = 3f;
+        private readonly float[] minmaxwidth = new float[] { 0.1f, 0.5f };
+        private readonly float baseDamageMultiplier = 4f;
 
-        public float duration;
-        private readonly float[] minmaxwidth = new float[]{0.25f,1f};
-        private readonly float baseDamageMultiplier = 2.5f;
+        private readonly float damageTickDelay = 0.1f;
+        private float startDamageTime;
 
         private LineRenderer trail;
         private readonly int MAX = 100000;
@@ -398,9 +372,13 @@ namespace PCE.Cards
         public Gun gun;
         public Player player;
 
-        private bool sync = true;
+        private PhotonView view;
 
         private Vector3[] positions3d;
+
+        private bool synced = false;
+
+        private int layerMask;
 
         public Material material
         {
@@ -410,7 +388,7 @@ namespace PCE.Cards
             }
             set
             {
-                this.trail.material = value; 
+                this.trail.material = value;
             }
         }
         public Color color
@@ -442,22 +420,15 @@ namespace PCE.Cards
 
             object[] instantiationData = info.photonView.InstantiationData;
 
-            GameObject parent = PhotonView.Find((int)instantiationData[0]).gameObject;
+            GameObject parentPlayer = PhotonView.Find((int)instantiationData[0]).gameObject;
 
-            if (PhotonNetwork.OfflineMode || this.GetComponent<PhotonView>().IsMine)
-            {
-                this.gameObject.transform.SetParent(parent.transform);
+            GameObject parent = parentPlayer.GetComponent<Player>().GetComponent<Holding>().holdable.GetComponent<Gun>().gameObject;
 
-                if (this.gameObject.transform.parent.gameObject.name.ToLower().Contains("emp"))
-                {
-                    Destroy(this.gameObject);
-                }
+            this.gameObject.transform.SetParent(parent.transform);
 
-                this.player = parent.GetComponent<ProjectileHit>().ownPlayer;
-                this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-                this.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
-            }
-
+            this.gun = this.gameObject.transform.parent.GetComponent<Gun>();
+            this.player = this.gun.player;
+            this.baseDamage = UnityEngine.Mathf.Clamp(this.gun.damage, 1f, float.MaxValue);
         }
 
         void Destroy()
@@ -468,38 +439,33 @@ namespace PCE.Cards
 
         void Awake()
         {
-            this.duration = 10f;
-
             this.positions3d = new Vector3[MAX];
             this.trail = this.gameObject.GetComponent<LineRenderer>();
         }
         void Start()
         {
+            this.view = this.GetComponent<PhotonView>();
 
-            this.sync = true;
+            this.layerMask = ~LayerMask.GetMask("BackgroundObject","Player");
 
-            List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
-            List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-            List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
-            CardInfo targetBounceCard = allcards.Where(card => card.gameObject.name == "TargetBounce").ToList()[0];
-            Gun targetBounceGun = targetBounceCard.GetComponent<Gun>();
-            ObjectsToSpawn trailToSpawn = (new List<ObjectsToSpawn>(targetBounceGun.objectsToSpawn)).Where(objectToSpawn => objectToSpawn.AddToProjectile.GetComponent<BounceTrigger>() != null).ToList()[0];
-            Material material = trailToSpawn.AddToProjectile.GetComponentInChildren<TrailRenderer>().material;
-            this.material = material;
+
+            this.material = LaserAssets.material;
             this.color = Color.red;
 
-
+            this.ResetDamageTimer();
             this.ResetTimer();
             this.damageMultiplier = this.baseDamageMultiplier;
             this.trail.enabled = true;
             if (this.color.a < 0f) { this.color = new Color(this.color.r, this.color.g, this.color.b, 0f); }
             this.UpdateWidth();
+
+            this.SyncAppearance();
+            this.synced = false;
         }
-        void DestroyBulletAfter()
+        void DestroyAfter()
         {
-            if (Time.time - this.startTime > 2f*this.duration)
+            if (Time.time - this.startTime > 2f * this.duration)
             {
-                if (this.gameObject.transform.parent != null) { UnityEngine.GameObject.Destroy(this.gameObject.transform.parent.gameObject); }
                 this.Destroy();
             }
         }
@@ -507,36 +473,81 @@ namespace PCE.Cards
         {
             if (this.trail == null) { return; }
 
-            if (this.sync && !this.BulletClose())
+            // sync final position only
+            if (!this.synced && (this.player.data.dead || Time.time >= this.startTime + this.timeToTrack))
             {
-                this.sync = false;
-            }
-
-            this.DestroyBulletAfter();
-            if (this.frames < this.frameInterval)
-            {
-                this.frames++;
-                return;
-            }
-            else if (this.gameObject.GetComponent<PhotonView>().IsMine)
-            {
-                this.frames = 0;
-                this.numPos = this.trail.GetPositions(positions3d);
-                this.UpdateDamage();
-                this.UpdateColor();
-                this.UpdateWidth();
-                if (this.damageMultiplier > 0f)
+                this.synced = true;
+                if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
                 {
-                    this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
+                    this.view.RPC(nameof(RPCA_SyncTrail), RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos, this.trail.startWidth, this.trail.startColor.r, this.trail.startColor.g, this.trail.startColor.b, this.trail.startColor.a });
                 }
             }
 
+            this.DestroyAfter();
+            this.numPos = this.positions3d.Length;
+            this.UpdateDamage();
+            this.UpdateColor();
+            this.UpdateWidth();
+            if (this.damageMultiplier > 0f && Time.time > this.startDamageTime + this.damageTickDelay)
+            {
+                this.ResetDamageTimer();
+                this.HurtBox(positions3d.toVector2Array().ToList<Vector2>().Take(this.numPos).ToArray());
+            }
+            
+
         }
-        bool BulletClose()
+        void FixedUpdate()
         {
-            if (this.gameObject.transform.parent == null) { return false; }
-            Vector3 bulletpos = this.gameObject.transform.parent.transform.position;
-            return (UnityEngine.Mathf.Abs(bulletpos.x) < 40f && UnityEngine.Mathf.Abs(bulletpos.y) < 30f);
+            if (this.trail != null && Time.time < this.startTime + this.timeToTrack && !this.player.data.dead)
+            {
+                this.positions3d = this.GetPositions();
+                this.UpdatePositions(this.positions3d.ToArray());
+            }
+        }
+        internal void UpdatePositions(Vector3[] positions)
+        {
+            this.trail.positionCount = positions.Length;
+            this.trail.SetPositions(positions.ToArray());
+        }
+        private readonly int maxReflects = 1000;
+        private readonly float maxDistance = 1000f;
+        Vector3[] GetPositions()
+        {
+            if (this.gun == null || this.gun.shootPosition == null)
+            {
+                return this.positions3d;
+            }
+            List<Vector3> positions = new List<Vector3>() { };
+
+            positions.Add(this.gun.shootPosition.position);
+
+            Vector3 direction = ((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
+                                   BindingFlags.Instance | BindingFlags.InvokeMethod |
+                                  BindingFlags.NonPublic, null, this.gun, new object[] { 0, 0, 0f })) * Vector3.forward;
+
+            // REMOVE COMPENSATION FOR BULLET SPEED
+            if (!this.player.data.stats.GetAdditionalData().removeSpeedCompensation)
+            {
+                direction -= Vector3.up * 0.13f / Mathf.Clamp(this.gun.projectileSpeed, 1f, 100f);
+            }
+
+            int i = 0;
+            RaycastHit2D hit = Physics2D.Raycast(this.gun.shootPosition.position, direction, maxDistance, this.layerMask);
+            while (hit && i < maxReflects)
+            {
+                i++;
+                positions.Add(hit.point);
+                direction = Vector2.Reflect(direction, hit.normal);
+                hit = Physics2D.Raycast(hit.point + (Vector2)(0.01f * direction), direction, maxDistance, this.layerMask);
+            }
+
+            // add the point at "infinity"
+            if (i < maxReflects)
+            {
+                positions.Add(positions[positions.Count - 1] + direction * 100000f);
+            }
+
+            return positions.ToArray();
         }
         void UpdateDamage()
         {
@@ -546,8 +557,8 @@ namespace PCE.Cards
             }
             else
             {
-                float damageMult = (-4.6f/this.duration)*((this.intensity - 1f) * (-1f * this.duration))+1f;
-                this.damageMultiplier = UnityEngine.Mathf.Clamp(damageMult, 0f, 1f);
+                float damageMult = (-8f / this.duration) * ((this.intensity - 1f) * (-1f * this.duration)) + 1f;
+                this.damageMultiplier = this.baseDamageMultiplier * UnityEngine.Mathf.Clamp(damageMult, 0f, 1f);
             }
         }
         void UpdateColor()
@@ -556,28 +567,31 @@ namespace PCE.Cards
         }
         void UpdateWidth()
         {
-            this.width = UnityEngine.Mathf.Clamp((this.minmaxwidth[1]-this.minmaxwidth[0])*((this.baseDamage-0.1f)*this.damageMultiplier)/((3f-0.1f)*this.baseDamageMultiplier) + this.minmaxwidth[0], this.minmaxwidth[0], this.minmaxwidth[1]);
+            this.width = UnityEngine.Mathf.Clamp((this.minmaxwidth[1] - this.minmaxwidth[0]) * ((this.baseDamage - 0.1f) * this.damageMultiplier) / ((3f - 0.1f) * this.baseDamageMultiplier) + this.minmaxwidth[0], this.minmaxwidth[0], this.minmaxwidth[1]);
         }
         void HurtBox(Vector2[] vertices)
         {
-            // take every consecutive pair of vertices, generate a capsule to use Physics.OverlapCapsule to see if it intersects with a player
-            for (int i = 0; i < vertices.Length-1; i++)
+            List<Collider2D> damaged = new List<Collider2D>() { };
+
+            // take every consecutive pair of vertices, generate a capsule to use Physics.OverlapCapsule to see if it intersects with a damagable
+            for (int i = 0; i < vertices.Length - 1; i++)
             {
                 Vector2 mid = Vector2.Lerp(vertices[i], vertices[i + 1], 0.5f);
                 Vector2 size = new Vector2(this.trail.startWidth, Vector2.Distance(vertices[i], vertices[i + 1]));
                 float angle = Vector2.SignedAngle(Vector2.up, vertices[i] - vertices[i + 1]);
 
-                Collider2D[] colliders = Physics2D.OverlapCapsuleAll(mid, size, CapsuleDirection2D.Vertical, angle);   
-                foreach (Collider2D collider in colliders)
+                Collider2D[] colliders = Physics2D.OverlapCapsuleAll(mid, size, CapsuleDirection2D.Vertical, angle);
+                foreach (Collider2D collider in colliders.Except(damaged))
                 {
                     Damagable componentInParent = collider.GetComponentInParent<Damagable>();
                     if (componentInParent)
                     {
+                        damaged.Add(collider);
                         if ((bool)typeof(Gun).InvokeMember("CheckIsMine",
                                     BindingFlags.Instance | BindingFlags.InvokeMethod |
                                     BindingFlags.NonPublic, null, this.gun, new object[] { }))
                         {
-                            componentInParent.CallTakeDamage(base.transform.forward * this.baseDamage * this.damageMultiplier, collider.transform.position, this.gun.gameObject, this.player, true);
+                            componentInParent.CallTakeDamage(Vector2.up * this.baseDamage * this.damageMultiplier, collider.transform.position, this.gun.gameObject, this.player, true);
                         }
                     }
                 }
@@ -587,123 +601,15 @@ namespace PCE.Cards
         {
             this.startTime = Time.time;
         }
-        
-    }
-
-    [RequireComponent(typeof(LineRenderer))]
-    public class NetworkedTrailRenderer : MonoBehaviour
-    {
-        private readonly int refreshRate = 0;
-        private readonly int initialDelay = 0;
-        private readonly int syncRate = 5;
-        private const int MAX = 1000;
-        private const float tolerance = 0.0f;
-
-        private LineRenderer line;
-        private List<Vector3> rawPositions3d = new List<Vector3>() { };
-        private Vector3[] positions3d;
-        private int numPos;
-        private PhotonView view;
-
-        private int frameCount = 0;
-        public Material material
+        private void ResetDamageTimer()
         {
-            get
-            {
-                return this.line.material;
-            }
-            set
-            {
-                this.line.material = value;
-            }
-        }
-        public Color color
-        {
-            get { return this.line.startColor; }
-            set { this.line.startColor = value; this.line.endColor = value; this.line.material.color = value; }
-        }
-        private float width
-        {
-            get { return this.line.startWidth; }
-            set { this.line.startWidth = value; this.line.endWidth = value; }
-        }
-        void Awake()
-        {
-            this.positions3d = new Vector3[MAX];
-        }
-        void Start()
-        {
-            this.line = this.gameObject.GetComponent<LineRenderer>();
-            this.view = this.gameObject.GetComponent<PhotonView>();
-
-            if (this.gameObject.transform.parent != null)
-            {
-                this.rawPositions3d.Add(this.gameObject.transform.position);
-                this.line.positionCount = this.rawPositions3d.Count;
-                this.line.SetPositions(this.rawPositions3d.ToArray());
-                this.numPos = this.line.GetPositions(this.positions3d);
-                this.rawPositions3d = this.positions3d.ToList().Take(this.numPos).ToList();
-            }
-        }
-        void Update()
-        {
-            if (this.line == null) { return; }
-            if (this.view.ViewID == 0) { return; }
-            if (this.gameObject.transform.parent == null) { return; }
-
-            this.frameCount++;
-
-            if ((this.refreshRate == 0 || this.frameCount % this.refreshRate == 0) && this.BulletClose())
-            {
-                this.rawPositions3d.Add(this.gameObject.transform.position);
-                this.line.positionCount = this.rawPositions3d.Count;
-                this.line.SetPositions(this.rawPositions3d.ToArray());
-                if (this.line.positionCount > 3) { this.line.Simplify(NetworkedTrailRenderer.tolerance); }
-                this.numPos = this.line.GetPositions(this.positions3d);
-                this.rawPositions3d = this.positions3d.ToList().Take(this.numPos).ToList();
-            }
-
-            if ((this.frameCount > this.initialDelay) && (this.syncRate == 0 || this.frameCount % this.syncRate == 0) && this.BulletClose())
-            {
-                this.SyncTrail();
-            }
-            else if ((this.frameCount > this.initialDelay) && (this.syncRate == 0 || this.frameCount % this.syncRate == 0))
-            {
-                this.SyncAppearance();
-            }
-
-        }
-        bool BulletClose()
-        {
-            if (this.gameObject.transform.parent == null) { return false; }
-            Vector3 bulletpos = this.gameObject.transform.parent.transform.position;
-            return (UnityEngine.Mathf.Abs(bulletpos.x) < 100f && UnityEngine.Mathf.Abs(bulletpos.y) < 100f);
-        }
-        void SyncTrail()
-        {
-            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
-            {
-                this.view.RPC("RPCA_SyncTrail", RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos, this.line.startWidth, this.line.startColor.r, this.line.startColor.g, this.line.startColor.b, this.line.startColor.a });
-            }
-        }
-        [PunRPC]
-        void RPCA_SyncTrail(Vector2[] positions, int num, float width, float r, float g, float b, float a)
-        {
-            // unparent once the host starts syncing the position
-            if (this.gameObject.transform.parent != null) { this.gameObject.transform.SetParent(null); }
-            this.line.positionCount = num;
-            this.line.SetPositions(positions.toVector3Array());
-            this.numPos = this.line.GetPositions(this.positions3d);
-            this.rawPositions3d = this.positions3d.ToList().Take(this.numPos).ToList();
-            this.width = width;
-            this.color = new Color(r, g, b, a);
-
+            this.startDamageTime = Time.time;
         }
         void SyncAppearance()
         {
             if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
             {
-                this.view.RPC("RPCA_SyncAppearance", RpcTarget.Others, new object[] { this.line.startWidth, this.line.startColor.r, this.line.startColor.g, this.line.startColor.b, this.line.startColor.a });
+                this.view.RPC(nameof(RPCA_SyncAppearance), RpcTarget.Others, new object[] { this.trail.startWidth, this.trail.startColor.r, this.trail.startColor.g, this.trail.startColor.b, this.trail.startColor.a });
             }
         }
         [PunRPC]
@@ -711,7 +617,17 @@ namespace PCE.Cards
         {
             this.width = width;
             this.color = new Color(r, g, b, a);
-
+        }
+        [PunRPC]
+        void RPCA_SyncTrail(Vector2[] positions, int num, float width, float r, float g, float b, float a)
+        {
+            // unparent once the host starts syncing the position
+            if (this.gameObject.transform.parent != null) { this.gameObject.transform.SetParent(null); }
+            this.trail.positionCount = num;
+            this.trail.SetPositions(positions.toVector3Array());
+            this.numPos = this.trail.GetPositions(this.positions3d);
+            this.width = width;
+            this.color = new Color(r, g, b, a);
         }
 
     }

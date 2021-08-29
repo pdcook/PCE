@@ -16,6 +16,9 @@ namespace PCE.Extensions
         public int wraps;
         public float inactiveDelay;
         public bool allowStop;
+        public bool canBeLaser;
+        public bool isLaser;
+        public GameObject laserGun;
 
         public GunAdditionalData()
         {
@@ -25,6 +28,9 @@ namespace PCE.Extensions
             wraps = 0;
             inactiveDelay = 0f;
             allowStop = false;
+            canBeLaser = false;
+            isLaser = false;
+            laserGun = null;
         }
     }
     public static class GunExtension
@@ -72,6 +78,9 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().wraps = 0;
             __instance.GetAdditionalData().allowStop = false;
             __instance.GetAdditionalData().inactiveDelay = 0f;
+            __instance.GetAdditionalData().canBeLaser = false;
+            __instance.GetAdditionalData().isLaser = false;
+            __instance.GetAdditionalData().laserGun = null;
         }
     }
 }
