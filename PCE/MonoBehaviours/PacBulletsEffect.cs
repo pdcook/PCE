@@ -63,8 +63,8 @@ namespace PCE.MonoBehaviours
     [RequireComponent(typeof(PhotonView))]
     public class PacBulletEffect : MonoBehaviour, IPunInstantiateMagicCallback
     {
-        private int numWraps = 0;
-        private int wraps = 0;
+        internal int numWraps = 0;
+        internal int wraps = 0;
         private PhotonView view;
         private Transform parent;
         private Player player;
@@ -163,7 +163,6 @@ namespace PCE.MonoBehaviours
             }
 
             this.parent.transform.position = this.mainCam.ScreenToWorldPoint(new Vector3(x * (float)Screen.width, y * (float)Screen.height, z));
-            this.wraps++;
 
             this.ExecuteAfterFrames(2, () =>
             {
@@ -180,7 +179,11 @@ namespace PCE.MonoBehaviours
                     particleSystem.Clear(true);
                 }
             });
-            this.ExecuteAfterFrames(5, () => this.projectile.GetAdditionalData().inactiveDelay = 0f);
+            this.ExecuteAfterFrames(5, () =>
+            {
+                this.wraps++;
+                this.projectile.GetAdditionalData().inactiveDelay = 0f;
+            });
         }
     }
 }
