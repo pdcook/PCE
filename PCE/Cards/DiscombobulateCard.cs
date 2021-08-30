@@ -21,7 +21,7 @@ namespace PCE.Cards
         {
             block.cdAdd += 0.25f;
             block.GetAdditionalData().discombobulateRange += 5f;
-            block.GetAdditionalData().discombobulateDuration += 1f;
+            block.GetAdditionalData().discombobulateDuration += 2f;
 
             block.BlockAction = (Action<BlockTrigger.BlockTriggerType>)Delegate.Combine(block.BlockAction, new Action<BlockTrigger.BlockTriggerType>(this.GetDoBlockAction(player, block)));
 

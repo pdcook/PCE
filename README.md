@@ -22,6 +22,24 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.2
+-----------
+
+- Balancing
+    - Comb
+        - No longer increases projectile speed
+        - Now reduces total ammo by 1/3
+        - Comb bullets now have 50% the damage of the main bullet
+    - Flip
+        - Increased gravity strength
+        - Removed cap on duration
+    - Grounded
+        - Increased duration
+    - Discombobulate
+        - Increased duration
+    - Ant
+        - Ants can now shield being squished
+
 #### v2.7.1
 -----------
 

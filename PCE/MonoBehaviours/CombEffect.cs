@@ -14,7 +14,6 @@ namespace PCE.MonoBehaviours
     public class CombAssets
     {
         private static GameObject _comb = null;
-        private static ObjectsToSpawn _trail = null;
 
         internal static GameObject comb
         {
@@ -69,6 +68,8 @@ namespace PCE.MonoBehaviours
     [RequireComponent(typeof(PhotonView))]
     public class CombEffect : MonoBehaviour, IPunInstantiateMagicCallback
     {
+        private readonly float combDamageMult = 0.5f;
+
         private Player player;
         private Gun gun;
         private Gun newGun;
@@ -126,6 +127,7 @@ namespace PCE.MonoBehaviours
             newGun.objectsToSpawn = newGun.objectsToSpawn.Where(obj => obj.AddToProjectile.GetComponent<CombSpawner>() == null && obj.AddToProjectile.GetComponent<LaserGunSpawner>() == null).ToArray();
             newGun.bursts = 1;
             newGun.numberOfProjectiles = 1;
+            newGun.damage *= this.combDamageMult;
 
             // set the gun of the spawnbulletseffect
             effect.SetGun(newGun);

@@ -19,7 +19,7 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             characterStats.GetAdditionalData().gravityMultiplierOnDoDamage *= 3f;
-            characterStats.GetAdditionalData().gravityDurationOnDoDamage = UnityEngine.Mathf.Clamp(characterStats.GetAdditionalData().gravityDurationOnDoDamage + 2f, 0f, 4f);
+            characterStats.GetAdditionalData().gravityDurationOnDoDamage += 3f;
 
 
             player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();

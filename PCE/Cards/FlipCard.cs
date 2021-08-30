@@ -23,9 +23,9 @@ namespace PCE.Cards
 
             if (characterStats.GetAdditionalData().gravityMultiplierOnDoDamage > 0)
             {
-                characterStats.GetAdditionalData().gravityMultiplierOnDoDamage = -0.25f * Math.Abs(characterStats.GetAdditionalData().gravityMultiplierOnDoDamage);
+                characterStats.GetAdditionalData().gravityMultiplierOnDoDamage = -0.5f * Math.Abs(characterStats.GetAdditionalData().gravityMultiplierOnDoDamage);
             }
-            characterStats.GetAdditionalData().gravityDurationOnDoDamage = UnityEngine.Mathf.Clamp(characterStats.GetAdditionalData().gravityDurationOnDoDamage + 1.5f, 0f, 4f);
+            characterStats.GetAdditionalData().gravityDurationOnDoDamage += 1.5f;
 
             player.gameObject.GetOrAddComponent<GravityDealtDamageEffect>();
             

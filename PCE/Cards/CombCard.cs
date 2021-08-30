@@ -23,8 +23,7 @@ namespace PCE.Cards
             gun.objectsToSpawn = objectsToSpawn.ToArray();
 
             gun.bulletDamageMultiplier *= 0.7f;
-            gun.projectileSpeed *= 1.5f;
-            gunAmmo.maxAmmo += 2;
+            gunAmmo.maxAmmo = UnityEngine.Mathf.RoundToInt(gunAmmo.maxAmmo / 3f);
         }
         public override void OnRemoveCard()
         {
@@ -62,10 +61,10 @@ namespace PCE.Cards
                 },
                 new CardInfoStat
                 {
-                    positive = true,
+                    positive = false,
                     stat = "Ammo",
-                    amount = "+2",
-                    simepleAmount = CardInfoStat.SimpleAmount.Some
+                    amount = "1/3×",
+                    simepleAmount = CardInfoStat.SimpleAmount.aLotLower
                 },
                 new CardInfoStat
                 {
@@ -73,14 +72,7 @@ namespace PCE.Cards
                     stat = "Damage",
                     amount = "-30%",
                     simepleAmount = CardInfoStat.SimpleAmount.slightlyLower
-                },
-                new CardInfoStat
-                {
-                    positive = true,
-                    stat = "Bullet Speed",
-                    amount = "+50%",
-                    simepleAmount = CardInfoStat.SimpleAmount.aLotOf
-                },
+                }
             };
         }
         protected override CardThemeColor.CardThemeColorType GetTheme()
