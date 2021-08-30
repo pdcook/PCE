@@ -352,6 +352,9 @@ namespace PCE.Cards
     [RequireComponent(typeof(PhotonView))]
     class LaserHurtbox : MonoBehaviour, IPunInstantiateMagicCallback
     {
+        private float syncTime;
+        private readonly float syncDelay = 0.1f;
+
         private readonly float baseTimeToTrack = 2f;
         private float timeToTrack;
         private readonly float baseDuration = 3f;
@@ -445,12 +448,20 @@ namespace PCE.Cards
         }
         void Start()
         {
-            // 0.3f is default attack speed, smalled attackSpeed stat means faster shooting
-            this.timeToTrack = UnityEngine.Mathf.Clamp(this.baseTimeToTrack * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f), 0.3f, 10f);
-            this.duration = this.timeToTrack + 1f;//this.baseDuration * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f);
-
-
             this.view = this.GetComponent<PhotonView>();
+
+            if (this.view.IsMine)
+            {
+                // 0.3f is default attack speed, smaller attackSpeed stat means faster shooting
+                this.timeToTrack = UnityEngine.Mathf.Clamp(this.baseTimeToTrack * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f), 0.3f, 10f);
+                this.duration = this.timeToTrack + 1f;
+            }
+            else
+            {
+                this.timeToTrack = UnityEngine.Mathf.Clamp(this.baseTimeToTrack * this.gun.attackSpeed / (0.3f), 0.3f, 10f);
+                this.duration = this.timeToTrack + 1f;
+            }
+
 
             this.layerMask = ~LayerMask.GetMask("BackgroundObject","Player");
 
@@ -466,6 +477,7 @@ namespace PCE.Cards
             this.UpdateWidth();
 
             this.SyncAppearance();
+            this.SyncStats();
             this.synced = false;
         }
         void DestroyAfter()
@@ -483,10 +495,13 @@ namespace PCE.Cards
             if (!this.synced && (this.player.data.dead || Time.time >= this.startTime + this.timeToTrack))
             {
                 this.synced = true;
-                if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
-                {
-                    this.view.RPC(nameof(RPCA_SyncTrail), RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos, this.trail.startWidth, this.trail.startColor.r, this.trail.startColor.g, this.trail.startColor.b, this.trail.startColor.a });
-                }
+                this.SyncTrail();
+                this.ResetSyncTimer();
+            }
+            else if (this.synced && Time.time >= this.syncTime + this.syncDelay)
+            {
+                this.SyncTrail();
+                this.ResetSyncTimer();
             }
 
             this.DestroyAfter();
@@ -610,6 +625,10 @@ namespace PCE.Cards
                 }
             }
         }
+        private void ResetSyncTimer()
+        {
+            this.syncTime = Time.time;
+        }
         private void ResetTimer()
         {
             this.startTime = Time.time;
@@ -618,12 +637,32 @@ namespace PCE.Cards
         {
             this.startDamageTime = Time.time;
         }
+        void SyncTrail()
+        {
+            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
+            {
+                this.view.RPC(nameof(RPCA_SyncTrail), RpcTarget.Others, new object[] { this.positions3d.toVector2Array().ToList().Take(this.numPos).ToArray(), this.numPos, this.trail.startWidth, this.trail.startColor.r, this.trail.startColor.g, this.trail.startColor.b, this.trail.startColor.a });
+            }
+        }
         void SyncAppearance()
         {
             if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
             {
                 this.view.RPC(nameof(RPCA_SyncAppearance), RpcTarget.Others, new object[] { this.trail.startWidth, this.trail.startColor.r, this.trail.startColor.g, this.trail.startColor.b, this.trail.startColor.a });
             }
+        }
+        void SyncStats()
+        {
+            if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
+            {
+                this.view.RPC(nameof(RPCA_SyncStats), RpcTarget.Others, new object[] { this.duration, this.timeToTrack });
+            }
+        }
+        [PunRPC]
+        void RPCA_SyncStats(float duration, float timeToTrack)
+        {
+            this.duration = duration;
+            this.timeToTrack = timeToTrack;
         }
         [PunRPC]
         void RPCA_SyncAppearance(float width, float r, float g, float b, float a)

@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.1
+-----------
+
+- Bugfix: Laser Syncing online
+
 #### v2.7.0
 -----------
 
