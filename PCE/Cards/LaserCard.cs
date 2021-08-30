@@ -19,6 +19,7 @@ namespace PCE.Cards
 {
     public class LaserCard : CustomCard
     {
+        internal static readonly float attackSpeedMult = 6f; // lasers are 6x slower than the normal gun
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.allowMultiple = false;
@@ -31,7 +32,7 @@ namespace PCE.Cards
 
             LaserEffect laserEffect = player.gameObject.GetOrAddComponent<LaserEffect>();
             laserEffect.SetLivesToEffect(int.MaxValue);
-            laserEffect.gunStatModifier.attackSpeed_add = 2f - gun.attackSpeed;
+            laserEffect.gunStatModifier.attackSpeed_mult = LaserCard.attackSpeedMult;
             laserEffect.gunStatModifier.bursts_mult = 0;
             laserEffect.gunStatModifier.evenSpread_mult = 0f;
             laserEffect.gunStatModifier.multiplySpread_mult = 0f;
@@ -144,7 +145,7 @@ namespace PCE.Cards
             {
                 Gun gun = ((Player)Traverse.Create(__instance).Field("playerToUpgrade").GetValue()).GetComponent<Holding>().holdable.GetComponent<Gun>();
                 gun.GetAdditionalData().isLaser = true;
-                gun.player.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_add = 2f - __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().attackSpeed;
+                gun.player.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_mult = LaserCard.attackSpeedMult;
                 gun.player.GetComponent<LaserEffect>().ApplyModifiers();
             }
         }
@@ -163,7 +164,6 @@ namespace PCE.Cards
                 
                     if (__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser)
                     {
-                        __instance.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_add = 2f - __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().attackSpeed;
                         __instance.GetComponent<LaserEffect>().ApplyModifiers();
                     }
                     if (!__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser)
@@ -202,7 +202,6 @@ namespace PCE.Cards
                 // fire laser
                 __instance.GetAdditionalData().laserGun.GetComponent<LaserGunSpawner>().SpawnLaser();
 
-                __instance.player.GetComponent<LaserEffect>().gunStatModifier.attackSpeed_add = 2f - __instance.attackSpeed;
                 __instance.player.GetComponent<LaserEffect>().ApplyModifiers();
 
                 // no recoil
@@ -353,15 +352,17 @@ namespace PCE.Cards
     [RequireComponent(typeof(PhotonView))]
     class LaserHurtbox : MonoBehaviour, IPunInstantiateMagicCallback
     {
-        private readonly float timeToTrack = 2f;
+        private readonly float baseTimeToTrack = 2f;
+        private float timeToTrack;
+        private readonly float baseDuration = 3f;
+        private float duration;
+        private readonly float baseDamageMultiplier = 4f;
 
         private float startTime;
         private float damageMultiplier;
         public float baseDamage;
 
-        private readonly float duration = 3f;
         private readonly float[] minmaxwidth = new float[] { 0.1f, 0.5f };
-        private readonly float baseDamageMultiplier = 4f;
 
         private readonly float damageTickDelay = 0.1f;
         private float startDamageTime;
@@ -444,6 +445,11 @@ namespace PCE.Cards
         }
         void Start()
         {
+            // 0.3f is default attack speed, smalled attackSpeed stat means faster shooting
+            this.timeToTrack = UnityEngine.Mathf.Clamp(this.baseTimeToTrack * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f), 0.3f, 10f);
+            this.duration = this.timeToTrack + 1f;//this.baseDuration * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f);
+
+
             this.view = this.GetComponent<PhotonView>();
 
             this.layerMask = ~LayerMask.GetMask("BackgroundObject","Player");
@@ -533,6 +539,13 @@ namespace PCE.Cards
 
             int i = 0;
             RaycastHit2D hit = Physics2D.Raycast(this.gun.shootPosition.position, direction, maxDistance, this.layerMask);
+
+            // if the first hit is nearly the same as the starting point, just return
+            if (hit && Vector3.Distance(hit.point, positions[0]) < 0.001f)
+            {
+                return positions.ToArray();
+            }
+
             while (hit && i < maxReflects)
             {
                 i++;

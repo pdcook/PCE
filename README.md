@@ -22,6 +22,15 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.0
+-----------
+
+- Laser rework
+    - Laser now functions completely differently (again!)
+    - Press middle-mouse (or d-pad down) to switch weapons to or from your laser cannon
+- Pac-Bullets now applies before any screenedgebounce effects
+- Switched version strings to x.x.x format consistent with ThunderStore
+
 #### v0.2.6.0
 -------------
 
