@@ -3,6 +3,8 @@ using UnboundLib;
 using UnityEngine;
 using System.Reflection;
 using System.Linq;
+using System.Collections;
+using Photon.Pun;
 
 namespace PCE.Cards
 {
@@ -74,6 +76,35 @@ namespace PCE.Cards
         public override string GetModName()
         {
             return "PCE";
+        }
+
+        internal static IEnumerator CommitMurders()
+        {
+            Player[] players = PlayerManager.instance.players.ToArray();
+            for (int j = 0; j < players.Length; j++)
+            {
+                // commit any pending murders
+                if (ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder >= 1)
+                {
+                    ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder--;
+
+                    // kill ALL opposing players
+                    foreach (Player oppPlayer in PlayerManager.instance.players.Where(player => player.teamID != players[j].teamID))
+                    {
+                        Unbound.Instance.ExecuteAfterSeconds(2f, delegate
+                        {
+                            oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                            {
+                                    new Vector2(0, 1)
+                            });
+
+                        });
+                    }
+
+
+                }
+            }
+            yield break;
         }
     }
 }

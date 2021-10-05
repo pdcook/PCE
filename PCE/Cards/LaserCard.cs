@@ -15,6 +15,7 @@ using System;
 using InControl;
 using ModdingUtils.MonoBehaviours;
 using UnboundLib;
+using System.Collections;
 namespace PCE.Cards
 {
     public class LaserCard : CustomCard
@@ -83,6 +84,19 @@ namespace PCE.Cards
         public override string GetModName()
         {
             return "PCE";
+        }
+
+
+        internal static IEnumerator RemoveLasersBetweenBattles()
+        {
+            foreach (GameObject gameObject in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+            {
+                if (gameObject.name == "LaserTrail(Clone)")
+                {
+                    UnityEngine.GameObject.Destroy(gameObject);
+                }
+            }
+            yield break;
         }
     }
     class LaserEffect : ReversibleEffect
@@ -355,9 +369,7 @@ namespace PCE.Cards
         private float syncTime;
         private readonly float syncDelay = 0.1f;
 
-        private readonly float baseTimeToTrack = 2f;
-        private float timeToTrack;
-        private readonly float baseDuration = 3f;
+        private readonly float baseDuration = 6f;
         private float duration;
         private readonly float baseDamageMultiplier = 4f;
 
@@ -453,18 +465,14 @@ namespace PCE.Cards
             if (this.view.IsMine)
             {
                 // 0.3f is default attack speed, smaller attackSpeed stat means faster shooting
-                this.timeToTrack = UnityEngine.Mathf.Clamp(this.baseTimeToTrack * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f), 0.3f, 10f);
-                this.duration = this.timeToTrack + 1f;
+                this.duration = UnityEngine.Mathf.Clamp(this.baseDuration * this.gun.attackSpeed / (LaserCard.attackSpeedMult * 0.3f), 1f, 12f);
             }
             else
             {
-                this.timeToTrack = UnityEngine.Mathf.Clamp(this.baseTimeToTrack * this.gun.attackSpeed / (0.3f), 0.3f, 10f);
-                this.duration = this.timeToTrack + 1f;
+                this.duration = UnityEngine.Mathf.Clamp(this.baseDuration * this.gun.attackSpeed / (0.3f), 0.5f, 10f);
             }
 
-
             this.layerMask = ~LayerMask.GetMask("BackgroundObject","Player");
-
 
             this.material = LaserAssets.material;
             this.color = Color.red;
@@ -479,6 +487,13 @@ namespace PCE.Cards
             this.SyncAppearance();
             this.SyncStats();
             this.synced = false;
+
+            // create the laser once and only once
+            if (this.trail != null && !this.player.data.dead)
+            {
+                this.positions3d = this.GetPositions();
+                this.UpdatePositions(this.positions3d.ToArray());
+            }
         }
         void DestroyAfter()
         {
@@ -492,7 +507,7 @@ namespace PCE.Cards
             if (this.trail == null) { return; }
 
             // sync final position only
-            if (!this.synced && (this.player.data.dead || Time.time >= this.startTime + this.timeToTrack))
+            if (!this.synced)
             {
                 this.synced = true;
                 this.SyncTrail();
@@ -517,14 +532,15 @@ namespace PCE.Cards
             
 
         }
+        /*
         void FixedUpdate()
         {
-            if (this.trail != null && Time.time < this.startTime + this.timeToTrack && !this.player.data.dead)
+            if (this.trail != null && !this.player.data.dead)
             {
                 this.positions3d = this.GetPositions();
                 this.UpdatePositions(this.positions3d.ToArray());
             }
-        }
+        }*/
         internal void UpdatePositions(Vector3[] positions)
         {
             this.trail.positionCount = positions.Length;
@@ -655,14 +671,13 @@ namespace PCE.Cards
         {
             if (!PhotonNetwork.OfflineMode && this.gameObject.GetComponent<PhotonView>().IsMine)
             {
-                this.view.RPC(nameof(RPCA_SyncStats), RpcTarget.Others, new object[] { this.duration, this.timeToTrack });
+                this.view.RPC(nameof(RPCA_SyncStats), RpcTarget.Others, new object[] { this.duration });
             }
         }
         [PunRPC]
-        void RPCA_SyncStats(float duration, float timeToTrack)
+        void RPCA_SyncStats(float duration)
         {
             this.duration = duration;
-            this.timeToTrack = timeToTrack;
         }
         [PunRPC]
         void RPCA_SyncAppearance(float width, float r, float g, float b, float a)

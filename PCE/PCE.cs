@@ -28,7 +28,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.gununblockablepatch", BepInDependency.DependencyFlags.HardDependency)] // fixes gun.unblockable
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "2.7.2")]
+    [BepInPlugin(ModId, ModName, "2.7.3")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -114,192 +114,18 @@ namespace PCE
             CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
             CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
 
-            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.CommitMurders());
-            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => this.ResetEffectsBetweenBattles());
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => MurderCard.CommitMurders());
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => LaserCard.RemoveLasersBetweenBattles());
 
-            GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => this.ResetEffectsBetweenBattles());
+            GameModeManager.AddHook(GameModeHooks.HookPointEnd, (gm) => LaserCard.RemoveLasersBetweenBattles());
 
-            GameModeManager.AddHook(GameModeHooks.HookPlayerPickEnd, (gm) => this.ExtraPicks());
+            GameModeManager.AddHook(GameModeHooks.HookPlayerPickEnd, (gm) => ShuffleCard.ExtraPicks());
 
-            GameModeManager.AddHook(GameModeHooks.HookPointStart, (gm) => this.RandomCard());
+            GameModeManager.AddHook(GameModeHooks.HookPointStart, (gm) => RandomCard.Go());
 
-            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => this.ClearRandomCards());
-            GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => this.ClearRandomCards());
+            GameModeManager.AddHook(GameModeHooks.HookGameStart, (gm) => RandomCard.ClearRandomCards());
+            GameModeManager.AddHook(GameModeHooks.HookGameEnd, (gm) => RandomCard.ClearRandomCards());
         }
-
-        private IEnumerator CommitMurders()
-        {
-            Player[] players = PlayerManager.instance.players.ToArray();
-            for (int j = 0; j < players.Length; j++)
-            {
-                // commit any pending murders
-                if (ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder >= 1)
-                {
-                    ModdingUtils.Extensions.CharacterStatModifiersExtension.GetAdditionalData(players[j].data.stats).murder--;
-
-                    // kill ALL opposing players
-                    foreach (Player oppPlayer in PlayerManager.instance.players.Where(player => player.teamID != players[j].teamID))
-                    {
-                        Unbound.Instance.ExecuteAfterSeconds(2f, delegate
-                        {
-                            oppPlayer.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
-                            {
-                                    new Vector2(0, 1)
-                            });
-
-                        });
-                    }
-
-
-                }
-            }
-            yield break;
-        }
-        private IEnumerator ResetEffectsBetweenBattles()
-        {
-            foreach (GameObject gameObject in FindObjectsOfType(typeof(GameObject)) as GameObject[])
-            {
-                if (gameObject.name == "LaserTrail(Clone)")
-                {
-                    UnityEngine.GameObject.Destroy(gameObject);
-                }
-            }
-            yield break;
-        }
-
-        private IEnumerator ExtraPicks()
-        {
-            foreach(Player player in PlayerManager.instance.players.ToArray())
-            {
-                while (Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).shuffles > 0)
-                {
-                    Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).shuffles -= 1;
-                    yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickStart);
-                    CardChoiceVisuals.instance.Show(Enumerable.Range(0,PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
-                    yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
-                    yield return new WaitForSecondsRealtime(0.1f);
-                    yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
-                    yield return new WaitForSecondsRealtime(0.1f);
-                }
-            }
-            yield break;
-        }
-
-        private IEnumerator RandomCard()
-        {
-            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
-            {
-                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { true });
-            }
-            yield return new WaitForSecondsRealtime(0.5f);
-            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
-            {
-                while (PCE.randomInProgress)
-                {
-                    yield return null;
-                }
-                yield break;
-            }
-            //if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
-            //{
-            //    NetworkingManager.RPC(typeof(PCE), nameof(RPCA_DisablePlayers), new object[] { });
-            //}
-
-            Dictionary<Player, List<CardInfo>> cardsToShow = new Dictionary<Player, List<CardInfo>>();
-            
-            foreach (Player player in PlayerManager.instance.players.ToArray())
-            {
-
-                if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
-                {
-                    List<int> indeces = new List<int>(player.GetComponent<RandomCardEffect>().indeces);
-                    List<int> invalidInd = new List<int>() { };
-                    List<string> twoLetterCodes = new List<string>() { };
-                    List<CardInfo> newCards = new List<CardInfo>() { };
-                    foreach (int idx in indeces)
-                    {
-                        string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
-                        CardInfo card = ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
-                        if (card == null)
-                        {
-                            // if there is no valid card, then try drawing from the list of all cards (inactive + active) but still make sure it is compatible
-                            CardInfo[] allCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList().Concat((List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
-                            card = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
-
-                            if (card == null)
-                            {
-                                // if there is STILL no valid card, then this index is invalid
-                                invalidInd.Add(idx);
-                                continue;
-                            }
-                        }
-                        twoLetterCodes.Add(twoLetterCode);
-                        newCards.Add(card);
-                    }
-                    indeces = indeces.Except(invalidInd).ToList();
-                    cardsToShow[player] = newCards;
-                    if (indeces.Count == 0)
-                    {
-                        continue;
-                    }
-                    yield return ModdingUtils.Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
-                }
-            }
-            yield return new WaitForSecondsRealtime(0.5f);
-            float numCardsToShow = 0f;
-            foreach (Player player in cardsToShow.Keys)
-            {
-                numCardsToShow += cardsToShow[player].Count;
-            }
-            numCardsToShow = UnityEngine.Mathf.Clamp(numCardsToShow, 2f, float.MaxValue);
-            foreach (Player player in cardsToShow.Keys)
-            {
-                if (cardsToShow[player].Count == 0) { continue; }
-                yield return ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player, cardsToShow[player].ToArray(), 2f/numCardsToShow);
-            }
-            //if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
-            //{
-            //    NetworkingManager.RPC(typeof(PCE), nameof(RPCA_EnablePlayers), new object[] { });
-            //}
-            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
-            {
-                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { false });
-            }
-            yield return new WaitForSecondsRealtime(0.1f);
-            yield break;
-        }
-        [UnboundRPC]
-        private static void RPCA_RandomInProgress(bool prog)
-        {
-            PCE.randomInProgress = prog;
-        }
-        [UnboundRPC]
-        private static void RPCA_DisablePlayers()
-        {
-            foreach (Player player in PlayerManager.instance.players.ToArray())
-            {
-                if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = false; }
-            }
-        }
-        [UnboundRPC]
-        private static void RPCA_EnablePlayers()
-        {
-            foreach (Player player in PlayerManager.instance.players.ToArray())
-            {
-                if (player.GetComponent<GeneralInput>() != null) { player.GetComponent<GeneralInput>().enabled = true; }
-            }
-        }
-
-        private IEnumerator ClearRandomCards()
-        {
-            foreach (Player player in PlayerManager.instance.players)
-            {
-                CustomEffects.DestroyAllRandomCardEffects(player.gameObject);
-            }
-            yield break;
-        }
-
-        private static bool randomInProgress = false;
 
         private const string ModId = "pykess.rounds.plugins.pykesscardexpansion";
 

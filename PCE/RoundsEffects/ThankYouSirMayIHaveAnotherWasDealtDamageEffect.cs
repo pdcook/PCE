@@ -13,6 +13,7 @@ namespace PCE.RoundsEffects
             {
                 ReversibleEffect reversibleEffect = this.gameObject.GetComponent<Player>().gameObject.AddComponent<ReversibleEffect>();
                 reversibleEffect.gunAmmoStatModifier.maxAmmo_add = this.gameObject.GetComponent<Player>().data.stats.GetAdditionalData().thankyousirmayihaveanother;
+                reversibleEffect.gunAmmoStatModifier.currentAmmo_add = this.gameObject.GetComponent<Player>().data.stats.GetAdditionalData().thankyousirmayihaveanother;
             }
         }
     }

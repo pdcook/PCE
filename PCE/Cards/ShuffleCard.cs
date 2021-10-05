@@ -9,6 +9,7 @@ using System.Collections;
 using UnboundLib.Networking;
 using ModdingUtils.Extensions;
 using CardChoiceSpawnUniqueCardPatch.CustomCategories;
+using UnboundLib.GameModes;
 
 namespace PCE.Cards
 {
@@ -33,7 +34,7 @@ namespace PCE.Cards
         }
         protected override string GetDescription()
         {
-            return "Draw five new cards to choose from.";
+            return "Draw new cards to choose from.";
         }
 
         protected override GameObject GetCardArt()
@@ -57,6 +58,24 @@ namespace PCE.Cards
         public override string GetModName()
         {
             return "PCE";
+        }
+
+        internal static IEnumerator ExtraPicks()
+        {
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+                while (Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).shuffles > 0)
+                {
+                    Extensions.CharacterStatModifiersExtension.GetAdditionalData(player.data.stats).shuffles -= 1;
+                    yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickStart);
+                    CardChoiceVisuals.instance.Show(Enumerable.Range(0, PlayerManager.instance.players.Count).Where(i => PlayerManager.instance.players[i].playerID == player.playerID).First(), true);
+                    yield return CardChoice.instance.DoPick(1, player.playerID, PickerType.Player);
+                    yield return new WaitForSecondsRealtime(0.1f);
+                    yield return GameModeManager.TriggerHook(GameModeHooks.HookPlayerPickEnd);
+                    yield return new WaitForSecondsRealtime(0.1f);
+                }
+            }
+            yield break;
         }
     }
 }

@@ -38,14 +38,14 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.V)
             {
                 this.V = true;
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self, addToCardBar: true);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
             else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V] && this.V)
             {
                 this.V = false;
-                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self);
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self, editCardBar: true);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<WildcardColorEffect>()));
             }
 
@@ -158,14 +158,14 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.wildcards[WildcardType.V] && !this.V)
             {
                 this.V = true;
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self);
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, WildcardVCard.self, addToCardBar: true);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, WildcardVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<WildcardColorEffect>());
             }
             else if (!this.HasCompleteSet() && this.wildcards[WildcardType.V] && this.V)
             {
                 this.V = false;
-                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self);
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, WildcardVCard.self, editCardBar: true);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<WildcardColorEffect>()));
             }
 

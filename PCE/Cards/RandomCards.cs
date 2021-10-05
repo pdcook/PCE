@@ -9,6 +9,9 @@ using PCE.Extensions;
 using TMPro;
 using UnityEngine.UI;
 using UnboundLib.Utils;
+using UnboundLib.Networking;
+using Photon.Pun;
+using System.Collections;
 
 namespace PCE.Cards
 {
@@ -92,6 +95,8 @@ namespace PCE.Cards
     }
     public abstract class RandomCard : CustomCard
     {
+        private static bool randomInProgress = false;
+
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.GetAdditionalData().isRandom = true;
@@ -111,6 +116,96 @@ namespace PCE.Cards
         public override string GetModName()
         {
             return "PCE";
+        }
+
+        internal static IEnumerator Go()
+        {
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { true });
+            }
+            yield return new WaitForSecondsRealtime(0.5f);
+            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
+            {
+                while (RandomCard.randomInProgress)
+                {
+                    yield return null;
+                }
+                yield break;
+            }
+
+            Dictionary<Player, List<CardInfo>> cardsToShow = new Dictionary<Player, List<CardInfo>>();
+
+            foreach (Player player in PlayerManager.instance.players.ToArray())
+            {
+
+                if (player.GetComponent<RandomCardEffect>() != null && player.GetComponent<RandomCardEffect>().indeces.Count > 0)
+                {
+                    List<int> indeces = new List<int>(player.GetComponent<RandomCardEffect>().indeces);
+                    List<int> invalidInd = new List<int>() { };
+                    List<string> twoLetterCodes = new List<string>() { };
+                    List<CardInfo> newCards = new List<CardInfo>() { };
+                    foreach (int idx in indeces)
+                    {
+                        string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
+                        CardInfo card = ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+                        if (card == null)
+                        {
+                            // if there is no valid card, then try drawing from the list of all cards (inactive + active) but still make sure it is compatible
+                            CardInfo[] allCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList().Concat((List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
+                            card = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+
+                            if (card == null)
+                            {
+                                // if there is STILL no valid card, then this index is invalid
+                                invalidInd.Add(idx);
+                                continue;
+                            }
+                        }
+                        twoLetterCodes.Add(twoLetterCode);
+                        newCards.Add(card);
+                    }
+                    indeces = indeces.Except(invalidInd).ToList();
+                    cardsToShow[player] = newCards;
+                    if (indeces.Count == 0)
+                    {
+                        continue;
+                    }
+                    yield return ModdingUtils.Utils.Cards.instance.ReplaceCards(player, indeces.ToArray(), newCards.ToArray(), twoLetterCodes.ToArray());
+                }
+            }
+            yield return new WaitForSecondsRealtime(0.5f);
+            float numCardsToShow = 0f;
+            foreach (Player player in cardsToShow.Keys)
+            {
+                numCardsToShow += cardsToShow[player].Count;
+            }
+            numCardsToShow = UnityEngine.Mathf.Clamp(numCardsToShow, 2f, float.MaxValue);
+            foreach (Player player in cardsToShow.Keys)
+            {
+                if (cardsToShow[player].Count == 0) { continue; }
+                yield return ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player, cardsToShow[player].ToArray(), 2f / numCardsToShow);
+            }
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
+            {
+                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { false });
+            }
+            yield return new WaitForSecondsRealtime(0.1f);
+            yield break;
+        }
+        [UnboundRPC]
+        private static void RPCA_RandomInProgress(bool prog)
+        {
+            RandomCard.randomInProgress = prog;
+        }
+
+        internal static IEnumerator ClearRandomCards()
+        {
+            foreach (Player player in PlayerManager.instance.players)
+            {
+                CustomEffects.DestroyAllRandomCardEffects(player.gameObject);
+            }
+            yield break;
         }
 
         internal static void callback(CardInfo card)

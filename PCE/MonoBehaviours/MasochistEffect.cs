@@ -46,14 +46,14 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.masochists[MasochistType.V] && !this.V)
             {
                 this.V = true;
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, MasochistVCard.self);
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, MasochistVCard.self, addToCardBar: true);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, MasochistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<MasochistColorEffect>());
             }
             else if (!this.HasCompleteSet() && this.masochists[MasochistType.V] && this.V)
             {
                 this.V = false;
-                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, MasochistVCard.self);
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, MasochistVCard.self, editCardBar: true);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<MasochistColorEffect>()));
             }
 

@@ -6,11 +6,85 @@ using UnboundLib.Cards;
 using UnityEngine;
 using System.Reflection;
 using UnboundLib.Networking;
+using System.Linq;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using UnboundLib.Utils;
 
 namespace PCE.Cards
 {
     public class DiscombobulateCard : CustomCard
     {
+        private static float rangePerCard = 5f;
+        private static float durationPerCard = 2f;
+
+        private static void makeHierarchyHidden(GameObject obj)
+        {
+            obj.gameObject.hideFlags = HideFlags.HideAndDontSave;
+            foreach (Transform child in obj.transform)
+            {
+                makeHierarchyHidden(child.gameObject);
+            }
+        }
+        private class DiscombobSpawner : MonoBehaviour
+        {
+            void Start()
+            {
+                if (!(this.gameObject.GetComponent<SpawnedAttack>().spawner != null))
+                {
+                    return;
+                }
+
+                this.gameObject.transform.localScale = new Vector3(1f, 1f, 1f) * (this.gameObject.GetComponent<SpawnedAttack>().spawner.GetComponent<Block>().GetAdditionalData().discombobulateRange / DiscombobulateCard.rangePerCard);
+
+                this.gameObject.AddComponent<RemoveAfterSeconds>().seconds = 5f;
+                this.gameObject.transform.GetChild(1).GetComponent<LineEffect>().SetFieldValue("inited", false);
+                typeof(LineEffect).InvokeMember("Init",
+                    BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
+                    null, this.gameObject.transform.GetChild(1).GetComponent<LineEffect>(), new object[] { });
+                this.gameObject.transform.GetChild(1).GetComponent<LineEffect>().radius = (DiscombobulateCard.rangePerCard-1.4f);
+                this.gameObject.transform.GetChild(1).GetComponent<LineEffect>().SetFieldValue("startWidth", 0.5f);
+                this.gameObject.transform.GetChild(1).GetComponent<LineEffect>().Play();
+
+            }
+        }
+
+        private static GameObject discombobVisual_ = null;
+        private static GameObject discombobVisual
+        {
+            get
+            {
+                if (discombobVisual_ != null) { return discombobVisual_; }
+                else
+                {
+                    List<CardInfo> activecards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
+                    List<CardInfo> inactivecards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+                    List<CardInfo> allcards = activecards.Concat(inactivecards).ToList();
+                    GameObject E_Overpower = allcards.Where(card => card.cardName.ToLower() == "overpower").First().GetComponent<CharacterStatModifiers>().AddObjectToPlayer.GetComponent<SpawnObjects>().objectToSpawn[0];
+                    discombobVisual_ = UnityEngine.GameObject.Instantiate(E_Overpower, new Vector3(0,100000f, 0f), Quaternion.identity);
+                    discombobVisual_.name = "E_Discombobulate";
+                    DontDestroyOnLoad(discombobVisual_);
+                    foreach (ParticleSystem parts in discombobVisual_.GetComponentsInChildren<ParticleSystem>())
+                    {
+                        parts.startColor = Color.green;
+                    }
+                    discombobVisual_.transform.GetChild(1).GetComponent<LineEffect>().colorOverTime.colorKeys = new GradientColorKey[] { new GradientColorKey(Color.green, 0f) };
+                    UnityEngine.GameObject.Destroy(discombobVisual_.transform.GetChild(2).gameObject);
+                    discombobVisual_.transform.GetChild(1).GetComponent<LineEffect>().offsetMultiplier = 0f;
+                    discombobVisual_.transform.GetChild(1).GetComponent<LineEffect>().playOnAwake = true;
+                    UnityEngine.GameObject.Destroy(discombobVisual_.GetComponent<FollowPlayer>());
+                    discombobVisual_.GetComponent<DelayEvent>().time = 0f;
+                    UnityEngine.GameObject.Destroy(discombobVisual_.GetComponent<SoundImplementation.SoundUnityEventPlayer>());
+                    UnityEngine.GameObject.Destroy(discombobVisual_.GetComponent<Explosion>());
+                    UnityEngine.GameObject.Destroy(discombobVisual_.GetComponent<Explosion_Overpower>());
+                    //UnityEngine.GameObject.Destroy(discombobVisual_.GetComponent<SpawnedAttack>());
+                    UnityEngine.GameObject.Destroy(discombobVisual_.GetComponent<RemoveAfterSeconds>());
+                    discombobVisual_.AddComponent<DiscombobSpawner>();
+                    return discombobVisual_;
+                }
+            }
+            set { }
+        }
         /*
         *  Blocking temporarily inverts nearby players' controls
         */
@@ -19,12 +93,15 @@ namespace PCE.Cards
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            if (block.GetAdditionalData().discombobulateRange == 0f)
+            {
+                block.BlockAction = (Action<BlockTrigger.BlockTriggerType>)Delegate.Combine(block.BlockAction, new Action<BlockTrigger.BlockTriggerType>(this.GetDoBlockAction(player, block)));
+                block.objectsToSpawn.Add(discombobVisual);
+            }
+
             block.cdAdd += 0.25f;
-            block.GetAdditionalData().discombobulateRange += 5f;
-            block.GetAdditionalData().discombobulateDuration += 2f;
-
-            block.BlockAction = (Action<BlockTrigger.BlockTriggerType>)Delegate.Combine(block.BlockAction, new Action<BlockTrigger.BlockTriggerType>(this.GetDoBlockAction(player, block)));
-
+            block.GetAdditionalData().discombobulateRange += DiscombobulateCard.rangePerCard;
+            block.GetAdditionalData().discombobulateDuration += DiscombobulateCard.durationPerCard;
         }
         public Action<BlockTrigger.BlockTriggerType> GetDoBlockAction(Player player, Block block)
         {
@@ -104,7 +181,7 @@ namespace PCE.Cards
                 BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
                 null, PlayerManager.instance, new object[] { playerID });
 
-            DiscombobulateEffect thisDiscombobulateEffect = player.gameObject.AddComponent<DiscombobulateEffect>();
+            DiscombobulateEffect thisDiscombobulateEffect = player.gameObject.GetOrAddComponent<DiscombobulateEffect>();
             thisDiscombobulateEffect.SetDuration(duration);
             thisDiscombobulateEffect.SetMovementSpeedMultiplier(-1f);
             Color yellow = Color.yellow;

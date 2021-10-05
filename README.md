@@ -22,6 +22,15 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.3
+-----------
+
+- Lots of code refactoring
+- Laser v3 has been rebalanced, should be more satisfying to use
+- Discombobulate now has a visual effect!
+- Fixed Shuffle's description to make since in the new DrawNCards meta
+- Jackpot/Gamble cards now work to give _any_ card if there are no valid cards; so you can play a Jackpot/Gamble only match by disabling all other cards
+
 #### v2.7.2
 -----------
 

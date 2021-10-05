@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using UnboundLib.Cards;
 using ModdingUtils.Extensions;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using UnboundLib.Utils;
+using System.Reflection;
 
 namespace PCE.Cards
 {
@@ -19,9 +24,14 @@ namespace PCE.Cards
         {
 
             CardInfo randomCard = ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, gun, gunAmmo, data, health, gravity, block, characterStats, this.condition);
-
+            if (randomCard == null)
+            {
+                // if there is no valid card, then try drawing from the list of all cards (inactive + active) but still make sure it is compatible
+                CardInfo[] allCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList().Concat((List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
+                randomCard = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, this.condition);
+            }
             //ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, randomCard, false, "", 2f);
-            ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, randomCard);
+            ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, randomCard, addToCardBar: true);
             ModdingUtils.Utils.CardBarUtils.instance.ShowAtEndOfPhase(player, randomCard);
         }
         public override void OnRemoveCard()
@@ -57,12 +67,12 @@ namespace PCE.Cards
         }
         public bool condition(CardInfo card, Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // do not allow duplicates of cards with allowMultiple == false
+            // do not allow duplicates of cards with allowMultiple == false (handled by moddingutils)
             // card rarity must be as desired
-            // card cannot be another Gamble / Jackpot card
-            // card cannot be from a blacklisted catagory of any other card
+            // card cannot be another cardmanipulation card
+            // card cannot be from a blacklisted catagory of any other card (handled by moddingutils)
 
-            return (card.rarity == CardInfo.Rarity.Uncommon) && !card.cardName.Contains("Jackpot") && !card.cardName.Contains("Gamble");
+            return (card.rarity == CardInfo.Rarity.Uncommon) && !card.categories.Contains(CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation"));
 
         }
         public override string GetModName()

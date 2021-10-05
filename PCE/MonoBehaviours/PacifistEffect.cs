@@ -45,14 +45,14 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.pacifists[PacifistType.V] && !this.V)
             {
                 this.V = true;
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, PacifistVCard.self);
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, PacifistVCard.self, addToCardBar: true);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, PacifistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<PacifistColorEffect>());
             }
             else if (!this.HasCompleteSet() && this.pacifists[PacifistType.V] && this.V)
             {
                 this.V = false;
-                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, PacifistVCard.self);
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, PacifistVCard.self, editCardBar: true);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<PacifistColorEffect>()));
             }
 

@@ -46,14 +46,14 @@ namespace PCE.MonoBehaviours
             if (this.HasCompleteSet() && !this.survivalists[SurvivalistType.V] && !this.V)
             {
                 this.V = true;
-                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, SurvivalistVCard.self);
+                ModdingUtils.Utils.Cards.instance.AddCardToPlayer(player, SurvivalistVCard.self, addToCardBar: true);
                 Unbound.Instance.StartCoroutine(ModdingUtils.Utils.CardBarUtils.instance.ShowImmediate(player.teamID, SurvivalistVCard.self));
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => this.gameObject.GetOrAddComponent<SurvivalistColorEffect>());
             }
             else if (!this.HasCompleteSet() && this.survivalists[SurvivalistType.V] && this.V)
             {
                 this.V = false;
-                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, SurvivalistVCard.self);
+                ModdingUtils.Utils.Cards.instance.RemoveCardFromPlayer(player, SurvivalistVCard.self, editCardBar: true);
                 Unbound.Instance.ExecuteAfterSeconds(2f, () => UnityEngine.GameObject.Destroy(this.gameObject.GetOrAddComponent<SurvivalistColorEffect>()));
             }
 
