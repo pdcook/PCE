@@ -12,6 +12,7 @@ using UnboundLib.Utils;
 using UnboundLib.Networking;
 using Photon.Pun;
 using System.Collections;
+using CardChoiceSpawnUniqueCardPatch.CustomCategories;
 
 namespace PCE.Cards
 {
@@ -97,6 +98,8 @@ namespace PCE.Cards
     {
         private static bool randomInProgress = false;
 
+        private static CardCategory[] blacklistedCategories = new CardCategory[] { CustomCardCategories.instance.CardCategory("NoRandom"), CustomCardCategories.instance.CardCategory("CardManipulation") };
+
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.GetAdditionalData().isRandom = true;
@@ -122,7 +125,7 @@ namespace PCE.Cards
         {
             if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
             {
-                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { true });
+                NetworkingManager.RPC(typeof(RandomCard), nameof(RPCA_RandomInProgress), new object[] { true });
             }
             yield return new WaitForSecondsRealtime(0.5f);
             if (!PhotonNetwork.OfflineMode && !PhotonNetwork.IsMasterClient)
@@ -148,12 +151,12 @@ namespace PCE.Cards
                     foreach (int idx in indeces)
                     {
                         string twoLetterCode = player.GetComponent<RandomCardEffect>().twoLetterCode;
-                        CardInfo card = ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+                        CardInfo card = ModdingUtils.Utils.Cards.instance.NORARITY_GetRandomCardWithCondition(player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, RandomCard.blacklistedCategories));
                         if (card == null)
                         {
                             // if there is no valid card, then try drawing from the list of all cards (inactive + active) but still make sure it is compatible
                             CardInfo[] allCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList().Concat((List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToArray();
-                            card = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation") }));
+                            card = ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(allCards, player, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => ModdingUtils.Utils.Cards.instance.CardDoesNotConflictWithCards(card, newCards.ToArray()) && card.rarity == player.data.currentCards[idx].rarity && ModdingUtils.Extensions.CardInfoExtension.GetAdditionalData(card).canBeReassigned && !Extensions.CardInfoExtension.GetAdditionalData(card).isRandom && ModdingUtils.Utils.Cards.instance.CardIsNotBlacklisted(card, RandomCard.blacklistedCategories));
 
                             if (card == null)
                             {
@@ -188,7 +191,7 @@ namespace PCE.Cards
             }
             if (PhotonNetwork.OfflineMode || PhotonNetwork.IsMasterClient)
             {
-                NetworkingManager.RPC(typeof(PCE), nameof(RPCA_RandomInProgress), new object[] { false });
+                NetworkingManager.RPC(typeof(RandomCard), nameof(RPCA_RandomInProgress), new object[] { false });
             }
             yield return new WaitForSecondsRealtime(0.1f);
             yield break;

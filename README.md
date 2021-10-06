@@ -22,6 +22,12 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.4
+-----------
+
+- Minor bugfix regarding syncing glitched cards online
+- Introduced `"NoRandom"` custom card category for mod developers who may want to prevent their card from being chosen by a glitched card.
+
 #### v2.7.3
 -----------
 
