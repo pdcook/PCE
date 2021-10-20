@@ -16,7 +16,7 @@ namespace PCE.Cards
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             gun.damageAfterDistanceMultiplier = 0.1f;
-            gun.GetAdditionalData().minDistanceMultiplier = 0f;
+            ModdingUtils.Extensions.GunExtension.GetAdditionalData(gun).minDistanceMultiplier = 0f;
         }
         public override void OnRemoveCard()
         {

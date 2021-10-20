@@ -22,6 +22,11 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.5
+-----------
+
+- Various minor bugfixes, performance improvements, and compatibility changes
+
 #### v2.7.4
 -----------
 

@@ -81,7 +81,7 @@ namespace PCE.Cards
             // card cannot be another cardmanipulation card
             // card cannot be from a blacklisted catagory of any other card (handled by moddingutils)
 
-            return (card.rarity == CardInfo.Rarity.Uncommon) && !card.categories.Contains(CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation"));
+            return (card.rarity == CardInfo.Rarity.Uncommon) && !card.categories.Intersect(JackpotCard.noLotteryCategories).Any();
 
         }
         public override string GetModName()

@@ -9,6 +9,19 @@ namespace PCE.Cards
 {
     public class FireworksCard : CustomCard
     {
+        private static GameObject _FireworkSpawner = null;
+        internal static GameObject FireworkSpawner
+        {
+            get 
+            {
+                if (_FireworkSpawner != null) { return FireworksCard._FireworkSpawner; }
+
+                _FireworkSpawner = new GameObject("FireworkSpawner", typeof(FireworkSpawner));
+                UnityEngine.GameObject.DontDestroyOnLoad(_FireworkSpawner);
+                return _FireworkSpawner;
+            }
+            set { }
+        }
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
 
@@ -18,7 +31,7 @@ namespace PCE.Cards
             if (gun.GetAdditionalData().fireworkProjectiles == 0)
             {
                 ObjectsToSpawn fireworkObj = new ObjectsToSpawn() { };
-                fireworkObj.AddToProjectile = new GameObject("FireworkSpawner", typeof(FireworkSpawner));
+                fireworkObj.AddToProjectile = FireworkSpawner;
                 List<ObjectsToSpawn> objectsToSpawn = gun.objectsToSpawn.ToList();
                 objectsToSpawn.Add(fireworkObj);
                 gun.objectsToSpawn = objectsToSpawn.ToArray();

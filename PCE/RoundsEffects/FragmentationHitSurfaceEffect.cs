@@ -8,6 +8,36 @@ using PCE.Utils;
 
 namespace PCE.RoundsEffects
 {
+    internal static class FragmentationAssets
+    {
+        private static GameObject _setInactiveDelay;
+        internal static GameObject setInactiveDelay
+        {
+            get
+            {
+                if (FragmentationAssets._setInactiveDelay != null) { return FragmentationAssets._setInactiveDelay; }
+                else
+                {
+                    FragmentationAssets._setInactiveDelay = new GameObject("SetFragmentationInactiveDelay", typeof(SetFragmentInactiveDelay));
+                    UnityEngine.GameObject.DontDestroyOnLoad(FragmentationAssets._setInactiveDelay);
+
+                    return FragmentationAssets._setInactiveDelay;
+                }
+            }
+            set { }
+        }
+        internal static ObjectsToSpawn setInactiveDelayObjectToSpawn
+        {
+            get
+            {
+                ObjectsToSpawn obj = new ObjectsToSpawn() { };
+                obj.AddToProjectile = FragmentationAssets.setInactiveDelay;
+
+                return obj;
+            }
+            set { }
+        }
+    }
     public class FragmentationHitSurfaceEffect : HitSurfaceEffect
     {
         static readonly System.Random rng = new System.Random() { };
@@ -43,8 +73,7 @@ namespace PCE.RoundsEffects
             newGun.damage = UnityEngine.Mathf.Clamp(newGun.damage/2f, 0.5f, float.MaxValue);
             newGun.projectileSpeed = UnityEngine.Mathf.Clamp(velocity.magnitude / 100f, 0.1f, 1f);
             newGun.damageAfterDistanceMultiplier = 1f;
-            newGun.GetAdditionalData().inactiveDelay = 0.1f;
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { FragmentationAssets.setInactiveDelayObjectToSpawn, PreventRecursion.stopRecursionObjectToSpawn };
 
             // set the gun of the spawnbulletseffect
             effect.SetGun(newGun);
@@ -98,5 +127,18 @@ namespace PCE.RoundsEffects
     public class FragmentationGun : Gun
     {
 
+    }
+    public class SetFragmentInactiveDelay : MonoBehaviour
+    {
+        private const float inactiveDelay = 0.5f;
+
+        void Start()
+        {
+            if (this.gameObject.transform.parent == null) { return; }
+            else if (this.gameObject.transform.parent.GetComponent<ProjectileHit>() != null)
+            {
+                ModdingUtils.Extensions.ProjectileHitExtension.GetAdditionalData(this.gameObject.transform.parent.GetComponent<ProjectileHit>()).inactiveDelay = inactiveDelay;
+            }
+        }
     }
 }

@@ -10,11 +10,9 @@ namespace PCE.Extensions
     [Serializable]
     public class GunAdditionalData
     {
-        public float minDistanceMultiplier;
         public int fragmentationProjectiles;
         public int fireworkProjectiles;
         public int wraps;
-        public float inactiveDelay;
         public bool allowStop;
         public bool canBeLaser;
         public bool isLaser;
@@ -22,11 +20,9 @@ namespace PCE.Extensions
 
         public GunAdditionalData()
         {
-            minDistanceMultiplier = 1f;
             fragmentationProjectiles = 0;
             fireworkProjectiles = 0;
             wraps = 0;
-            inactiveDelay = 0f;
             allowStop = false;
             canBeLaser = false;
             isLaser = false;
@@ -58,10 +54,6 @@ namespace PCE.Extensions
     {
         private static void Prefix(Gun __instance, GameObject obj, int numOfProj = 1, float damageM = 1f, float randomSeed = 0f)
         {
-            if (__instance.GetAdditionalData().minDistanceMultiplier != 1f)
-            {
-                obj.GetOrAddComponent<ChangeDamageMultiplierAfterDistanceTravelled>().distance *= __instance.GetAdditionalData().minDistanceMultiplier;
-            }
             MoveTransform component3 = obj.GetComponent<MoveTransform>();
             component3.allowStop = __instance.GetAdditionalData().allowStop;
         }
@@ -72,12 +64,10 @@ namespace PCE.Extensions
     {
         private static void Prefix(Gun __instance)
         {
-            __instance.GetAdditionalData().minDistanceMultiplier = 1f;
             __instance.GetAdditionalData().fragmentationProjectiles = 0;
             __instance.GetAdditionalData().fireworkProjectiles = 0;
             __instance.GetAdditionalData().wraps = 0;
             __instance.GetAdditionalData().allowStop = false;
-            __instance.GetAdditionalData().inactiveDelay = 0f;
             __instance.GetAdditionalData().canBeLaser = false;
             __instance.GetAdditionalData().isLaser = false;
             __instance.GetAdditionalData().laserGun = null;

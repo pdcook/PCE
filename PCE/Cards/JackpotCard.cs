@@ -14,6 +14,7 @@ namespace PCE.Cards
         /*
         *  An Uncommon card which gives the player a random Rare card
         */
+        public static CardCategory[] noLotteryCategories = new CardCategory[] { CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation"), CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("NoRandom") };
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers)
         {
             cardInfo.GetAdditionalData().canBeReassigned = false;
@@ -72,7 +73,7 @@ namespace PCE.Cards
             // card cannot be another cardmanipulation card
             // card cannot be from a blacklisted catagory of any other card (handled by moddingutils)
 
-            return (card.rarity == CardInfo.Rarity.Rare) && !card.categories.Contains(CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.instance.CardCategory("CardManipulation"));
+            return (card.rarity == CardInfo.Rarity.Rare) && !card.categories.Intersect(JackpotCard.noLotteryCategories).Any();
 
         }
         public override string GetModName()

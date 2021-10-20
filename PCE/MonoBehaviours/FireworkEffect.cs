@@ -4,6 +4,7 @@ using Photon.Pun;
 using PCE.Extensions;
 using System.Linq;
 using PCE.Utils;
+using UnboundLib;
 
 namespace PCE.MonoBehaviours
 {
@@ -23,6 +24,33 @@ namespace PCE.MonoBehaviours
 
                     return FireworkAssets._firework;
                 }
+            }
+            set { }
+        }
+        private static GameObject _setInactiveDelay;
+        internal static GameObject setInactiveDelay
+        {
+            get
+            {
+                if (FireworkAssets._setInactiveDelay != null) { return FireworkAssets._setInactiveDelay; }
+                else
+                {
+                    FireworkAssets._setInactiveDelay = new GameObject("SetFireworkInactiveDelay",typeof(SetFireworkInactiveDelay));
+                    UnityEngine.GameObject.DontDestroyOnLoad(FireworkAssets._setInactiveDelay);
+
+                    return FireworkAssets._setInactiveDelay;
+                }
+            }
+            set { }
+        }
+        internal static ObjectsToSpawn setInactiveDelayObjectToSpawn
+        {
+            get
+            {
+                ObjectsToSpawn obj = new ObjectsToSpawn() { };
+                obj.AddToProjectile = FireworkAssets.setInactiveDelay;
+
+                return obj;
             }
             set { }
         }
@@ -70,6 +98,12 @@ namespace PCE.MonoBehaviours
         private readonly int bullets = 10;
         private readonly float radius = 2f;
 
+        private const int absMaxBullets = 25;
+        private const int numBulletsThreshold = 3;
+        private const float minProb = 2f/25f;
+        private const float preventLagDelay = 0.5f;
+        private const float exclusivityRange = 5f;
+
         private float delay {
             get
             {
@@ -85,9 +119,11 @@ namespace PCE.MonoBehaviours
             set { }
         }
 
-        private int numPops;
+        internal int numPops;
         private float time;
-        private int pops = 0;
+        internal int pops = 0;
+
+        private float extraDelay = 0f;
 
         private readonly float tolerance = 0.2f;
 
@@ -113,6 +149,7 @@ namespace PCE.MonoBehaviours
         void ResetTimer()
         {
             this.time = Time.time;
+            this.extraDelay = 0f;
         }
         void Awake()
         {
@@ -138,7 +175,7 @@ namespace PCE.MonoBehaviours
                 Destroy(this);
                 return;
             }
-            if (Time.time < this.delay + this.time)
+            if (Time.time < this.delay + this.time + this.extraDelay)
             {
                 return;
             }
@@ -163,9 +200,32 @@ namespace PCE.MonoBehaviours
 
             if (PhotonNetwork.OfflineMode || this.view.IsMine)
             {
-                this.view.RPC("RPCA_ShootFireWorks", RpcTarget.All, new object[] { FireworkEffect.rng.Next(0, this.colors.Length), this.gameObject.transform.position, this.bullets });
+                // randomly don't spawn fireworks from bullets if more than X number of firework-spawning bullets are on screen
+                int numBullets = GetAllBulletsFromThisPlayerInRange();
+                if (numBullets > numBulletsThreshold)
+                {
+                    if (UnityEngine.Random.Range(0f, 1f) >= 2f/numBullets)
+                    {
+                        this.extraDelay = preventLagDelay;
+                        return; 
+                    }
+                }
+
+                float randomRadiusFactor = UnityEngine.Random.Range(0.5f, 1.5f);
+                this.view.RPC("RPCA_ShootFireWorks", RpcTarget.All, new object[] { FireworkEffect.rng.Next(0, this.colors.Length), this.gameObject.transform.position, this.bullets, this.radius * randomRadiusFactor });
             }
 
+        }
+        private int GetAllBulletsFromThisPlayerInRange()
+        {
+            ProjectileHit[] array = UnityEngine.Object.FindObjectsOfType<ProjectileHit>();
+
+            return array.Where(f => IsValidBullet(f)).Count();
+        }
+        private bool IsValidBullet(ProjectileHit bullet)
+        {
+            if (bullet.ownPlayer != this.player) { return false; }
+            return Vector3.Distance(bullet.transform.position, this.gameObject.transform.position) <= exclusivityRange;
         }
 
         void OnDisable()
@@ -173,15 +233,15 @@ namespace PCE.MonoBehaviours
         }
 
         [PunRPC]
-        void RPCA_ShootFireWorks(int randomColorInt, Vector3 position, int numBullets)
+        void RPCA_ShootFireWorks(int randomColorInt, Vector3 position, int numBullets, float radius)
         {
             Color color = this.colors[randomColorInt];
 
-            Gun newGun = this.player.gameObject.AddComponent<FireworkGun>();
+            Gun newGun = this.player.gameObject.GetOrAddComponent<FireworkGun>();
 
             SpawnBulletsEffect effect = this.player.gameObject.AddComponent<SpawnBulletsEffect>();
             // set the position and direction to fire
-            List<Vector3> positions = this.GetPositions(position, this.radius, numBullets);
+            List<Vector3> positions = this.GetPositions(position, radius, numBullets);
             effect.SetPositions(positions);
             effect.SetDirections(this.GetDirections(position, positions));
             effect.SetNumBullets(numBullets);
@@ -201,10 +261,9 @@ namespace PCE.MonoBehaviours
             newGun.gravity = 1f;
             newGun.reflects = 0;
             newGun.GetAdditionalData().allowStop = true;
-            newGun.GetAdditionalData().inactiveDelay = 0.1f;
             newGun.damageAfterDistanceMultiplier = 1f;
             newGun.projectileColor = color;
-            newGun.objectsToSpawn = new ObjectsToSpawn[] { PreventRecursion.stopRecursionObjectToSpawn };
+            newGun.objectsToSpawn = new ObjectsToSpawn[] { FireworkAssets.setInactiveDelayObjectToSpawn, PreventRecursion.stopRecursionObjectToSpawn };
 
             // set the gun of the spawnbulletseffect
             effect.SetGun(newGun);
@@ -243,5 +302,17 @@ namespace PCE.MonoBehaviours
     public class FireworkGun : Gun
     { }
 
-    
+    public class SetFireworkInactiveDelay : MonoBehaviour
+    {
+        private const float inactiveDelay = 1f;
+
+        void Start()
+        {
+            if (this.gameObject.transform.parent == null) { return; }
+            else if (this.gameObject.transform.parent.GetComponent<ProjectileHit>()!=null)
+            {
+                ModdingUtils.Extensions.ProjectileHitExtension.GetAdditionalData(this.gameObject.transform.parent.GetComponent<ProjectileHit>()).inactiveDelay = inactiveDelay;
+            }
+        }
+    }
 }
