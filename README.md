@@ -22,6 +22,12 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.6
+-----------
+
+- Updated to use newest version of Unbound
+- Fixed missing sprite in Pac-Bullets art
+
 #### v2.7.5
 -----------
 

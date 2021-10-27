@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3929395779
+CRC: 4071194244
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0e5f65d7a9c36ca165ffc149e615505c
+    Hash: a1809a9b9c276c9daaae531558bc7cd6
   TypeTreeHash:
     serializedVersion: 2
     Hash: b32eb4c7ce1fdd682a6286505bc33897
@@ -107,6 +107,7 @@ Assets:
 - Assets/Prefabs/Images/PCE/JackpotCards/BCKP/strawberry.png
 - Assets/Prefabs/Images/LaserIn.png
 - Assets/Prefabs/Images/PCE/WildcardCards/white-layer8.png
+- Assets/Prefabs/Images/Gun_1.png
 - Assets/Prefabs/Images/PCE/WildcardCards/joker-hat-894472.png
 - Assets/Prefabs/Images/mouthtop.controller
 - Assets/Prefabs/Images/bulletpack2.anim

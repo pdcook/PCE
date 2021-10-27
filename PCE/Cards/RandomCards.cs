@@ -213,6 +213,10 @@ namespace PCE.Cards
 
         internal static void callback(CardInfo card)
         {
+            // hide default icon
+            card.gameObject.transform.Find("CardBase(Clone)(Clone)/Canvas/Front/Icon").gameObject.SetActive(false);
+
+
             card.gameObject.AddComponent<RandomCardVisualEffect>();
 
         }
