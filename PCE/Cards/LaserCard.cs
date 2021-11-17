@@ -16,6 +16,7 @@ using InControl;
 using ModdingUtils.MonoBehaviours;
 using UnboundLib;
 using System.Collections;
+using ZeroGBulletPatch;
 namespace PCE.Cards
 {
     public class LaserCard : CustomCard
@@ -175,14 +176,17 @@ namespace PCE.Cards
                 if (__instance.GetComponent<CharacterData>().playerActions.GetAdditionalData().switchWeapon.WasPressed && __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().canBeLaser)
                 {
                     __instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser = !__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser;
-                
+
+
                     if (__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser)
                     {
+                        ZeroGBulletPatch.Extensions.GunExtension.GetAdditionalData(__instance.GetComponent<Holding>().holdable.GetComponent<Gun>()).arcTrajectoryRotationalCompensationDisabled = true;
                         __instance.GetComponent<LaserEffect>().ApplyModifiers();
                     }
                     if (!__instance.GetComponent<Holding>().holdable.GetComponent<Gun>().GetAdditionalData().isLaser)
                     {
                         __instance.GetComponent<LaserEffect>().ClearModifiers(false);
+                        ZeroGBulletPatch.Extensions.GunExtension.GetAdditionalData(__instance.GetComponent<Holding>().holdable.GetComponent<Gun>()).arcTrajectoryRotationalCompensationDisabled = false;
                     }
 
                 }
@@ -561,12 +565,6 @@ namespace PCE.Cards
             Vector3 direction = ((Quaternion)typeof(Gun).InvokeMember("getShootRotation",
                                    BindingFlags.Instance | BindingFlags.InvokeMethod |
                                   BindingFlags.NonPublic, null, this.gun, new object[] { 0, 0, 0f })) * Vector3.forward;
-
-            // REMOVE COMPENSATION FOR BULLET SPEED
-            if (!this.player.data.stats.GetAdditionalData().removeSpeedCompensation)
-            {
-                direction -= Vector3.up * 0.13f / Mathf.Clamp(this.gun.projectileSpeed, 1f, 100f);
-            }
 
             int i = 0;
             RaycastHit2D hit = Physics2D.Raycast(this.gun.shootPosition.position, direction, maxDistance, this.layerMask);

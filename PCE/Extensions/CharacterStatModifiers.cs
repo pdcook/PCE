@@ -14,7 +14,6 @@ namespace PCE.Extensions
         public int remainingMulligans;
         public int mulligans;
         public int shuffles;
-        public bool removeSpeedCompensation;
         public float piercingPerc;
         public int wraps;
         public int remainingWraps;
@@ -25,7 +24,6 @@ namespace PCE.Extensions
             remainingMulligans = 0;
             mulligans = 0;
             shuffles = 0;
-            removeSpeedCompensation = false;
             piercingPerc = 0f;
             wraps = 0;
             remainingWraps = 0;
@@ -62,7 +60,6 @@ namespace PCE.Extensions
             __instance.GetAdditionalData().remainingMulligans = 0;
             __instance.GetAdditionalData().mulligans = 0;
             __instance.GetAdditionalData().shuffles = 0;
-            __instance.GetAdditionalData().removeSpeedCompensation = false;
             __instance.GetAdditionalData().piercingPerc = 0f;
             __instance.GetAdditionalData().wraps = 0;
             __instance.GetAdditionalData().remainingWraps = 0;

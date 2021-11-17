@@ -396,7 +396,7 @@ namespace PCE.Cards
                 this.activeCards = ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
                 this.inactiveCards = (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
                 this.allCards = activeCards.Concat(this.inactiveCards).ToArray();
-                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(this.allCards, null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!card.cardArt.name.Contains("New Game Object")) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, this.artParent.transform);
+                GameObject newart = GameObject.Instantiate(ModdingUtils.Utils.Cards.instance.DrawRandomCardWithCondition(this.allCards, null, null, null, null, null, null, null, null, (card, player, g, ga, d, h, gr, b, s) => (!(card.cardArt == null)) && (card.rarity == this.gameObject.GetComponent<CardInfo>().rarity)).cardArt, this.artParent.transform);
                 newart.transform.localScale = new Vector3(1f, 1f, 1f);
                 newart.transform.SetAsFirstSibling();
                 this.art[artNum] = newart;

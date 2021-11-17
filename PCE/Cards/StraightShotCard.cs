@@ -16,9 +16,7 @@ namespace PCE.Cards
             gun.projectileSpeed *= 0.85f;
             gunAmmo.reloadTimeMultiplier = 0.7f;
 
-            // remove projectile speed aiming compensation
-            characterStats.GetAdditionalData().removeSpeedCompensation = true;
-
+            // removal of projectile speed aiming compensation is handled by ZeroGBulletPatch
         }
         public override void OnRemoveCard()
         {
