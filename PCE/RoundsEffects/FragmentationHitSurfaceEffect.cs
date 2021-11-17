@@ -130,7 +130,7 @@ namespace PCE.RoundsEffects
     }
     public class SetFragmentInactiveDelay : MonoBehaviour
     {
-        private const float inactiveDelay = 0.5f;
+        private const float inactiveDelay = 0.2f;
 
         void Start()
         {

@@ -22,6 +22,14 @@ Download [r2modman](https://rounds.thunderstore.io/package/ebkr/r2modman/), set 
 ### Version Notes
 -----------------
 
+#### v2.7.7
+-----------
+
+- Updated to require ZeroGBulletPatch by TeamDK
+- Performance bugfixes
+    - Glitched cards should no longer lag the game during the pick phase
+    - Fragmentation bullets should glitch through walls less often
+
 #### v2.7.6
 -----------
 
