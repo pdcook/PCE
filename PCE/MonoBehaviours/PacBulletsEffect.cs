@@ -108,19 +108,17 @@ namespace PCE.MonoBehaviours
                 return;
             }
 
-
-            Vector3 pos = this.mainCam.WorldToScreenPoint(this.transform.position);
-            pos.x /= (float)Screen.width;
-            pos.y /= (float)Screen.height;
+            Vector2 pos_ = ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.BoundsPointFromWorldPosition(Extensions.CharacterDataExtension.GetAdditionalData(this.projectile.ownPlayer.data).outOfBoundsHandler, this.transform.position);
+            Vector3 pos = new Vector3(pos_.x, pos_.y, this.transform.position.z);
 
             bool flag = false;
 
-            if (pos.x > 1f || pos.x < 0f)
+            if (pos.x >= 1f || pos.x <= 0f)
             {
                 flag = true;
                 pos.x = 1f - pos.x;
             }
-            if (pos.y > 1f || pos.y < 0f)
+            if (pos.y >= 1f || pos.y <= 0f)
             {
                 flag = true;
                 pos.y = 1f - pos.y;
@@ -162,7 +160,8 @@ namespace PCE.MonoBehaviours
                 renderer.enabled = false;
             }
 
-            this.parent.transform.position = this.mainCam.ScreenToWorldPoint(new Vector3(x * (float)Screen.width, y * (float)Screen.height, z));
+            Vector2 _position = ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.WorldPositionFromBoundsPoint(Extensions.CharacterDataExtension.GetAdditionalData(this.projectile.ownPlayer.data).outOfBoundsHandler, new Vector2(x,y));
+            this.parent.transform.position = new Vector3(_position.x, _position.y, z);
 
             this.ExecuteAfterFrames(2, () =>
             {

@@ -29,7 +29,7 @@ namespace PCE.MonoBehaviours
         private void WarpX(Vector3 pos)
         {
             bool flag = false;
-            if (pos.x > upper || pos.x < lower)
+            if (pos.x >= upper || pos.x <= lower)
             {
                 flag = true;
                 pos.x = upper - pos.x;
@@ -44,14 +44,14 @@ namespace PCE.MonoBehaviours
                 int currentWraps = base.characterStatModifiers.GetAdditionalData().remainingWraps;
                 if (!this.waitX) { Unbound.Instance.ExecuteAfterSeconds(0.1f, () => { this.waitX = false; base.characterStatModifiers.GetAdditionalData().remainingWraps = currentWraps - 1; }); }
                 this.waitX = true;
-                if (!PhotonNetwork.OfflineMode && base.GetComponent<PhotonView>().IsMine) { base.GetComponent<PhotonView>().RPC(nameof(RPCA_Teleport), RpcTarget.All, new object[] { MainCam.instance.transform.GetComponent<Camera>().ScreenToWorldPoint(new Vector3(pos.x * (float)Screen.width, pos.y * (float)Screen.height, pos.z)) }); }
-                else if (PhotonNetwork.OfflineMode) { RPCA_Teleport(MainCam.instance.transform.GetComponent<Camera>().ScreenToWorldPoint(new Vector3(pos.x * (float)Screen.width, pos.y * (float)Screen.height, pos.z))); }
+                if (!PhotonNetwork.OfflineMode && base.GetComponent<PhotonView>().IsMine) { base.GetComponent<PhotonView>().RPC(nameof(RPCA_Teleport), RpcTarget.All, new object[] { ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.WorldPositionFromBoundsPoint(this.data.GetAdditionalData().outOfBoundsHandler, pos) }); }
+                else if (PhotonNetwork.OfflineMode) { RPCA_Teleport(ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.WorldPositionFromBoundsPoint(this.data.GetAdditionalData().outOfBoundsHandler, pos)); }
             }
         }
         private void WarpY(Vector3 pos)
         {
             bool flag = false;
-            if (pos.y > upper || pos.y < lower)
+            if (pos.y >= upper || pos.y <= lower)
             {
                 flag = true;
                 pos.y = upper - pos.y;
@@ -66,8 +66,8 @@ namespace PCE.MonoBehaviours
                 int currentWraps = base.characterStatModifiers.GetAdditionalData().remainingWraps;
                 if (!this.waitY) { Unbound.Instance.ExecuteAfterSeconds(0.1f, () => { this.waitY = false;  base.characterStatModifiers.GetAdditionalData().remainingWraps = currentWraps - 1; }); }
                 this.waitY = true;
-                if (!PhotonNetwork.OfflineMode && base.GetComponent<PhotonView>().IsMine) { base.GetComponent<PhotonView>().RPC(nameof(RPCA_Teleport), RpcTarget.All, new object[] { MainCam.instance.transform.GetComponent<Camera>().ScreenToWorldPoint(new Vector3(pos.x * (float)Screen.width, pos.y * (float)Screen.height, pos.z)) }); }
-                else if (PhotonNetwork.OfflineMode) { RPCA_Teleport(MainCam.instance.transform.GetComponent<Camera>().ScreenToWorldPoint(new Vector3(pos.x * (float)Screen.width, pos.y * (float)Screen.height, pos.z))); }
+                if (!PhotonNetwork.OfflineMode && base.GetComponent<PhotonView>().IsMine) { base.GetComponent<PhotonView>().RPC(nameof(RPCA_Teleport), RpcTarget.All, new object[] {ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.WorldPositionFromBoundsPoint(this.data.GetAdditionalData().outOfBoundsHandler, pos)}); }
+                else if (PhotonNetwork.OfflineMode) { RPCA_Teleport(ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.WorldPositionFromBoundsPoint(this.data.GetAdditionalData().outOfBoundsHandler, pos)); }
             }
         }
         public override void OnUpdate()
@@ -105,10 +105,7 @@ namespace PCE.MonoBehaviours
                 base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;
             }
 
-            Vector3 pos = MainCam.instance.transform.GetComponent<Camera>().WorldToScreenPoint(new Vector3(data.transform.position.x, data.transform.position.y, 0f));
-
-            pos.x /= (float)Screen.width;
-            pos.y /= (float)Screen.height;
+            Vector2 pos = ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.BoundsPointFromWorldPosition(this.data.GetAdditionalData().outOfBoundsHandler, this.data.transform.position);
 
             if (!this.waitX)
             {
@@ -148,7 +145,7 @@ namespace PCE.MonoBehaviours
             });
         }
         [PunRPC]
-        public void RPCA_Teleport(Vector3 pos)
+        public void RPCA_Teleport(Vector2 pos)
         {
             this.PlayParts();
             base.player.GetComponentInParent<PlayerCollision>().IgnoreWallForFrames(2);

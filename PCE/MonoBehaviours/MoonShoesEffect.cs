@@ -61,18 +61,13 @@ namespace PCE.MonoBehaviours
             while (true)
             {
 
-                Vector3 vector = MainCam.instance.transform.GetComponent<Camera>().WorldToScreenPoint(new Vector3(data.transform.position.x, data.transform.position.y, 0f));
-
-                vector.x /= (float)Screen.width;
-                vector.y /= (float)Screen.height;
-
-                vector = new Vector3(Mathf.Clamp01(vector.x), Mathf.Clamp01(vector.y), 0f);
+                Vector2 vector = ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.BoundsPointFromWorldPosition(this.data.GetAdditionalData().outOfBoundsHandler, data.transform.position);
 
                 if (Time.time > startTime + outOfBoundsTime || vector.x <= 0f || vector.x >= 1f || vector.y <= 0f)
                 {
                     base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = true;
                 }
-                if (!(vector.x <= 0f || vector.x >= 1f || vector.y <= 0f) && vector.y < 1f)
+                if (!(vector.x <= 0f || vector.x >= 1f || vector.y <= 0f) && vector.y <= 1f)
                 {
                     startTime = Time.time;
                     base.player.data.GetAdditionalData().outOfBoundsHandler.enabled = false;

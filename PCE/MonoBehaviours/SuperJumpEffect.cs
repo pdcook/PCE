@@ -137,17 +137,7 @@ namespace PCE.MonoBehaviours
             }
             while (!base.data.isGrounded && Time.time < startTime + this.outOfBoundsTime)
             {
-                //if (base.player.data.playerActions.Jump.WasPressed || base.player.data.playerActions.Jump.IsPressed)
-                //{
-                //    break;
-                //}
-
-                Vector3 vector = MainCam.instance.transform.GetComponent<Camera>().WorldToScreenPoint(new Vector3(data.transform.position.x, data.transform.position.y, 0f));
-
-                vector.x /= (float)Screen.width;
-                vector.y /= (float)Screen.height;
-
-                vector = new Vector3(Mathf.Clamp01(vector.x), Mathf.Clamp01(vector.y), 0f);
+                Vector2 vector = ModdingUtils.Extensions.OutOfBoundsHandlerExtensions.BoundsPointFromWorldPosition(this.data.GetAdditionalData().outOfBoundsHandler, data.transform.position);
 
                 if (vector.x <= 0f || vector.x >= 1f || vector.y <= 0f)
                 {
