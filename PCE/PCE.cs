@@ -29,7 +29,7 @@ namespace PCE
     [BepInDependency("pykess.rounds.plugins.temporarystatspatch", BepInDependency.DependencyFlags.HardDependency)] // fixes Taste Of Blood, Pristine Perserverence, and Chase when combined with cards from PCE
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("com.dk.rounds.plugins.zerogpatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "2.7.8")]
+    [BepInPlugin(ModId, ModName, "2.7.9")]
     [BepInProcess("Rounds.exe")]
     public class PCE : BaseUnityPlugin
     {
@@ -40,7 +40,7 @@ namespace PCE
         private void Start()
         {
             // register credits with unbound
-            Unbound.RegisterCredits(ModName, new string[] { "Pykess" }, new string[] { "github", "Buy me a coffee" }, new string[] { "https://github.com/pdcook/PCE", "https://www.buymeacoffee.com/Pykess" });
+            Unbound.RegisterCredits(ModName, new string[] { "Pykess" }, new string[] { "github", "Support Pykess" }, new string[] { "https://github.com/pdcook/PCE", "https://ko-fi.com/pykess" });
 
             PCE.ArtAssets = AssetUtils.LoadAssetBundleFromResources("pceassetbundle", typeof(PCE).Assembly);
             if (PCE.ArtAssets == null)
@@ -111,9 +111,9 @@ namespace PCE
             CustomCard.BuildCard<MasochistIVCard>();
             CustomCard.BuildCard<MasochistVCard>(card => { MasochistVCard.self = card; ModdingUtils.Utils.Cards.instance.AddHiddenCard(MasochistVCard.self); });
 
-            CustomCard.BuildCard<RandomCommonCard>(Cards.RandomCard.callback);
-            CustomCard.BuildCard<RandomUncommonCard>(Cards.RandomCard.callback);
-            CustomCard.BuildCard<RandomRareCard>(Cards.RandomCard.callback);
+            CustomCard.BuildCard<RandomCommonCard>();
+            CustomCard.BuildCard<RandomUncommonCard>();
+            CustomCard.BuildCard<RandomRareCard>();
 
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => MurderCard.CommitMurders());
             GameModeManager.AddHook(GameModeHooks.HookBattleStart, (gm) => LaserCard.RemoveLasersBetweenBattles());
