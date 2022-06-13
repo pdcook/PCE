@@ -145,11 +145,11 @@ namespace PCE.MonoBehaviours
         }
         private readonly Dictionary<MasochistType, string> cardNames = new Dictionary<MasochistType, string>()
         {
-            {MasochistType.I, "Masochist I" },
-            {MasochistType.II, "Masochist II" },
-            {MasochistType.III, "Masochist III" },
-            {MasochistType.IV, "Masochist IV" },
-            {MasochistType.V, "Masochist V" },
+            {MasochistType.I, "__PCE__Masochist I" },
+            {MasochistType.II, "__PCE__Masochist II" },
+            {MasochistType.III, "__PCE__Masochist III" },
+            {MasochistType.IV, "__PCE__Masochist IV" },
+            {MasochistType.V, "__PCE__Masochist V" },
         };
 
     }

@@ -99,7 +99,7 @@ namespace PCE.MonoBehaviours
             this.player = this.projectile.ownPlayer;
             this.gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
 
-            this.layersToAdd = this.player.data.currentCards.Where(card => card.cardName == "Comb").Count();
+            this.layersToAdd = this.player.data.currentCards.Where(card => card.name == "__PCE__Comb").Count();
 
             // create a new gun for the spawnbulletseffect
             this.newGun = this.player.gameObject.AddComponent<CombGun>();

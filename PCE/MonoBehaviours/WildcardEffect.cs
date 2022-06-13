@@ -243,11 +243,11 @@ namespace PCE.MonoBehaviours
         }
         private readonly Dictionary<WildcardType, string> cardNames = new Dictionary<WildcardType, string>()
         {
-            {WildcardType.I, "Wildcard I" },
-            {WildcardType.II, "Wildcard II" },
-            {WildcardType.III, "Wildcard III" },
-            {WildcardType.IV, "Wildcard IV" },
-            {WildcardType.V, "Wildcard V" },
+            {WildcardType.I, "__PCE__Wildcard I" },
+            {WildcardType.II, "__PCE__Wildcard II" },
+            {WildcardType.III, "__PCE__Wildcard III" },
+            {WildcardType.IV, "__PCE__Wildcard IV" },
+            {WildcardType.V, "__PCE__Wildcard V" },
         };
 
         [PunRPC]

@@ -144,11 +144,11 @@ namespace PCE.MonoBehaviours
         }
         private readonly Dictionary<PacifistType, string> cardNames = new Dictionary<PacifistType, string>()
         {
-            {PacifistType.I, "Pacifist I" },
-            {PacifistType.II, "Pacifist II" },
-            {PacifistType.III, "Pacifist III" },
-            {PacifistType.IV, "Pacifist IV" },
-            {PacifistType.V, "Pacifist V" },
+            {PacifistType.I, "__PCE__Pacifist I" },
+            {PacifistType.II, "__PCE__Pacifist II" },
+            {PacifistType.III, "__PCE__Pacifist III" },
+            {PacifistType.IV, "__PCE__Pacifist IV" },
+            {PacifistType.V, "__PCE__Pacifist V" },
         };
 
     }

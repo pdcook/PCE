@@ -1,17 +1,17 @@
 {
     "name": "PCE",
-    "version_number": "2.7.9",
+    "version_number": "2.7.10",
     "website_url": "https://github.com/pdcook/PCE",
     "description": "Adds a number of new cards to the game",
     "dependencies": [
-        "Pykess-ModdingUtils-0.2.8",
+        "Pykess-ModdingUtils-0.3.3",
         "Pykess-TemporaryStatsPatch-0.0.0",
-        "Pykess-CardChoiceSpawnUniqueCardPatch-0.1.7",
+        "Pykess-CardChoiceSpawnUniqueCardPatch-0.1.8",
 	"Pykess-PlayerJumpPatch-0.0.2",
     "Pykess-LegRaycastersPatch-0.0.0",
     "Pykess-GunUnblockablePatch-0.0.0",
     "TeamDK-ZeroGBulletPatch-1.1.0",
-        "willis81808-UnboundLib-3.0.0",
+        "willis81808-UnboundLib-3.1.0",
 	"willis81808-MMHook-1.0.0",
 	"BepInEx-BepInExPack_ROUNDS-5.4.1100"
     ]

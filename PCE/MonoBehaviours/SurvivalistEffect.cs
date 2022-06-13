@@ -145,11 +145,11 @@ namespace PCE.MonoBehaviours
         }
         private readonly Dictionary<SurvivalistType, string> cardNames = new Dictionary<SurvivalistType, string>()
         {
-            {SurvivalistType.I, "Survivalist I" },
-            {SurvivalistType.II, "Survivalist II" },
-            {SurvivalistType.III, "Survivalist III" },
-            {SurvivalistType.IV, "Survivalist IV" },
-            {SurvivalistType.V, "Survivalist V" },
+            {SurvivalistType.I, "__PCE__Survivalist I" },
+            {SurvivalistType.II, "__PCE__Survivalist II" },
+            {SurvivalistType.III, "__PCE__Survivalist III" },
+            {SurvivalistType.IV, "__PCE__Survivalist IV" },
+            {SurvivalistType.V, "__PCE__Survivalist V" },
         };
 
     }
